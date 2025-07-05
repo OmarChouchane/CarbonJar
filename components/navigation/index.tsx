@@ -80,7 +80,8 @@ const MobileMenu = () => (
         <Link
           key={link.label}
           href={link.href}
-          className="text-white block px-3 py-2 text-base font-medium"
+          prefetch={true}
+          className="text-white block px-3 py-2 text-base font-medium transition-colors duration-100"
         >
           {link.label}
         </Link>
@@ -111,7 +112,8 @@ const Navigation = () => {
             <Link
               key={link.label}
               href={link.href}
-              className="text-white hover:text-light-green px-3 py-2 rounded-md font-Inter"
+              prefetch={true}
+              className="text-white hover:text-light-green px-3 py-2 rounded-md font-Inter transition-colors duration-100"
             >
               {link.label}
             </Link>
