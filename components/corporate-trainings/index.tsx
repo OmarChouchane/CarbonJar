@@ -5,7 +5,7 @@ import BigCard2 from "../big-card2";
 import { motion } from "framer-motion";
 import { SmallerH1, H2 } from "../Heading";
 import CourseCard from "../course-card";
-import Button from "../button";
+import Button from "@/components/button";
 import { IoIosArrowForward } from "react-icons/io";
 
 const CorporateTrainings: React.FC = () => {
@@ -158,7 +158,7 @@ const CorporateTrainings: React.FC = () => {
       "At Carbon Jar, we provide professional training to enhance your team’s knowledge and skills. Our courses help teams gain an in-depth understanding of various standards that empower businesses. Through efficient training in effective implementation practices, auditing, and structured frameworks, we enable businesses to achieve their goals and improve staff efficiency. We offer In-House Training, Public Training, and Live Online Training to achieve process and operational excellence.",
     Maindescription: "Why Choose Our Corporate Training Programs?",
     description: (
-      <div className="space-y-3">
+      <div className="">
         <div className="flex items-start">
           <span className="text-lg mr-2">•</span>
           <span className="underline">Onsite Training:</span>
@@ -180,7 +180,7 @@ const CorporateTrainings: React.FC = () => {
   return (
     <>
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
-        <section className="bg-green-100 lg:px-8 px-2 lg:mt-8 mb-8 rounded-lg">
+        <section className="lg:px-8 px-2 lg:mt-8 mb-8 rounded-lg">
           <div className="container lg:px-8 px-2 mx-auto">
             <BigCard2
               title={card2.title}
@@ -219,7 +219,7 @@ const CorporateTrainings: React.FC = () => {
           </H2>
 
           <div className="mt-8 mb-8 flex justify-center items-center w-full mx-auto">
-            <Button className="px-8">
+            <Button>
               Get started now
               <IoIosArrowForward />
             </Button>

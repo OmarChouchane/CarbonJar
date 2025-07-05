@@ -46,7 +46,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
   return (
     <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
-      <div className="relative m-8 gap-4 rounded-lg border border-green-dark bg-green-dark shadow-md p-6">
+      <div className="relative m-8 gap-4 rounded-lg lg:pl-8 border border-green-dark bg-green-dark shadow-md p-6">
         <motion.a
           href={link}
           className="absolute right-6 top-6 text-white-light text-sm underline flex items-center gap-1"

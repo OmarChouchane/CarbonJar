@@ -24,22 +24,32 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, answer }) => {
       style={{ boxShadow: "none" }} // Remove outline/shadow
       >
       <div
-        className="px-2  rounded-lg border-0 flex justify-between items-center cursor-pointer"
+        className="px-2 rounded-lg border-0 flex justify-between items-center cursor-pointer"
         onClick={toggleCard}
         style={{ minHeight: "24px" }} // Further reduce height
       >
         <Title className="text-base">Q: {question}</Title>
         {isOpen ? (
-          <IoIosArrowUp className="text-green text-xl" />
+        <IoIosArrowUp className="text-green text-xl" />
         ) : (
-          <IoIosArrowDown className="text-green text-xl" />
+        <IoIosArrowDown className="text-green text-xl" />
         )}
       </div>
-      {isOpen && (
-        <div className="pl-4 pr-6 pt-2 pb-2 text-left transition-all duration-300 ease-in-out sm:pl-6 sm:pr-12 lg:pl-10 lg:pr-28">
+      <motion.div
+        initial={false}
+        animate={isOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+        transition={{ height: { duration: 0.3, ease: "easeInOut" }, opacity: { duration: 0.2 } }}
+        style={{ overflow: "hidden" }}
+      >
+        <div
+        style={{
+          display: isOpen ? "block" : "none",
+        }}
+        className="pl-4 pr-6 pt-2 pb-2 text-left transition-all duration-300 ease-in-out sm:pl-6 sm:pr-12 lg:pl-10 lg:pr-28"
+        >
         <H2 className="text-left mb-2 sm:m-2">{answer}</H2>
         </div>
-      )}
+      </motion.div>
       </div>
     </motion.div>
   );

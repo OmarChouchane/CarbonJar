@@ -26,7 +26,7 @@ const BigCard2: React.FC<BigCardProps> = ({
   <div className="flex lg:mt-12 flex-col bg-light-green mx-auto lg:flex-row justify-start items-start lg:items-stretch lg:p-8 p-2 rounded-lg border border-lighter-green">
     <div className="flex flex-col justify-start items-start gap-6 lg:ml-6 w-full">
       <div className="flex flex-col justify-start items-start">
-        <SmallerH1 className="mx-10">{title}</SmallerH1>
+        <SmallerH1 className=" text-center w-full">{title}</SmallerH1>
         <br />
         {description1 && <H2 className="text-left">{description1}</H2>}
 
@@ -45,7 +45,7 @@ const BigCard2: React.FC<BigCardProps> = ({
           )}
           <H2 className="font-bold text-left">{Maindescription}</H2>
         </div>
-        <H2 className="lg:mx-6 mx-2 text-left">{description}</H2>
+        <H2 className="lg:mx-6 pl-10 mx-2 text-left">{description}</H2>
       </div>
 
       {button1 && (

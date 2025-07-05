@@ -13,7 +13,22 @@ const StatisticBlock: React.FC<StatisticBlockProps> = ({
 }) => {
   return (
     <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
-      <div className="w-full sm:w-72 flex flex-col justify-start items-center gap-2 p-4 transition-transform duration-300 hover:bg-opacity-90 hover:shadow-lg hover:scale-105">
+      <div
+        className="w-full sm:w-72 flex flex-col justify-start items-center gap-2 p-4"
+        style={{
+          transition: "box-shadow 0.3s, background 0.3s, transform 0.3s",
+        }}
+        onMouseEnter={e => {
+          (e.currentTarget as HTMLDivElement).style.background = "rgba(0,0,0,0.05)";
+          (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 24px rgba(0,0,0,0.15)";
+          (e.currentTarget as HTMLDivElement).style.transform = "scale(1.05)";
+        }}
+        onMouseLeave={e => {
+          (e.currentTarget as HTMLDivElement).style.background = "";
+          (e.currentTarget as HTMLDivElement).style.boxShadow = "";
+          (e.currentTarget as HTMLDivElement).style.transform = "";
+        }}
+      >
         <H1 className="font-bold">{number}</H1>
         <div className="w-full text-center">
           <H2 className="text-center lg:text-xl">{description}</H2>
