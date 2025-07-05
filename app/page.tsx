@@ -6,21 +6,24 @@ import CardsSection from "@/components/cards-section";
 import CardSection from "@/components/testamonials";
 import FAQSection from "@/components/faq-section";
 import ScrollProgress from "@/components/scroll";
+import Page from "@/components/page";
 
 
 export default function HomePage() {
   return (
     <>
-      <ScrollProgress />
-      <Header />
-      <main className="bg-white-light min-h-screen">
-        <CarbonManagement />
-        <ClimateActionSection />
-        <CardsSection />
-        <CardSection />
-        <FAQSection />
-      </main>
-      <Footer />
+      <Page>
+        <ScrollProgress />
+        <Header />
+        <main className="bg-white-light min-h-screen">
+          <CarbonManagement />
+          <ClimateActionSection />
+          <CardsSection />
+          <CardSection />
+          <FAQSection />
+        </main>
+        <Footer />
+      </Page>
     </>
   );
 }

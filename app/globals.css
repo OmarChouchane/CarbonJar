@@ -2,14 +2,48 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Font Face Declarations */
+@font-face {
+  font-family: "The Bold Font";
+  src: url("/fonts/Inter/THE-BOLD-FONT.ttf") format("truetype"),
+    url("/fonts/Inter/THE-BOLD-FONT.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/Inter-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/Inter-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/Inter-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Custom fonts, colors, and tokens in @theme */
 @theme {
-  --font-inter: 'Inter, sans-serif';
-  --font-custom: 'The Bold Font, sans-serif';
+  --font-inter: "Inter", sans-serif;
+  --font-custom: "The Bold Font", sans-serif;
 
-  --color-green: #17412D;
+  --color-green: #17412d;
   --color-light-green: #70d460;
-  --color-background: #C6D8CB;
+  --color-background: #ffffff;
   --color-lighter-green: #d4edd8;
   --color-green-dark: #123725;
   --color-white: #ffffff;
@@ -19,10 +53,24 @@
   --color-lighter-grey: #e7f0e9;
   --color-blue: #081747;
   --color-light-blue: #7e9bf5;
-  --color-yellow: #FFC805;
+  --color-yellow: #ffc805;
   --color-border-white: rgba(255 255 255 / 0.06);
+
+  /* Font family utilities */
+  --font-family-inter: var(--font-inter);
+  --font-family-custom: var(--font-custom);
 }
 
+/* Custom font utility classes */
+.font-Inter {
+  font-family: "Inter", "Arial", sans-serif !important;
+  font-feature-settings: normal !important;
+}
+
+.font-custom {
+  font-family: "The Bold Font", "Arial Black", sans-serif !important;
+  font-feature-settings: normal !important;
+}
 
 body {
   font-family: var(--font-inter);

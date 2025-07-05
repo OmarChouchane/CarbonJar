@@ -2,7 +2,6 @@
 
 "use client";
 
-import { Metadata } from "next";
 import Footer from "@/components/footer";
 import { SmallerH1, H2 } from "@/components/Heading";
 import BigCard3 from "@/components/big-card3";
@@ -11,11 +10,6 @@ import FAQSection from "@/components/faq-section";
 import TextCard from "@/components/TextCard";
 import ScrollProgress from "@/components/scroll";
 import { motion } from "framer-motion";
-
-export const metadata: Metadata = {
-  title: "About Us",
-  description: "Learn more about us on this page.",
-};
 
 export default function AboutPage() {
   const texts = [
@@ -66,11 +60,11 @@ export default function AboutPage() {
                   our carbon footprint.
                 </>
               }
-              icon="images/icons/sun.svg"
+              icon="/images/icons/sun.svg"
             />
 
             <BigCard1
-              image="images/images/card2.png"
+              image="/images/images/card2.png"
               title="Why Now? The World is Changing."
               description={
                 <>
@@ -92,7 +86,7 @@ export default function AboutPage() {
             <TextCard texts={texts} />
 
             <BigCard1
-              image="images/images/card3.jpg"
+              image="/images/images/card3.jpg"
               title="The Path to Net Zero: A Clear Roadmap"
               description={
                 <>

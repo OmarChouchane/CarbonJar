@@ -1,6 +1,5 @@
 "use client";
 
-import { Metadata } from "next";
 import { useState } from "react";
 import Footer from "@/components/footer";
 import ScrollProgress from "@/components/scroll";
@@ -11,11 +10,6 @@ import StudentsTrainings from "@/components/students-trainings";
 import TextCard from "@/components/TextCard";
 import StatisticBlock from "@/components/static-bloc2";
 import FAQSection from "@/components/faq-section";
-
-export const metadata: Metadata = {
-  title: "Trainings",
-  description: "",
-};
 
 export default function TrainingsPage() {
   const [isCorporate, setIsCorporate] = useState(true);
