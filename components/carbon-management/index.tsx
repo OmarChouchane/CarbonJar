@@ -45,7 +45,7 @@ const CarbonManagement: React.FC = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
-      <section className="bg-green-100 p-8 lg:mt-8 rounded-lg">
+      <section className=" p-8 lg:mt-8 rounded-lg">
         <div className="container mx-auto">
           <SmallerH1>Comprehensive Carbon Management</SmallerH1>
           <br />
