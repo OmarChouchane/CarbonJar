@@ -74,18 +74,31 @@ const MenuButton = ({ toggleMenu, showMenu }: IMenuButton) => (
 );
 
 const MobileMenu = () => (
-  <div className="md:hidden">
-    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-      {links.map((link) => (
+  <div
+    className="md:hidden absolute top-full left-0 right-0 z-50 bg-green rounded-b-lg border border-border-white border-t-0 shadow-xl"
+    style={{
+      transform: "translateY(0)",
+      transition: "all 1s ease-in-out",
+      opacity: 1,
+    }}
+  >
+    <div className="px-2 pt-4 pb-6 space-y-2 sm:px-3 text-center">
+      {links.map((link: LinkType) => (
         <Link
-          key={link.label}
           href={link.href}
+          className="text-white block px-3 py-3 text-base font-medium hover:text-light-green rounded-md"
+          key={link.label}
           prefetch={true}
-          className="text-white block px-3 py-2 text-base font-medium transition-colors duration-100"
+          style={{
+            transition: "all 1s ease-in-out",
+          }}
         >
           {link.label}
         </Link>
       ))}
+      <div className="pt-4">
+        <Button>Contact us</Button>
+      </div>
     </div>
   </div>
 );
@@ -95,42 +108,66 @@ const Navigation = () => {
   const toggleMenu = () => setShowMenu(!showMenu);
 
   return (
-    <nav className="bg-green lg:mx-32 sm:mx-8 md:mx-12 lg:mt-8 md:mt-10 px-4 sm:px-4 lg:px-4 rounded-lg lg:rounded-xl border border-border-white flex items-center justify-between">
-      <Link href="/">
-        <Image
-          src="/logoCarbonJar.svg"
-          alt="logo"
-          width={48}
-          height={48}
-          className="h-20 w-12 ml-1"
-        />
-      </Link>
-
-      <div className="hidden md:flex flex-1 justify-center">
-        <div className="ml-10 items-baseline lg:space-x-4 flex space-x-4">
-          {links.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              prefetch={true}
-              className="text-white hover:text-light-green px-3 py-2 rounded-md font-Inter transition-colors duration-100"
-            >
-              {link.label}
+    <div className="relative z-50">
+      <nav className="bg-green lg:mx-32 sm:mx-8 md:mx-12 lg:mt-8 md:mt-10 px-4 sm:px-4 lg:px-4 rounded-lg lg:rounded-xl border border-border-white relative z-50">
+        <div className="flex items-center justify-between lg:h-20 md:h-20 sm:h-30 h-17 px-4 sm:px-1 lg:px-1 mx-auto">
+          <div className="flex-shrink-0">
+            <Link href="/">
+              <Image
+                className="h-12 w-12"
+                src="/logoCarbonJar.svg"
+                alt="logo"
+                width={48}
+                height={48}
+              />
             </Link>
-          ))}
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="hidden md:block flex-1 justify-center">
+              <div className="ml-10 items-baseline lg:space-x-4 flex space-x-4">
+                {links.map((link: LinkType) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    prefetch={true}
+                    className="text-white hover:text-light-green px-3 py-2 rounded-md font-Inter"
+                    style={{
+                      transition: "color 1s ease-in-out",
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden md:block">
+            <div className="ml-4 flex items-center md:ml-10">
+              <Button>Contact us</Button>
+            </div>
+          </div>
+
+          <div className="-mr-2 flex md:hidden">
+            <MenuButton showMenu={showMenu} toggleMenu={toggleMenu} />
+          </div>
         </div>
-      </div>
 
-      <div className="hidden md:flex items-center md:ml-10">
-        <Button>Contact us</Button>
-      </div>
+        {showMenu && <MobileMenu />}
+      </nav>
 
-      <div className="flex md:hidden -mr-2">
-        <MenuButton showMenu={showMenu} toggleMenu={toggleMenu} />
-      </div>
-
-      {showMenu && <MobileMenu />}
-    </nav>
+      {/* Backdrop overlay for mobile menu */}
+      {showMenu && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-25 z-40 md:hidden"
+          onClick={toggleMenu}
+          style={{
+            transition: "opacity 1s ease-in-out",
+          }}
+        />
+      )}
+    </div>
   );
 };
 
