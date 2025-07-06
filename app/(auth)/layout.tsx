@@ -21,9 +21,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </nav>
 
       {/* Main content */}
-      <div className="flex w-full items-center justify-center mt-4 sm:mt-6 md:mt-8 lg:mt-12">
-        {children}
-      </div>
+    <div className="flex w-full items-center justify-center mt-10 sm:mt-6 md:mt-8 lg:mt-12">
+      {children}
+    </div>
     </div>
   );
 };
