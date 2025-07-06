@@ -12,6 +12,12 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "CarbonJar",
+  description: "Carbon management and climate action solutions",
+  icons: {
+    icon: "/logoCarbonJar.svg",
+    shortcut: "/logoCarbonJar.svg",
+    apple: "/logoCarbonJar.svg",
+  },
 };
 
 export default function RootLayout({
