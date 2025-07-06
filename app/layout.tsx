@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import {
+  ClerkProvider,
+} from "@clerk/nextjs";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import ClientLayout from "./ClientLayout";
@@ -26,35 +29,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link
-          rel="preload"
-          href="/fonts/Inter/THE-BOLD-FONT.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/Inter/Inter-Regular.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/Inter/Inter-Bold.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-      </head>
-      <body
-        className={`${inter.variable} text-center bg-lighter-green min-h-screen`}
-      >
-        <ClientLayout>{children}</ClientLayout>
-      </body>
-    </html>
+    <ClerkProvider dynamic afterSignOutUrl="/">
+      <html lang="en">
+        <head>
+          <link
+            rel="preload"
+            href="/fonts/Inter/THE-BOLD-FONT.ttf"
+            as="font"
+            type="font/ttf"
+            crossOrigin="anonymous"
+          />
+          <link
+            rel="preload"
+            href="/fonts/Inter/Inter-Regular.ttf"
+            as="font"
+            type="font/ttf"
+            crossOrigin="anonymous"
+          />
+          <link
+            rel="preload"
+            href="/fonts/Inter/Inter-Bold.ttf"
+            as="font"
+            type="font/ttf"
+            crossOrigin="anonymous"
+          />
+        </head>
+        <body
+          className={`${inter.variable} text-center bg-lighter-green min-h-screen`}
+        >
+          <ClientLayout>{children}</ClientLayout>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

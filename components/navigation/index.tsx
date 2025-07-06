@@ -119,6 +119,7 @@ const Navigation = () => {
                 alt="logo"
                 width={48}
                 height={48}
+                priority
               />
             </Link>
           </div>
@@ -133,7 +134,7 @@ const Navigation = () => {
                     prefetch={true}
                     className="text-white hover:text-light-green px-3 py-2 rounded-md font-Inter"
                     style={{
-                      transition: "color 1s ease-in-out",
+                      transition: "color 0.1s ease-in-out",
                     }}
                   >
                     {link.label}

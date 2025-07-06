@@ -160,3 +160,73 @@ button {
 body {
   contain: layout style paint;
 }
+
+/* Clerk Auth Component Styling */
+.cl-card {
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.cl-formButtonPrimary {
+  background-color: var(--color-green) !important;
+  transition: all 0.2s ease !important;
+}
+
+.cl-formButtonPrimary:hover {
+  background-color: var(--color-green-dark) !important;
+  transform: translateY(-1px);
+}
+
+.cl-formFieldInput {
+  border: 2px solid var(--color-lighter-green) !important;
+  border-radius: 12px !important;
+  transition: border-color 0.2s ease !important;
+}
+
+.cl-formFieldInput:focus {
+  border-color: var(--color-light-green) !important;
+  box-shadow: 0 0 0 3px rgba(112, 212, 96, 0.1) !important;
+}
+
+.cl-socialButtonsBlockButton {
+  border: 2px solid var(--color-lighter-green) !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+.cl-socialButtonsBlockButton:hover {
+  border-color: var(--color-light-green) !important;
+  transform: translateY(-1px);
+}
+
+.cl-dividerLine {
+  background-color: var(--color-lighter-green) !important;
+}
+
+.cl-internal-icon {
+  color: var(--color-green) !important;
+}
+
+/* Auth page animations */
+.auth-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Backdrop blur support for older browsers */
+@supports not (backdrop-filter: blur(12px)) {
+  .backdrop-blur-lg {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+}
