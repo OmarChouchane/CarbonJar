@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/button";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 interface IMenuButton {
   toggleMenu: React.MouseEventHandler<HTMLButtonElement>;
@@ -96,8 +97,16 @@ const MobileMenu = () => (
           {link.label}
         </Link>
       ))}
-      <div className="pt-4">
-        <Button>Contact us</Button>
+
+      <div className="pt-4 space-y-3 flex flex-col items-center">
+        <SignedIn>
+          <Button>Certificates</Button>
+        </SignedIn>
+        <SignedOut>
+          <Link href="/sign-in">
+        <Button>Login</Button>
+          </Link>
+        </SignedOut>
       </div>
     </div>
   </div>
@@ -119,13 +128,13 @@ const Navigation = () => {
                 alt="logo"
                 width={48}
                 height={48}
+                priority
               />
             </Link>
           </div>
-
-          <div className="flex items-center justify-between">
-            <div className="hidden md:block flex-1 justify-center">
-              <div className="ml-10 items-baseline lg:space-x-4 flex space-x-4">
+          <div className="flex flex-1 justify-center">
+            <div className="hidden md:flex items-center">
+              <div className="flex space-x-4">
                 {links.map((link: LinkType) => (
                   <Link
                     key={link.label}
@@ -133,7 +142,7 @@ const Navigation = () => {
                     prefetch={true}
                     className="text-white hover:text-light-green px-3 py-2 rounded-md font-Inter"
                     style={{
-                      transition: "color 1s ease-in-out",
+                      transition: "color 0.1s ease-in-out",
                     }}
                   >
                     {link.label}
@@ -142,14 +151,69 @@ const Navigation = () => {
               </div>
             </div>
           </div>
-
-          <div className="hidden md:block">
-            <div className="ml-4 flex items-center md:ml-10">
-              <Button>Contact us</Button>
-            </div>
+          <div className="hidden md:flex items-center space-x-4 ml-auto">
+            <SignedIn>
+              <Button>Certificates</Button>
+              {/* Notification Icon */}
+              <button
+                type="button"
+                className="relative p-2 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                aria-label="Notifications"
+              >
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+                {/* Notification badge */}
+                {/* <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1 py-0.5 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">3</span> */}
+              </button>
+              <UserButton />
+            </SignedIn>
+            <SignedOut>
+              <Link href="/sign-in">
+                <Button>Login</Button>
+              </Link>
+            </SignedOut>
           </div>
 
-          <div className="-mr-2 flex md:hidden">
+          <div className="flex items-center space-x-2 md:hidden">
+            <SignedIn>
+              {/* Mobile Notification Icon */}
+              <button
+                type="button"
+                className="relative p-2 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                aria-label="Notifications"
+              >
+                <svg
+                  className="h-7 w-7 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+              </button>
+              {/* Mobile UserButton */}
+              <div className="scale-100 pt-1">
+                <UserButton />
+              </div>
+            </SignedIn>
             <MenuButton showMenu={showMenu} toggleMenu={toggleMenu} />
           </div>
         </div>
