@@ -41,7 +41,12 @@ const CourseCardStudent: React.FC<CourseCardStudentProps> = ({
   link,
 }) => {
   return (
-    <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10px", amount: 0.1 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+    >
       <div className="relative items-start m-8 lg:px-8 gap-4 rounded-lg border border-green-dark bg-green-dark shadow-md p-6">
         <motion.a
           href={link}
@@ -90,7 +95,12 @@ const CourseCardStudent: React.FC<CourseCardStudentProps> = ({
 
           <div className="mt-2">
             <div className="flex items-center gap-2">
-              <Image src="/images/icons/Stack.svg" alt="stack-icon" width={24} height={24} />
+              <Image
+                src="/images/icons/Stack.svg"
+                alt="stack-icon"
+                width={24}
+                height={24}
+              />
               <H2 className="text-white-light font-bold">Course Content</H2>
             </div>
 
@@ -129,7 +139,12 @@ const CourseCardStudent: React.FC<CourseCardStudentProps> = ({
 
           <div className="mt-2">
             <div className="flex items-center gap-0">
-              <Image src="/images/icons/fi-sr-info.svg" alt="info-icon" width={24} height={24} />
+              <Image
+                src="/images/icons/fi-sr-info.svg"
+                alt="info-icon"
+                width={24}
+                height={24}
+              />
               <H2 className="text-white-light font-bold">
                 Why take this course?
               </H2>

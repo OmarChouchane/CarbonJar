@@ -9,8 +9,10 @@ interface TextCardProps {
 
 const TextCard: React.FC<TextCardProps> = ({ texts, title }) => (
   <motion.div
-    initial={{ opacity: 0 }}
-    whileInView={{ opacity: 1 }}
+    initial={{ opacity: 0, y: 15 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-20px", amount: 0.1 }}
+    transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
     className="rounded-lg border border-lighter-green bg-white-light lg:mt-20 lg:mb-20 lg:mx-32"
   >
     {title && <SmallerH1 className="mt-6 px-6">{title}</SmallerH1>}

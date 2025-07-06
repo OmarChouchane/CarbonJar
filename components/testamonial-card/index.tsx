@@ -19,9 +19,12 @@ const CardComponent: React.FC<CardComponentProps> = ({
 }) => {
   return (
     <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "-10px", amount: 0.1 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
       className="w-96 h-64 px-8 py-4 rounded-lg border border-lighter-green flex flex-col justify-between shadow-lg transition-shadow ease-in-out"
       whileHover={{ scale: 1.05 }}
-      transition={{ type: "spring", stiffness: 400, damping: 10 }}
     >
       {/* Review text */}
       <H2 className="text-left mt-4">{reviewText}</H2>

@@ -54,13 +54,16 @@ const imageLinks: Link[] = [
 ];
 
 const Header = () => (
-  <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-10px", amount: 0.1 }}
+    transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+  >
     <header>
       <div className="max-w-4xl mx-auto py-12 sm:px-4 lg:px-6 mb-4 lg:mb-10 md:mb-6 sm:mb-8 lg:mt-10 md:mt-4 sm:mt-4">
         <br />
-        <H1 className="leading-tight">
-          Measuring Today, Preserving Tomorrow.
-        </H1>
+        <H1 className="leading-tight">Measuring Today, Preserving Tomorrow.</H1>
         <br />
         <H2>
           Empowering businesses with the tools to measure, manage, and reduce

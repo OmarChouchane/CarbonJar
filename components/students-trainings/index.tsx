@@ -108,7 +108,12 @@ const StudentsTrainings: React.FC = () => {
   ];
 
   return (
-    <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10px", amount: 0.1 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+    >
       <section className="flex flex-col bg-green lg:p-12 lg:pb-20 lg:pt-20 p-6 mt-6 lg:mt-40">
         <SmallerH1 className="text-white-light">
           Featured Students Training Courses

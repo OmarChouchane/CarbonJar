@@ -179,7 +179,12 @@ const CorporateTrainings: React.FC = () => {
 
   return (
     <>
-      <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-20px", amount: 0.1 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+      >
         <section className="lg:px-8 px-2 lg:mt-8 mb-8 rounded-lg">
           <div className="container lg:px-8 px-2 mx-auto">
             <BigCard2
@@ -193,7 +198,12 @@ const CorporateTrainings: React.FC = () => {
         </section>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-20px", amount: 0.1 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1], delay: 0.1 }}
+      >
         <section className="flex flex-col bg-green lg:p-12 p-6 lg:mt-8 mt-6">
           <SmallerH1 className="text-white-light">
             Featured Corporate Training Courses

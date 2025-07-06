@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { H2, H2Bold, H3 } from "../Heading";
@@ -26,6 +26,10 @@ const Card: React.FC<CardProps> = ({
     <>
       <motion.div
         layoutId={id}
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, margin: "-10px", amount: 0.1 }}
+        transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
         className="flex flex-col items-start lg:px-8 gap-4 rounded-xl border border-green-dark bg-green-dark shadow-md p-6 transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer"
         onClick={() => setSelectedId(id)}
       >

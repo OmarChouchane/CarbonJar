@@ -7,7 +7,12 @@ import { motion } from "framer-motion";
 
 const ClimateActionSection: React.FC = () => {
   return (
-    <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10px", amount: 0.1 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+    >
       <section className="lg:mt-16 lg:mb-12 bg-green flex flex-col justify-center items-center gap-16 py-16">
         <div className="flex flex-col justify-start items-center gap-4">
           <div className="self-stretch text-center">

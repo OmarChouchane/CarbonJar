@@ -12,18 +12,25 @@ const StatisticBlock: React.FC<StatisticBlockProps> = ({
   description,
 }) => {
   return (
-    <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10px", amount: 0.1 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1], delay: 0.05 }}
+    >
       <div
         className="w-full sm:w-72 flex flex-col justify-start items-center gap-2 p-4"
         style={{
           transition: "box-shadow 0.3s, background 0.3s, transform 0.3s",
         }}
-        onMouseEnter={e => {
-          (e.currentTarget as HTMLDivElement).style.background = "rgba(0,0,0,0.05)";
-          (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 24px rgba(0,0,0,0.15)";
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLDivElement).style.background =
+            "rgba(0,0,0,0.05)";
+          (e.currentTarget as HTMLDivElement).style.boxShadow =
+            "0 10px 24px rgba(0,0,0,0.15)";
           (e.currentTarget as HTMLDivElement).style.transform = "scale(1.05)";
         }}
-        onMouseLeave={e => {
+        onMouseLeave={(e) => {
           (e.currentTarget as HTMLDivElement).style.background = "";
           (e.currentTarget as HTMLDivElement).style.boxShadow = "";
           (e.currentTarget as HTMLDivElement).style.transform = "";

@@ -44,7 +44,12 @@ const CourseCard: React.FC<CourseCardProps> = ({
   }, {} as Record<string, string>);
 
   return (
-    <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-20px", amount: 0.1 }}
+      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+    >
       <div className="relative m-2 sm:m-4 lg:m-8 gap-4 rounded-lg lg:pl-8 border border-green-dark bg-green-dark shadow-md p-4 sm:p-6">
         <motion.a
           href={link}
