@@ -21,8 +21,8 @@ const Card: React.FC<CardProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className="flex flex-col items-start lg:px-8 gap-4 rounded-xl border border-green-dark bg-green-dark shadow-md p-6 transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer"
     >
       <div className="flex items-center gap-2">

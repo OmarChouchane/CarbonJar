@@ -92,9 +92,13 @@ export default function TrainingsPage() {
         <ScrollProgress />
 
         <main>
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
             <header>
-                <div className="mx-auto py-12 sm:px-4 lg:px-6 md:mb-2 sm:mb-4 lg:mt-4 md:mt-4 sm:mt-4">
+              <div className="mx-auto py-12 sm:px-4 lg:px-6 md:mb-2 sm:mb-4 lg:mt-4 md:mt-4 sm:mt-4">
                 <br />
                 <H1>Our Training Programs!</H1>
                 <br />
@@ -104,38 +108,43 @@ export default function TrainingsPage() {
                   <br />
                   team’s knowledge and skills.
                 </H2>
-                </div>
+              </div>
 
-                <div className="flex justify-center items-center mt-2 mb-8">
+              <div className="flex justify-center items-center mt-2 mb-8">
                 <div className="relative flex items-center border-bg-grey rounded-full bg-white p-1 w-96">
                   <div
-                  className={`cursor-pointer flex-1 text-center py-4 text-lg rounded-full transition-colors ${
-                    isCorporate
-                    ? "bg-green text-white"
-                    : "bg-white text-green"
-                  }`}
-                  onClick={() => handleSwitch("corporate")}
+                    className={`cursor-pointer flex-1 text-center py-4 text-lg rounded-full transition-colors ${
+                      isCorporate
+                        ? "bg-green text-white"
+                        : "bg-white text-green"
+                    }`}
+                    onClick={() => handleSwitch("corporate")}
                   >
-                  Corporate trainings
+                    Corporate trainings
                   </div>
                   <div
-                  className={`cursor-pointer flex-1 text-center py-4 text-lg rounded-full transition-colors ${
-                    !isCorporate
-                    ? "bg-green text-white"
-                    : "bg-white text-green"
-                  }`}
-                  onClick={() => handleSwitch("student")}
+                    className={`cursor-pointer flex-1 text-center py-4 text-lg rounded-full transition-colors ${
+                      !isCorporate
+                        ? "bg-green text-white"
+                        : "bg-white text-green"
+                    }`}
+                    onClick={() => handleSwitch("student")}
                   >
-                  Student trainings
+                    Student trainings
                   </div>
                 </div>
-                </div>
+              </div>
             </header>
           </motion.div>
 
           {isCorporate ? <CorporateTrainings /> : <StudentsTrainings />}
 
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
             <section>
               <TextCard title="In-House Training" texts={inHouse} />
               <TextCard title="Public Training" texts={publicTrainings} />
@@ -146,7 +155,12 @@ export default function TrainingsPage() {
             </section>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+          >
             <section className="bg-light-green w-full lg:px-20 p-4 lg:pt-12 lg:mb-16">
               <SmallerH1 className="lg:m-8">
                 Empowering Businesses with Efficient Trainings

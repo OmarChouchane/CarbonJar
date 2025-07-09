@@ -86,7 +86,6 @@
 
 body {
   font-family: var(--font-inter);
-  text-align: center;
   background-color: var(--color-background);
   min-height: 100vh;
 }
@@ -118,6 +117,7 @@ body {
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* Prevent flash of unstyled content */
@@ -126,20 +126,56 @@ body {
   background-color: var(--color-background);
 }
 
-/* Ultra-smooth and fast page transitions */
-* {
-  transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-main {
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Optimize rendering performance */
+/* Improve animation performance and reduce flicker */
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize Framer Motion performance - prevent conflicting transitions */
+[data-framer-component] {
+  will-change: auto;
+}
+
+/* Prevent flicker during scroll animations - apply only to animated elements */
+[data-framer-component],
+.motion-element {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Optimize scroll performance */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  /* Removed transform that can affect modal positioning */
+}
+
+/* Remove global transitions that conflict with Framer Motion */
+main {
+  /* Removed transition that causes flicker */
+}
+
+/* Optimize button transitions only */
+a,
+button {
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
 }
 
 /* Faster loading for interactive elements */
@@ -218,6 +254,13 @@ button {
   }
 }
 
+/* Apply text centering to main content areas specifically */
+main,
+.content-section,
+.text-center {
+  text-align: center;
+}
+
 /* ===== CLERK MODAL FIXES ===== */
 /* Ensure Clerk modals are properly positioned and visible */
 
@@ -229,6 +272,19 @@ button {
 .cl-userProfile-modalContent {
   background: white !important;
   border-radius: 12px !important;
+}
+
+/* Prevent UserButton layout shift */
+.cl-userButtonTrigger {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+}
+
+.cl-userButtonAvatarBox {
+  width: 32px !important;
+  height: 32px !important;
 }
 
 /* ===== END CLERK MODAL FIXES ===== */

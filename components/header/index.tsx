@@ -55,10 +55,9 @@ const imageLinks: Link[] = [
 
 const Header = () => (
   <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-10px", amount: 0.1 }}
-    transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8, ease: "easeOut" }}
   >
     <header>
       <div className="max-w-4xl mx-auto py-12 sm:px-4 lg:px-6 mb-4 lg:mb-10 md:mb-6 sm:mb-8 lg:mt-10 md:mt-4 sm:mt-4">

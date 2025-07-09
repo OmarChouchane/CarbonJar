@@ -177,14 +177,17 @@ const Navigation = () => {
                 {/* Notification badge */}
                 {/* <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1 py-0.5 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">3</span> */}
               </button>
-              <UserButton
-                userProfileMode="modal"
-                appearance={{
-                  elements: {
-                    userButtonAvatarBox: "w-8 h-8",
-                  },
-                }}
-              />
+              {/* Reserve space for UserButton to prevent layout shift */}
+              <div className="w-8 h-8 flex items-center justify-center">
+                <UserButton
+                  userProfileMode="modal"
+                  appearance={{
+                    elements: {
+                      userButtonAvatarBox: "w-8 h-8",
+                    },
+                  }}
+                />
+              </div>
             </SignedIn>
             <SignedOut>
               <Link href="/sign-in">
@@ -216,8 +219,8 @@ const Navigation = () => {
                   />
                 </svg>
               </button>
-              {/* Mobile UserButton */}
-              <div className="scale-100 pt-1">
+              {/* Mobile UserButton - Reserve space to prevent layout shift */}
+              <div className="w-8 h-8 flex items-center justify-center">
                 <UserButton
                   userProfileMode="modal"
                   appearance={{

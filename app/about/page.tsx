@@ -35,7 +35,11 @@ export default function AboutPage() {
           <ScrollProgress />
           <main className=" min-h-screen px-2 lg:px-8 lg:mx-32">
             <div className="pt-16 space-y-16">
-              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              >
                 <SmallerH1>Take the Lead on Climate</SmallerH1>
                 <H2>
                   It’s never too early or too late to start carbon accounting.

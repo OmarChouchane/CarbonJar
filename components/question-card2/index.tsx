@@ -15,10 +15,10 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, answer }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10px", amount: 0.1 }}
-      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
       <div
         className={`w-full shadow-base rounded-xl border border-border-white flex-col justify-start lg:px-8 sm:px-4 md:px-6 gap-4 inline-flex mb-1 ${

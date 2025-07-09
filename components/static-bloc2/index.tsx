@@ -13,10 +13,10 @@ const StatisticBlock: React.FC<StatisticBlockProps> = ({
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 15 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10px", amount: 0.1 }}
-      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1], delay: 0.05 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
     >
       <div
         className="w-full sm:w-72 flex flex-col justify-start items-center gap-2 p-4"
