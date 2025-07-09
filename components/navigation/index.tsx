@@ -74,25 +74,21 @@ const MenuButton = ({ toggleMenu, showMenu }: IMenuButton) => (
   </button>
 );
 
-const MobileMenu = () => (
+const MobileMenu = ({ isVisible }: { isVisible: boolean }) => (
   <div
-    className="md:hidden absolute top-full left-0 right-0 z-50 bg-green rounded-b-lg border border-border-white border-t-0 shadow-xl"
-    style={{
-      transform: "translateY(0)",
-      transition: "all 1s ease-in-out",
-      opacity: 1,
-    }}
+    className={`md:hidden absolute top-full left-3.5 right-3.5 z-30 bg-green/90 backdrop-blur-sm rounded-b-3xl border border-border-white shadow-xl transition-all duration-300 ease-in-out overflow-hidden -mt-1 ${
+      isVisible
+        ? "opacity-100 max-h-screen transform translate-y-0"
+        : "opacity-0 max-h-0 transform -translate-y-4"
+    }`}
   >
     <div className="px-2 pt-4 pb-6 space-y-2 sm:px-3 text-center">
       {links.map((link: LinkType) => (
         <Link
           href={link.href}
-          className="text-white block px-3 py-3 text-base font-medium hover:text-light-green rounded-md"
+          className="text-white block px-3 py-3 text-base font-medium hover:text-light-green rounded-md transition-colors duration-200 ease-in-out"
           key={link.label}
           prefetch={true}
-          style={{
-            transition: "all 1s ease-in-out",
-          }}
         >
           {link.label}
         </Link>
@@ -118,8 +114,8 @@ const Navigation = () => {
 
   return (
     <div className="relative z-50">
-      <nav className="bg-green lg:mx-32 sm:mx-8 md:mx-12 lg:mt-8 md:mt-10 px-4 sm:px-4 lg:px-4 rounded-lg lg:rounded-xl border border-border-white relative z-50">
-        <div className="flex items-center justify-between lg:h-20 md:h-20 sm:h-30 h-17 px-4 sm:px-1 lg:px-1 mx-auto">
+      <nav className="bg-green lg:mx-32 md:mx-12 lg:mt-8 md:mt-10 md:relative fixed top-0 left-0 right-0 md:px-4 px-4 sm:px-4 lg:px-4 rounded-b-3xl md:rounded-lg lg:rounded-xl border border-border-white z-50">
+        <div className="flex items-center justify-between lg:h-20 md:h-20 sm:h-16 h-16 px-4 sm:px-1 lg:px-1 mx-auto">
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
@@ -234,20 +230,8 @@ const Navigation = () => {
             <MenuButton showMenu={showMenu} toggleMenu={toggleMenu} />
           </div>
         </div>
-
-        {showMenu && <MobileMenu />}
       </nav>
-
-      {/* Backdrop overlay for mobile menu */}
-      {showMenu && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-25 z-40 md:hidden"
-          onClick={toggleMenu}
-          style={{
-            transition: "opacity 1s ease-in-out",
-          }}
-        />
-      )}
+      <MobileMenu isVisible={showMenu} />
     </div>
   );
 };
