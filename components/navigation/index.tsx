@@ -4,11 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/button";
-<<<<<<< Updated upstream
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-=======
-import UserButton from "@clerk/nextjs";
->>>>>>> Stashed changes
 
 interface IMenuButton {
   toggleMenu: React.MouseEventHandler<HTMLButtonElement>;
@@ -183,7 +179,11 @@ const Navigation = () => {
               </button>
               <UserButton
                 userProfileMode="modal"
-                
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-8 h-8",
+                  },
+                }}
               />
             </SignedIn>
             <SignedOut>
@@ -192,7 +192,6 @@ const Navigation = () => {
               </Link>
             </SignedOut>
           </div>
-          <UserButton />
 
           <div className="flex items-center space-x-2 md:hidden">
             <SignedIn>
