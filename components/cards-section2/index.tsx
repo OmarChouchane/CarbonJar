@@ -80,7 +80,6 @@ const CarbonCards: React.FC = () => {
             {cards.map((card, index) => (
               <Card
                 key={index}
-                id={card.id}
                 icon={card.icon}
                 title={card.title}
                 description={card.description}
