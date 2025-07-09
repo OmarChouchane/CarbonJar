@@ -142,23 +142,10 @@ main {
   text-rendering: optimizeLegibility;
 }
 
-/* Hardware acceleration for smoother animations */
-main,
-section,
-div {
-  transform: translateZ(0);
-  will-change: transform, opacity;
-}
-
 /* Faster loading for interactive elements */
 a,
 button {
   transition: all 0.1s ease-out;
-}
-
-/* Preload optimization */
-body {
-  contain: layout style paint;
 }
 
 /* Clerk Auth Component Styling */
@@ -230,3 +217,17 @@ body {
     background-color: rgba(255, 255, 255, 0.9);
   }
 }
+
+/* ===== MINIMAL CLERK MODAL FIXES ===== */
+/* Simple fix without interfering with animations */
+
+.cl-userProfile-root {
+  z-index: 999999 !important;
+}
+
+.cl-userProfile-modalContent {
+  background: white !important;
+  border-radius: 12px !important;
+}
+
+/* ===== END CLERK MODAL FIXES ===== */
