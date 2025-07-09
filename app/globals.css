@@ -90,7 +90,17 @@ body {
   min-height: 100vh;
 }
 
+/* Fixed navbar compensation for mobile - exclude auth pages */
+@media (max-width: 768px) {
+  body {
+    padding-top: 64px; /* Height of mobile navbar */
+  }
 
+  /* Remove padding for auth pages */
+  body:has([data-auth-page]) {
+    padding-top: 0 !important;
+  }
+}
 
 /* Swiper and cards styles */
 .mySwiper {
