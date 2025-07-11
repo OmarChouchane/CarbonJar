@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db/drizzle";
+import { getDb } from "@/lib/db/drizzle";
 import { users } from "@/lib/db/schema";
 import { Webhook } from "svix";
 import { WebhookEvent } from "@clerk/nextjs/server";
@@ -57,6 +57,7 @@ export async function POST(req: Request) {
     const email = user.email_addresses?.[0]?.email_address;
 
     try {
+      const db = getDb();
       await db.insert(users).values({
         clerkId: user.id,
         email,
