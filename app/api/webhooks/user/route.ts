@@ -80,7 +80,7 @@ export async function POST(req: Request) {
       if (eventType === "user.created") {
         const user = evt.data as ClerkUser;
         const email = user.email_addresses?.[0]?.email_address;
-        
+
         await db.insert(users).values({
           clerkId: user.id,
           email: email || "",
@@ -88,15 +88,16 @@ export async function POST(req: Request) {
           lastName: user.last_name || null,
           username: user.username || null,
           profileImageUrl: user.image_url || null,
-          lastSignInAt: user.last_sign_in_at ? new Date(user.last_sign_in_at) : null,
+          lastSignInAt: user.last_sign_in_at
+            ? new Date(user.last_sign_in_at)
+            : null,
         });
 
         console.log("✅ User created in database:", user.id);
-      } 
-      else if (eventType === "user.updated") {
+      } else if (eventType === "user.updated") {
         const user = evt.data as ClerkUser;
         const email = user.email_addresses?.[0]?.email_address;
-        
+
         await db
           .update(users)
           .set({
@@ -105,16 +106,17 @@ export async function POST(req: Request) {
             lastName: user.last_name || null,
             username: user.username || null,
             profileImageUrl: user.image_url || null,
-            lastSignInAt: user.last_sign_in_at ? new Date(user.last_sign_in_at) : null,
+            lastSignInAt: user.last_sign_in_at
+              ? new Date(user.last_sign_in_at)
+              : null,
             updatedAt: new Date(),
           })
           .where(eq(users.clerkId, user.id));
 
         console.log("✅ User updated in database:", user.id);
-      } 
-      else if (eventType === "user.deleted") {
+      } else if (eventType === "user.deleted") {
         const user = evt.data as ClerkUser;
-        
+
         // Soft delete - mark as deleted instead of actually removing
         await db
           .update(users)
@@ -125,8 +127,7 @@ export async function POST(req: Request) {
           .where(eq(users.clerkId, user.id));
 
         console.log("✅ User marked as deleted in database:", user.id);
-      } 
-      else {
+      } else {
         console.log("⚠️ Unhandled webhook event type:", eventType);
       }
     } catch (dbError) {
