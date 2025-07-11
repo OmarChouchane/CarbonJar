@@ -96,7 +96,9 @@ const MobileMenu = ({ isVisible }: { isVisible: boolean }) => (
 
       <div className="pt-4 space-y-3 flex flex-col items-center">
         <SignedIn>
-          <Button>Certificates</Button>
+          <Link href="/dashboard/certificates">
+            <Button>Certificates</Button>
+          </Link>
         </SignedIn>
         <SignedOut>
           <Link href="/sign-in">
@@ -149,7 +151,9 @@ const Navigation = () => {
           </div>
           <div className="hidden md:flex items-center space-x-4 ml-auto">
             <SignedIn>
-              <Button>Certificates</Button>
+              <Link href="/dashboard/certificates">
+                <Button>Certificates</Button>
+              </Link>
               {/* Notification Icon */}
               <button
                 type="button"
