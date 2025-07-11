@@ -16,6 +16,13 @@ interface ClerkUser {
   last_sign_in_at?: number;
 }
 
+// Interface for Clerk session data
+interface ClerkSession {
+  id: string;
+  user_id: string;
+  created_at: number;
+}
+
 // Handle GET requests for testing
 export async function GET() {
   return NextResponse.json({
@@ -114,6 +121,19 @@ export async function POST(req: Request) {
           .where(eq(users.clerkId, user.id));
 
         console.log("✅ User updated in database:", user.id);
+      } else if (eventType === "session.created") {
+        const session = evt.data as ClerkSession;
+
+        // Update last sign-in time when a new session is created
+        await db
+          .update(users)
+          .set({
+            lastSignInAt: new Date(session.created_at),
+            updatedAt: new Date(),
+          })
+          .where(eq(users.clerkId, session.user_id));
+
+        console.log("✅ User sign-in tracked:", session.user_id);
       } else if (eventType === "user.deleted") {
         const user = evt.data as ClerkUser;
 
