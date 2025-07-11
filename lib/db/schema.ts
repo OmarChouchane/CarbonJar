@@ -13,7 +13,6 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 255 }).notNull(),
   firstName: varchar("first_name", { length: 255 }),
   lastName: varchar("last_name", { length: 255 }),
-  username: varchar("username", { length: 255 }),
   profileImageUrl: varchar("profile_image_url", { length: 500 }),
   isDeleted: boolean("is_deleted").default(false),
   lastSignInAt: timestamp("last_sign_in_at"),

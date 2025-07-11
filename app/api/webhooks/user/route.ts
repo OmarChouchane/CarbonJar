@@ -11,7 +11,6 @@ interface ClerkUser {
   email_addresses?: Array<{ email_address: string }>;
   first_name?: string;
   last_name?: string;
-  username?: string;
   image_url?: string;
   last_sign_in_at?: number;
 }
@@ -93,7 +92,6 @@ export async function POST(req: Request) {
           email: email || "",
           firstName: user.first_name || null,
           lastName: user.last_name || null,
-          username: user.username || null,
           profileImageUrl: user.image_url || null,
           lastSignInAt: user.last_sign_in_at
             ? new Date(user.last_sign_in_at)
@@ -111,7 +109,6 @@ export async function POST(req: Request) {
             email: email || "",
             firstName: user.first_name || null,
             lastName: user.last_name || null,
-            username: user.username || null,
             profileImageUrl: user.image_url || null,
             lastSignInAt: user.last_sign_in_at
               ? new Date(user.last_sign_in_at)
@@ -129,7 +126,6 @@ export async function POST(req: Request) {
           .update(users)
           .set({
             lastSignInAt: new Date(session.created_at),
-            updatedAt: new Date(),
           })
           .where(eq(users.clerkId, session.user_id));
 
@@ -142,7 +138,6 @@ export async function POST(req: Request) {
           .update(users)
           .set({
             isDeleted: true,
-            updatedAt: new Date(),
           })
           .where(eq(users.clerkId, user.id));
 
