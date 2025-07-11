@@ -6,9 +6,9 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 
 // Handle GET requests for testing
 export async function GET() {
-  return NextResponse.json({ 
+  return NextResponse.json({
     message: "Webhook endpoint is working",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 

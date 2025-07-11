@@ -9,6 +9,7 @@ const isPublicRoute = createRouteMatcher([
   "/expertise",
   "/trainings",
   "/api/contact",
+  "/api/webhooks(.*)",
 ]);
 
 const isAuthRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
