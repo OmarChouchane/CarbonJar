@@ -5,6 +5,7 @@ import {
   timestamp,
   varchar,
   boolean,
+  text,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -18,4 +19,13 @@ export const users = pgTable("users", {
   lastSignInAt: timestamp("last_sign_in_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const certificates = pgTable("certificates", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull(), // Clerk user ID
+  title: text("title").notNull(),
+  description: text("description"), // Optional
+  issuedAt: timestamp("issued_at").defaultNow(),
+  certificateUrl: text("certificate_url").notNull(),
 });
