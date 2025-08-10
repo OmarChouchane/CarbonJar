@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/drizzle";
-import { users } from "@/lib/db/schema";
+import { authUsers } from "@/lib/db/schema";
 import { Webhook } from "svix";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
@@ -87,15 +87,16 @@ export async function POST(req: Request) {
         const user = evt.data as ClerkUser;
         const email = user.email_addresses?.[0]?.email_address;
 
-        await db.insert(users).values({
+        await db.insert(authUsers).values({
           clerkId: user.id,
           email: email || "",
-          firstName: user.first_name || null,
-          lastName: user.last_name || null,
-          profileImageUrl: user.image_url || null,
-          lastSignInAt: user.last_sign_in_at
+          passwordHash: "", // Provide a default or generated hash if not available
+          firstName: user.first_name || undefined,
+          lastName: user.last_name || undefined,
+          profileImageUrl: user.image_url || undefined,
+          lastLogin: user.last_sign_in_at
             ? new Date(user.last_sign_in_at)
-            : null,
+            : undefined,
         });
 
         console.log("✅ User created in database:", user.id);
@@ -104,18 +105,18 @@ export async function POST(req: Request) {
         const email = user.email_addresses?.[0]?.email_address;
 
         await db
-          .update(users)
+          .update(authUsers)
           .set({
             email: email || "",
-            firstName: user.first_name || null,
-            lastName: user.last_name || null,
-            profileImageUrl: user.image_url || null,
-            lastSignInAt: user.last_sign_in_at
+            firstName: user.first_name || undefined,
+            lastName: user.last_name || undefined,
+            profileImageUrl: user.image_url || undefined,
+            lastLogin: user.last_sign_in_at
               ? new Date(user.last_sign_in_at)
-              : null,
-            updatedAt: new Date(),
+              : undefined,
+            // updatedAt: new Date(), // Removed because it's not in the schema
           })
-          .where(eq(users.clerkId, user.id));
+          .where(eq(authUsers.clerkId, user.id));
 
         console.log("✅ User updated in database:", user.id);
       } else if (eventType === "session.created") {
@@ -123,25 +124,13 @@ export async function POST(req: Request) {
 
         // Update last sign-in time when a new session is created
         await db
-          .update(users)
+          .update(authUsers)
           .set({
-            lastSignInAt: new Date(session.created_at),
+            lastLogin: new Date(session.created_at),
           })
-          .where(eq(users.clerkId, session.user_id));
+          .where(eq(authUsers.clerkId, session.user_id));
 
         console.log("✅ User sign-in tracked:", session.user_id);
-      } else if (eventType === "user.deleted") {
-        const user = evt.data as ClerkUser;
-
-        // Soft delete - mark as deleted instead of actually removing
-        await db
-          .update(users)
-          .set({
-            isDeleted: true,
-          })
-          .where(eq(users.clerkId, user.id));
-
-        console.log("✅ User marked as deleted in database:", user.id);
       } else {
         console.log("⚠️ Unhandled webhook event type:", eventType);
       }
