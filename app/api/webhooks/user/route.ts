@@ -90,9 +90,9 @@ export async function POST(req: Request) {
         await db.insert(authUsers).values({
           clerkId: user.id,
           email: email || "",
-          passwordHash: "", // Provide a default or generated hash if not available
-          firstName: user.first_name || undefined,
-          lastName: user.last_name || undefined,
+          passwordHash: "", // Clerk handles auth, so we use empty hash
+          firstName: user.first_name || "Unknown",
+          lastName: user.last_name || "User",
           profileImageUrl: user.image_url || undefined,
           lastLogin: user.last_sign_in_at
             ? new Date(user.last_sign_in_at)
@@ -104,25 +104,46 @@ export async function POST(req: Request) {
         const user = evt.data as ClerkUser;
         const email = user.email_addresses?.[0]?.email_address;
 
+        const updateData: Partial<typeof authUsers.$inferInsert> = {
+          email: email || "",
+          firstName: user.first_name || "Unknown",
+          lastName: user.last_name || "User",
+          profileImageUrl: user.image_url || undefined,
+        };
+
+        // Only update lastLogin if it's provided and different
+        if (user.last_sign_in_at) {
+          updateData.lastLogin = new Date(user.last_sign_in_at);
+        }
+
         await db
           .update(authUsers)
-          .set({
-            email: email || "",
-            firstName: user.first_name || undefined,
-            lastName: user.last_name || undefined,
-            profileImageUrl: user.image_url || undefined,
-            lastLogin: user.last_sign_in_at
-              ? new Date(user.last_sign_in_at)
-              : undefined,
-            // updatedAt: new Date(), // Removed because it's not in the schema
-          })
+          .set(updateData)
           .where(eq(authUsers.clerkId, user.id));
 
         console.log("✅ User updated in database:", user.id);
+      } else if (eventType === "user.deleted") {
+        const user = evt.data as ClerkUser;
+
+        // Soft delete by setting isActive to false, or hard delete
+        await db
+          .update(authUsers)
+          .set({
+            isActive: false,
+            // You could also store deletion timestamp if needed
+          })
+          .where(eq(authUsers.clerkId, user.id));
+
+        // Alternative: Hard delete (uncomment if you prefer this approach)
+        // await db
+        //   .delete(authUsers)
+        //   .where(eq(authUsers.clerkId, user.id));
+
+        console.log("✅ User soft-deleted in database:", user.id);
       } else if (eventType === "session.created") {
         const session = evt.data as ClerkSession;
 
-        // Update last sign-in time when a new session is created
+        // Update last login time when a new session is created
         await db
           .update(authUsers)
           .set({
@@ -130,7 +151,7 @@ export async function POST(req: Request) {
           })
           .where(eq(authUsers.clerkId, session.user_id));
 
-        console.log("✅ User sign-in tracked:", session.user_id);
+        console.log("✅ User last login updated:", session.user_id);
       } else {
         console.log("⚠️ Unhandled webhook event type:", eventType);
       }
