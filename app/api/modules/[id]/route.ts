@@ -6,11 +6,11 @@ import { eq } from "drizzle-orm";
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
-  const { id } = context.params;
+  const { id } = await context.params;
   await client.connect();
   const moduleData = await db
     .select()
@@ -22,11 +22,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
-  const { id } = context.params;
+  const { id } = await context.params;
   const data = await request.json();
   await client.connect();
   const updated = await db
@@ -40,11 +40,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
-  const { id } = context.params;
+  const { id } = await context.params;
   await client.connect();
   const deleted = await db
     .delete(schema.modules)

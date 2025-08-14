@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -17,7 +17,7 @@ export async function PUT(
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
-    const { id } = context.params;
+    const { id } = await context.params;
     const data = await request.json();
 
     await client.connect();
@@ -40,7 +40,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -50,7 +50,7 @@ export async function DELETE(
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
-    const { id } = context.params;
+    const { id } = await context.params;
 
     await client.connect();
     const deleted = await db

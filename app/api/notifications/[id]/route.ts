@@ -8,7 +8,7 @@ import * as schema from "../../../../lib/db/schema";
 // Admin-only GET by ID
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -20,10 +20,11 @@ export async function GET(
     await client.connect();
     const db = drizzle(client, { schema });
 
+    const { id } = await params;
     const notification = await db
       .select()
       .from(schema.notifications)
-      .where(eq(schema.notifications.id, params.id))
+      .where(eq(schema.notifications.id, id))
       .limit(1);
 
     await client.end();
@@ -42,7 +43,7 @@ export async function GET(
 // Admin-only Update
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -55,6 +56,7 @@ export async function PUT(
     await client.connect();
     const db = drizzle(client, { schema });
 
+    const { id } = await params;
     const toUpdate: Partial<{
       content: string;
       status: "read" | "unread";
@@ -70,7 +72,7 @@ export async function PUT(
     const updated = await db
       .update(schema.notifications)
       .set(toUpdate)
-      .where(eq(schema.notifications.id, params.id))
+      .where(eq(schema.notifications.id, id))
       .returning();
 
     await client.end();
@@ -89,7 +91,7 @@ export async function PUT(
 // Admin-only Delete
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -101,9 +103,10 @@ export async function DELETE(
     await client.connect();
     const db = drizzle(client, { schema });
 
+    const { id } = await params;
     await db
       .delete(schema.notifications)
-      .where(eq(schema.notifications.id, params.id));
+      .where(eq(schema.notifications.id, id));
 
     await client.end();
 

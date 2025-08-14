@@ -7,8 +7,9 @@ import { auth } from "@clerk/nextjs/server";
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();
@@ -16,7 +17,7 @@ export async function GET(
     const rows = await db
       .select()
       .from(schema.blogposts)
-      .where(eq(schema.blogposts.id, params.id));
+      .where(eq(schema.blogposts.id, id));
     return NextResponse.json(rows[0] ?? null);
   } catch (err: any) {
     return new NextResponse(err?.message || "Failed to fetch post", {
@@ -29,8 +30,9 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();
@@ -47,7 +49,7 @@ export async function PUT(
     const existingRows = await db
       .select()
       .from(schema.blogposts)
-      .where(eq(schema.blogposts.id, params.id));
+      .where(eq(schema.blogposts.id, id));
     const existing = existingRows[0];
     if (!existing) {
       return new NextResponse("Not found", { status: 404 });
@@ -83,7 +85,7 @@ export async function PUT(
     const updated = await db
       .update(schema.blogposts)
       .set(updatePayload)
-      .where(eq(schema.blogposts.id, params.id))
+      .where(eq(schema.blogposts.id, id))
       .returning();
 
     return NextResponse.json(updated[0] ?? null);
@@ -98,8 +100,9 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();
@@ -110,7 +113,7 @@ export async function DELETE(
     }
     const deleted = await db
       .delete(schema.blogposts)
-      .where(eq(schema.blogposts.id, params.id))
+      .where(eq(schema.blogposts.id, id))
       .returning();
     return NextResponse.json(deleted[0] ?? null);
   } catch (err: any) {

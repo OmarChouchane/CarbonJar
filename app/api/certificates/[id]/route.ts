@@ -28,9 +28,9 @@ async function withDb<T>(
 // GET /api/certificates/[id]  (id can be certificateId UUID or certificateCode)
 export async function GET(
   _req: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
+  const { id } = await context.params;
   const byCode = !isUuid(id);
   const keyCol = byCode
     ? schema.certificates.certificateCode
@@ -55,9 +55,9 @@ export async function GET(
 // Body supports: { isRevoked?: boolean, revokedReason?: string | null, pdfUrl?: string, title?: string, description?: string, validUntil?: string | null }
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
+  const { id } = await context.params;
   const byCode = !isUuid(id);
   const keyCol = byCode
     ? schema.certificates.certificateCode
@@ -123,9 +123,9 @@ export async function PUT(
 // DELETE /api/certificates/[id]  (id can be certificateId UUID or certificateCode)
 export async function DELETE(
   _request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
+  const { id } = await context.params;
   const byCode = !isUuid(id);
   const keyCol = byCode
     ? schema.certificates.certificateCode
