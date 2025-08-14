@@ -89,7 +89,7 @@ export const H1Inter: React.FC<HeadingProps> = ({
   ...props
 }) => (
   <h2
-    className={`text-green text-center font-Inter text-xl font-bold md:text-xl lg:text-2xl ${className}`}
+    className={`text-green font-Inter text-xl font-bold md:text-xl lg:text-2xl ${className}`}
     {...props}
   >
     {children}
