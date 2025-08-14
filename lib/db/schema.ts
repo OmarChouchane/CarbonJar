@@ -19,7 +19,7 @@ export const authUserRole = pgEnum("auth_user_role", [
   "admin",
   "trainer",
   "trainee",
-  "user"
+  "user",
 ]);
 export const userStatus = pgEnum("user_status", [
   "active",
@@ -117,6 +117,10 @@ export const courses = pgTable(
     carbonTopicId: uuid("carbon_topic_id").references(
       () => carbonTopics.topicId
     ),
+    duration: varchar("duration", { length: 255 }), // e.g., "1 day (8 hours)"
+    price: varchar("price", { length: 50 }), // e.g., "€199 or 199 TND"
+    whyThisCourse: text("why_this_course"), // Reason/benefit text
+
     level: courseLevel("level").notNull(),
     creationDate: timestamp("creation_date", {
       withTimezone: true,
