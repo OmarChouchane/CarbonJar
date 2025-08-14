@@ -1,23 +1,77 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Footer from "@/components/footer";
 import ScrollProgress from "@/components/scroll";
-import { motion } from "framer-motion";
-import { H1, H2, SmallerH1 } from "@/components/Heading";
-import CorporateTrainings from "@/components/corporate-trainings";
-import StudentsTrainings from "@/components/students-trainings";
+import { H1, H2, H3, H1Inter, SmallerH1 } from "@/components/Heading";
+import Link from "next/link";
+import Button from "@/components/button";
 import TextCard from "@/components/TextCard";
 import StatisticBlock from "@/components/static-bloc2";
 import FAQSection from "@/components/faq-section";
 import Page from "@/components/page";
+import { useRouter } from "next/navigation";
+
+type Course = {
+  courseId: string;
+  title: string;
+  description: string | null;
+  carbonAccountingFocus: boolean | null;
+  carbonTopicId: string | null;
+  duration: string | null;
+  price: string | null;
+  whyThisCourse: string | null;
+  level: "beginner" | "intermediate" | "expert";
+  creationDate: string | null;
+  lastUpdated: string | null;
+  status: "Draft" | "Published" | "Archived";
+};
 
 export default function TrainingsPage() {
-  const [isCorporate, setIsCorporate] = useState(true);
+  const router = useRouter();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedLevel, setSelectedLevel] =
+    useState<Course["level"]>("beginner");
 
-  const handleSwitch = (type: string) => {
-    setIsCorporate(type === "corporate");
-  };
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch("/api/trainings", { cache: "no-store" });
+        if (!res.ok)
+          throw new Error(`Failed to fetch trainings: ${res.status}`);
+        const data: Course[] = await res.json();
+        console.log("Fetched trainings:", data);
+        if (mounted) setCourses(data);
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : "Failed to load trainings";
+        if (mounted) setError(msg);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Only show published trainings
+  const published = useMemo(
+    () => courses.filter((c) => c.status === "Published"),
+    [courses]
+  );
+
+  // Group by level
+  // Selected-level filtered list for display
+
+  const filtered = useMemo(
+    () => published.filter((c) => c.level === selectedLevel),
+    [published, selectedLevel]
+  );
 
   const inHouse = [
     {
@@ -92,11 +146,7 @@ export default function TrainingsPage() {
         <ScrollProgress />
 
         <main>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
+          <div>
             <header>
               <div className="mx-auto py-12 sm:px-4 lg:px-6 md:mb-2 sm:mb-4 lg:mt-4 md:mt-4 sm:mt-4">
                 <br />
@@ -110,41 +160,98 @@ export default function TrainingsPage() {
                 </H2>
               </div>
 
-              <div className="flex justify-center items-center mt-2 mb-8">
-                <div className="relative flex items-center border-bg-grey rounded-full bg-white p-1 w-96">
-                  <div
-                    className={`cursor-pointer flex-1 text-center py-4 text-lg rounded-full transition-colors ${
-                      isCorporate
-                        ? "bg-green text-white"
-                        : "bg-white text-green"
-                    }`}
-                    onClick={() => handleSwitch("corporate")}
-                  >
-                    Corporate trainings
-                  </div>
-                  <div
-                    className={`cursor-pointer flex-1 text-center py-4 text-lg rounded-full transition-colors ${
-                      !isCorporate
-                        ? "bg-green text-white"
-                        : "bg-white text-green"
-                    }`}
-                    onClick={() => handleSwitch("student")}
-                  >
-                    Student trainings
-                  </div>
-                </div>
-              </div>
+              {/* Removed corporate/student toggle; grouping by level below */}
             </header>
-          </motion.div>
+          </div>
 
-          {isCorporate ? <CorporateTrainings /> : <StudentsTrainings />}
+          {/* Dynamic trainings list with level filters - full width green background */}
+          <section className="w-full bg-green py-8 md:py-10 lg:py-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              {/* Level filters */}
+              <div className="flex flex-wrap gap-3 justify-center items-center mb-8">
+                {(
+                  [
+                    { key: "beginner", label: "Beginner" },
+                    { key: "intermediate", label: "Intermediate" },
+                    { key: "expert", label: "Expert" },
+                  ] as const
+                ).map((opt) => {
+                  const active = selectedLevel === opt.key;
+                  return (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() => setSelectedLevel(opt.key)}
+                      className={
+                        `px-4 py-2 rounded-full border transition ` +
+                        (active
+                          ? "bg-light-green text-green border-green"
+                          : "bg-transparent text-white border-border-white hover:bg-white/10")
+                      }
+                    >
+                      <span className="font-Inter text-sm">{opt.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              {loading && (
+                <div className="flex justify-center items-center py-12">
+                  <H2 className="text-white-light">Loading trainings…</H2>
+                </div>
+              )}
+              {!loading && error && (
+                <div className="flex flex-col items-center py-12">
+                  <H2 className="text-white-light">{error}</H2>
+                  <H3 className="mt-2 text-white-light/80">
+                    Please try again later.
+                  </H3>
+                </div>
+              )}
+              {!loading && !error && (
+                <>
+                  {published.length === 0 ? (
+                    <div className="flex flex-col items-center py-12">
+                      <H2 className="text-white-light">
+                        No trainings available yet.
+                      </H2>
+                      <H3 className="mt-2 text-white-light/80">
+                        Check back soon.
+                      </H3>
+                    </div>
+                  ) : (
+                    <div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {filtered.map((c) => (
+                            <div
+                              key={c.courseId}
+                              onClick={() => router.push(`/trainings/${c.courseId}`)}
+                              className="h-full flex flex-col items-start gap-3 rounded-xl border border-lighter-green bg-green-dark shadow-md p-5 cursor-pointer transition hover:shadow-2xl hover:bg-light-green"
+                            >
+                              <H1Inter className="text-left w-full text-white-light">
+                                {c.title}
+                              </H1Inter>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
+                              <div className="w-full mt-auto flex items-center justify-between pt-3">
+                                <span className="font-Inter text-white-light text-sm">
+                                  {c.price ? `Price: ${c.price}` : ""}
+                                </span>
+                                <Link
+                                  href={`/trainings/${c.courseId}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Button secondary>Enroll</Button>
+                                </Link>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </section>
+          <div>
             <section>
               <TextCard title="In-House Training" texts={inHouse} />
               <TextCard title="Public Training" texts={publicTrainings} />
@@ -153,14 +260,8 @@ export default function TrainingsPage() {
                 texts={liveOnlineTrainings}
               />
             </section>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-          >
+          </div>
+          <div>
             <section className="bg-light-green w-full lg:px-20 p-4 lg:pt-12 lg:mb-16">
               <SmallerH1 className="lg:m-8">
                 Empowering Businesses with Efficient Trainings
@@ -187,7 +288,7 @@ export default function TrainingsPage() {
                 Please get in touch with our team for further details.
               </H2>
             </section>
-          </motion.div>
+          </div>
 
           <FAQSection />
         </main>
