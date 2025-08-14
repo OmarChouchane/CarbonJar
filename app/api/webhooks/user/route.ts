@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/drizzle";
 import { authUsers } from "@/lib/db/schema";
 import { Webhook } from "svix";
-import { WebhookEvent } from "@clerk/nextjs/server";
+import type { WebhookEvent } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 
 // Interface for Clerk user data
