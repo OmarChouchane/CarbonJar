@@ -1,5 +1,6 @@
 import { H1, H3, H1Inter, SmallerH1 } from "@/components/Heading";
 import Button from "@/components/button";
+import EnrollButton from "@/components/enroll-button";
 import Footer from "@/components/footer";
 import Page from "@/components/page";
 import Link from "next/link";
@@ -279,12 +280,7 @@ export default async function TrainingDetailPage({
                   ))}
                 </div>
               </div>
-              <Link
-                href={`/trainings/${course.courseId}`}
-                className="block rounded-lg py-2 border border-lighter-green bg-green text-white"
-              >
-                <Button secondary className="w-full">Enroll</Button>
-              </Link>
+              <EnrollButton courseId={course.courseId} />
             </div>
           </aside>
         </div>
