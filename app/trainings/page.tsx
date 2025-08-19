@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import Footer from "@/components/footer";
 import ScrollProgress from "@/components/scroll";
 import { H1, H2, H3, H1Inter, SmallerH1 } from "@/components/Heading";
-import Link from "next/link";
-import Button from "@/components/button";
+import EnrollButton from "@/components/enroll-button";
 import TextCard from "@/components/TextCard";
 import StatisticBlock from "@/components/static-bloc2";
 import FAQSection from "@/components/faq-section";
@@ -29,11 +29,13 @@ type Course = {
 
 export default function TrainingsPage() {
   const router = useRouter();
+  const { user } = useUser();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] =
     useState<Course["level"]>("beginner");
+  const [enrolledIds, setEnrolledIds] = useState<string[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -58,6 +60,44 @@ export default function TrainingsPage() {
       mounted = false;
     };
   }, []);
+
+  // Load enrolled course IDs for the signed-in user
+  useEffect(() => {
+    let cancelled = false;
+    const loadEnrollments = async () => {
+      try {
+        if (!user) {
+          setEnrolledIds([]);
+          return;
+        }
+        const usersRes = await fetch(`/api/users`, { cache: "no-store" });
+        if (!usersRes.ok) return;
+        const users = (await usersRes.json()) as Array<{
+          userId: string;
+          clerkId?: string | null;
+        }>;
+        const me = users.find((u) => u.clerkId === user.id);
+        if (!me?.userId) return;
+        const res = await fetch(`/api/enrollments`, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as Array<{
+          courseId: string;
+          userId: string;
+        }>;
+        if (cancelled) return;
+        const ids = data
+          .filter((e) => e.userId === me.userId)
+          .map((e) => e.courseId);
+        setEnrolledIds(Array.from(new Set(ids)));
+      } catch {
+        // ignore
+      }
+    };
+    loadEnrollments();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   // Only show published trainings
   const published = useMemo(
@@ -220,31 +260,50 @@ export default function TrainingsPage() {
                     </div>
                   ) : (
                     <div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {filtered.map((c) => (
-                            <div
-                              key={c.courseId}
-                              onClick={() => router.push(`/trainings/${c.courseId}`)}
-                              className="h-full flex flex-col items-start gap-3 rounded-xl border border-lighter-green bg-green-dark shadow-md p-5 cursor-pointer transition hover:shadow-2xl hover:bg-light-green"
-                            >
-                              <H1Inter className="text-left w-full text-white-light">
-                                {c.title}
-                              </H1Inter>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filtered.map((c) => (
+                          <div
+                            key={c.courseId}
+                            onClick={() =>
+                              router.push(`/trainings/${c.courseId}`)
+                            }
+                            className="h-full flex flex-col items-start gap-3 rounded-xl border border-lighter-green bg-green-dark shadow-md p-5 cursor-pointer transition hover:shadow-2xl hover:bg-light-green/20"
+                          >
+                            <H1Inter className="text-left w-full text-white-light">
+                              {c.title}
+                            </H1Inter>
 
-                              <div className="w-full mt-auto flex items-center justify-between pt-3">
+                            <div className="w-full mt-auto flex items-center justify-between pt-3">
+                              <div className="flex flex-col items-start">
+                                {enrolledIds.includes(c.courseId) && (
+                                  <span className="mb-2 inline-block bg-light-green px-2.5 py-0.5 rounded-full text-[11px] font-Inter font-semibold text-green border border-green/50">
+                                    Enrolled
+                                  </span>
+                                )}
                                 <span className="font-Inter text-white-light text-sm">
                                   {c.price ? `Price: ${c.price}` : ""}
                                 </span>
-                                <Link
-                                  href={`/trainings/${c.courseId}`}
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <Button secondary>Enroll</Button>
-                                </Link>
                               </div>
+                              <EnrollButton
+                                courseId={c.courseId}
+                                fullWidth={false}
+                                onEnrollmentSuccess={() => {
+                                  setEnrolledIds((prev) =>
+                                    prev.includes(c.courseId)
+                                      ? prev
+                                      : [...prev, c.courseId]
+                                  );
+                                }}
+                                onUnenroll={() => {
+                                  setEnrolledIds((prev) =>
+                                    prev.filter((id) => id !== c.courseId)
+                                  );
+                                }}
+                              />
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </>
