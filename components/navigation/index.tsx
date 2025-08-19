@@ -21,7 +21,7 @@ const links: LinkType[] = [
   { label: "About us", href: "/about" },
   { label: "Expertise", href: "/expertise" },
   { label: "Trainings", href: "/trainings" },
-  { label: "Resources", href: "/" },
+  { label: "Blogs", href: "/blogs" },
   { label: "Careers", href: "/" },
 ];
 

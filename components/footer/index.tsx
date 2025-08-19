@@ -27,7 +27,7 @@ const Footer = () => {
             { name: "About us", href: "/about" },
             { name: "Expertise", href: "/expertise" },
             { name: "Trainings", href: "/trainings" },
-            { name: "Resources", href: "/resources" },
+            { name: "Blogs", href: "/blogs" },
             { name: "Careers", href: "/careers" },
             { name: "Contact us", href: "/contact" },
           ].map(({ name, href }) => (
@@ -156,7 +156,7 @@ const Footer = () => {
             { name: "About us", href: "/about" },
             { name: "Expertise", href: "/expertise" },
             { name: "Trainings", href: "/trainings" },
-            { name: "Resources", href: "/resources" },
+            { name: "Blogs", href: "/blogs" },
             { name: "Careers", href: "/careers" },
             { name: "Contact us", href: "/contact" },
           ].map(({ name, href }) => (
