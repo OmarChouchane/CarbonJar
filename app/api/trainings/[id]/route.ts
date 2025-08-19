@@ -9,9 +9,10 @@ const UUID_RE =
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  if (!UUID_RE.test(params.id)) {
+  const { id } = await context.params;
+  if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
   }
   const client = new Client({ connectionString: process.env.DATABASE_URL });
@@ -21,7 +22,7 @@ export async function GET(
     const rows = await db
       .select()
       .from(schema.courses)
-      .where(eq(schema.courses.courseId, params.id))
+      .where(eq(schema.courses.courseId, id))
       .limit(1);
     const row = rows[0];
     if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -33,9 +34,10 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  if (!UUID_RE.test(params.id)) {
+  const { id } = await context.params;
+  if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
   }
   const client = new Client({ connectionString: process.env.DATABASE_URL });
@@ -70,7 +72,7 @@ export async function PUT(
     const rows = await db
       .update(schema.courses)
       .set(update)
-      .where(eq(schema.courses.courseId, params.id))
+      .where(eq(schema.courses.courseId, id))
       .returning();
     const row = rows[0];
     if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -82,9 +84,10 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  if (!UUID_RE.test(params.id)) {
+  const { id } = await context.params;
+  if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
   }
   const client = new Client({ connectionString: process.env.DATABASE_URL });
@@ -93,7 +96,7 @@ export async function DELETE(
     const db = drizzle(client, { schema });
     const rows = await db
       .delete(schema.courses)
-      .where(eq(schema.courses.courseId, params.id))
+      .where(eq(schema.courses.courseId, id))
       .returning();
     return NextResponse.json(rows[0] ?? null);
   } finally {
