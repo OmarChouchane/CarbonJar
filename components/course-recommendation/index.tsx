@@ -35,17 +35,17 @@ export default function CourseRecommendation({
   };
 
   return (
-    <div className={`group relative ${className}`}>
+    <div className={`group relative h-full ${className}`}>
       {/* Course Card */}
-      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-0 overflow-hidden border border-gray-100 group-hover:border-green/20">
+      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-0 overflow-hidden border border-gray-100 group-hover:border-green/20 h-[420px] flex flex-col">
         {/* Course Header with Gradient */}
-        <div className="bg-gradient-to-tr from-green-500 to-green-800 p-6 text-white relative overflow-hidden">
+        <div className="bg-gradient-to-tr from-green-500 to-green-800 pt-2 p-6 text-white relative overflow-hidden h-50">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12"></div>
 
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
-              <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+              <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
                 <Icon className="h-6 w-6 text-white" />
               </div>
               {level ? (
@@ -55,19 +55,19 @@ export default function CourseRecommendation({
               ) : null}
             </div>
 
-            <h3 className="text-xl font-bold mb-2 line-clamp-2 leading-tight font-Inter">
+            <h3 className="text-2xl font-bold line-clamp-2 pt-2 leading-tight font-Inter">
               {title}
             </h3>
 
-            <div className="flex items-center space-x-4 text-white/80 text-sm">
+      <div className="flex items-center justify-between mt-5 w-full text-white/80 text-sm">
               {duration ? (
-                <div className="flex items-center">
+        <div className="flex items-center text-left">
                   <Clock className="h-3 w-3 mr-1" />
                   {duration}
                 </div>
               ) : null}
               {typeof enrolled === "number" ? (
-                <div className="flex items-center">
+        <div className="flex items-center ml-auto text-right">
                   <Users className="h-3 w-3 mr-1" />
                   {enrolled.toLocaleString()} enrolled
                 </div>
@@ -77,7 +77,7 @@ export default function CourseRecommendation({
         </div>
 
         {/* Course Body */}
-        <div className="p-6">
+    <div className="p-6 flex flex-col flex-1">
           {/* Description */}
           <p className="text-gray-600 text-sm mb-6 line-clamp-3 leading-relaxed font-Inter">
             {description}
@@ -106,7 +106,7 @@ export default function CourseRecommendation({
           {/* Action Button */}
           <button
             onClick={handleClick}
-            className="w-full inline-flex items-center justify-center px-4 py-3 bg-green text-white rounded-xl hover:bg-green/90 transition-all duration-200 font-medium group-hover:shadow-lg font-Inter"
+            className="mt-auto w-full inline-flex items-center justify-center px-4 py-3 bg-green text-white rounded-xl hover:bg-green/90 transition-all duration-200 font-medium group-hover:shadow-lg font-Inter"
           >
             <span>Explore Course</span>
             <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
