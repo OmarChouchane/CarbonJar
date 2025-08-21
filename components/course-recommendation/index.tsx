@@ -1,4 +1,5 @@
-import { LucideIcon, ArrowRight, Clock, Users } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { ArrowRight, Clock, Users } from "lucide-react";
 
 interface CourseRecommendationProps {
   title: string;
@@ -20,10 +21,10 @@ export default function CourseRecommendation({
   onExplore,
   href,
   className = "",
-  duration = "4-6 weeks",
-  level = "Intermediate",
-  enrolled = 1247,
-  tags = ["Leadership", "Sustainability"],
+  duration,
+  level,
+  enrolled,
+  tags,
 }: CourseRecommendationProps) {
   const handleClick = () => {
     if (href) {
@@ -47,9 +48,11 @@ export default function CourseRecommendation({
               <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
                 <Icon className="h-6 w-6 text-white" />
               </div>
-              <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-white/30">
-                {level}
-              </span>
+              {level ? (
+                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-white/30">
+                  {level}
+                </span>
+              ) : null}
             </div>
 
             <h3 className="text-xl font-bold mb-2 line-clamp-2 leading-tight font-Inter">
@@ -57,14 +60,18 @@ export default function CourseRecommendation({
             </h3>
 
             <div className="flex items-center space-x-4 text-white/80 text-sm">
-              <div className="flex items-center">
-                <Clock className="h-3 w-3 mr-1" />
-                {duration}
-              </div>
-              <div className="flex items-center">
-                <Users className="h-3 w-3 mr-1" />
-                {enrolled.toLocaleString()} enrolled
-              </div>
+              {duration ? (
+                <div className="flex items-center">
+                  <Clock className="h-3 w-3 mr-1" />
+                  {duration}
+                </div>
+              ) : null}
+              {typeof enrolled === "number" ? (
+                <div className="flex items-center">
+                  <Users className="h-3 w-3 mr-1" />
+                  {enrolled.toLocaleString()} enrolled
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -77,22 +84,24 @@ export default function CourseRecommendation({
           </p>
 
           {/* Skills Tags */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {tags.map((tag, index) => (
-              <span
-                key={index}
-                className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  index === 0
-                    ? "bg-green/10 text-green"
-                    : index === 1
-                    ? "bg-blue-50 text-blue-600"
-                    : "bg-purple-50 text-purple-600"
-                }`}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          {tags && tags.length > 0 ? (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    index === 0
+                      ? "bg-green/10 text-green"
+                      : index === 1
+                      ? "bg-blue-50 text-blue-600"
+                      : "bg-purple-50 text-purple-600"
+                  }`}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          ) : null}
 
           {/* Action Button */}
           <button

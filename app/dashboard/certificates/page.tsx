@@ -15,16 +15,15 @@ import SectionWrapper from "@/components/section-wrapper";
 import { SmallerH1, H2 } from "@/components/Heading";
 import type { Certificate } from "@/types/certificate";
 import {
-  COURSE_RECOMMENDATIONS,
-  QUICK_ACTIONS,
-} from "@/constants/certificatesData";
-import {
   Award,
   Clock,
   Calendar,
   BookOpen,
   Download,
   Share2,
+  GraduationCap,
+  Leaf,
+  Building,
 } from "lucide-react";
 
 type ApiCertificate = {
@@ -55,6 +54,23 @@ export default function CertificatesDashboard() {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [recommendations, setRecommendations] = useState<
+    Array<{
+      courseId: string;
+      title: string;
+      description: string | null;
+      duration: string | null;
+      level: string | null;
+      carbonTopicId?: string | null;
+      status?: string | null;
+      createdAt?: string | null;
+      lastUpdated?: string | null;
+    }>
+  >([]);
+  const [enrollmentCounts, setEnrollmentCounts] = useState<
+    Record<string, number>
+  >({});
+  const [topicsById, setTopicsById] = useState<Record<string, string>>({});
 
   const load = useCallback(async () => {
     try {
@@ -107,6 +123,107 @@ export default function CertificatesDashboard() {
   const refetchCertificates = useCallback(() => {
     load();
   }, [load]);
+
+  // Load recommendations from DB (courses API)
+  useEffect(() => {
+    const fetchTrainings = async () => {
+      try {
+        const res = await fetch("/api/trainings", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to load trainings");
+        const courses: Array<any> = await res.json();
+
+        // Prefer published courses, newest first
+        const sorted = [...courses]
+          .filter((c) => (c.status ? c.status === "Published" : true))
+          .sort((a, b) => {
+            const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return db - da;
+          })
+          .slice(0, 3);
+
+        setRecommendations(
+          sorted.map((c) => ({
+            courseId: c.courseId,
+            title: c.title,
+            description: c.description ?? null,
+            duration: c.duration ?? null,
+            level: c.level ?? null,
+            carbonTopicId: c.carbonTopicId ?? null,
+            status: c.status ?? null,
+            createdAt: c.createdAt ?? null,
+            lastUpdated: c.lastUpdated ?? null,
+          }))
+        );
+      } catch (e) {
+        // Fallback to empty if error; avoid crashing the page
+        setRecommendations([]);
+      }
+    };
+    fetchTrainings();
+  }, []);
+
+  // Load enrollment counts for courses (DB-backed)
+  useEffect(() => {
+    const fetchEnrollments = async () => {
+      try {
+        const res = await fetch("/api/enrollments", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to load enrollments");
+        const enrolls: Array<{ courseId: string }> = await res.json();
+        const counts = enrolls.reduce<Record<string, number>>((acc, e) => {
+          if (e && e.courseId) acc[e.courseId] = (acc[e.courseId] || 0) + 1;
+          return acc;
+        }, {});
+        setEnrollmentCounts(counts);
+      } catch {
+        setEnrollmentCounts({});
+      }
+    };
+    fetchEnrollments();
+  }, []);
+
+  // Load carbon topics to use as dynamic tags
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const res = await fetch("/api/carbon-topics", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to load topics");
+        const topics: Array<{ topicId: string; name: string }> =
+          await res.json();
+        const map: Record<string, string> = {};
+        topics.forEach((t) => {
+          if (t && t.topicId) map[t.topicId] = t.name;
+        });
+        setTopicsById(map);
+      } catch {
+        setTopicsById({});
+      }
+    };
+    fetchTopics();
+  }, []);
+
+  // Quick actions (inlined, not from constants)
+  const quickActions = useMemo(
+    () => [
+      {
+        id: "browse-courses",
+        title: "Browse Courses",
+        description: "Discover new training programs",
+        href: "/trainings",
+      },
+      {
+        id: "download-certificates",
+        title: "Download All Certificates",
+        description: "Get PDF copies of all certificates",
+      },
+      {
+        id: "share-portfolio",
+        title: "Share Portfolio",
+        description: "Share your achievements online",
+      },
+    ],
+    []
+  );
 
   // Simple stats derived from real data
   const stats = useMemo(() => {
@@ -274,7 +391,7 @@ export default function CertificatesDashboard() {
                 {/* Quick Actions */}
                 <SectionWrapper title="Quick Actions">
                   <div className="space-y-3">
-                    {QUICK_ACTIONS.map((action) => {
+                    {quickActions.map((action) => {
                       const commonProps = {
                         title: action.title,
                         description: action.description,
@@ -296,6 +413,45 @@ export default function CertificatesDashboard() {
                                     "noopener,noreferrer"
                                   );
                               });
+                            }}
+                          />
+                        );
+                      }
+
+                      if (action.id === "share-portfolio") {
+                        return (
+                          <ActionButton
+                            key={action.id}
+                            {...commonProps}
+                            onClick={() => {
+                              const shareUrl = `${window.location.origin}/dashboard/certificates`;
+                              if (navigator.share) {
+                                navigator
+                                  .share({
+                                    title: "My CarbonJar Certificates",
+                                    text: "Check out my certificates on CarbonJar",
+                                    url: shareUrl,
+                                  })
+                                  .catch(() => {
+                                    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                                      shareUrl
+                                    )}`;
+                                    window.open(
+                                      url,
+                                      "_blank",
+                                      "noopener,noreferrer"
+                                    );
+                                  });
+                              } else {
+                                const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                                  shareUrl
+                                )}`;
+                                window.open(
+                                  url,
+                                  "_blank",
+                                  "noopener,noreferrer"
+                                );
+                              }
                             }}
                           />
                         );
@@ -342,19 +498,43 @@ export default function CertificatesDashboard() {
                 className="p-8"
               >
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {COURSE_RECOMMENDATIONS.map((course) => (
-                    <CourseRecommendation
-                      key={course.id}
-                      title={course.title}
-                      description={course.description}
-                      icon={course.icon}
-                      href={course.href}
-                      duration={course.duration}
-                      level={course.level}
-                      enrolled={course.enrolled}
-                      tags={course.tags}
-                    />
-                  ))}
+                  {recommendations.map((course, idx) => {
+                    const icons = [GraduationCap, Leaf, Building] as const;
+                    const Icon = icons[idx % icons.length];
+                    const href = `/trainings/${course.courseId}`;
+                    const duration = course.duration || undefined;
+                    const levelLabel = course.level
+                      ? String(course.level).charAt(0).toUpperCase() +
+                        String(course.level).slice(1)
+                      : undefined;
+                    const desc = course.description || "";
+                    const enrolled =
+                      typeof enrollmentCounts[course.courseId] === "number"
+                        ? enrollmentCounts[course.courseId]
+                        : undefined;
+                    const topicName = course.carbonTopicId
+                      ? topicsById[course.carbonTopicId]
+                      : undefined;
+                    const tags = topicName ? [topicName] : undefined;
+
+                    const optionalProps = {
+                      ...(duration ? { duration } : {}),
+                      ...(levelLabel ? { level: levelLabel } : {}),
+                      ...(typeof enrolled === "number" ? { enrolled } : {}),
+                      ...(tags ? { tags } : {}),
+                    } as const;
+
+                    return (
+                      <CourseRecommendation
+                        key={course.courseId}
+                        title={course.title}
+                        description={desc}
+                        icon={Icon}
+                        href={href}
+                        {...optionalProps}
+                      />
+                    );
+                  })}
                 </div>
               </SectionWrapper>
             </>
