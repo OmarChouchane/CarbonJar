@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { useUser } from "@clerk/nextjs";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import CertificateCard from "@/components/certificate-card";
@@ -11,12 +13,11 @@ import ActionButton from "@/components/action-button";
 import CourseRecommendation from "@/components/course-recommendation";
 import SectionWrapper from "@/components/section-wrapper";
 import { SmallerH1, H2 } from "@/components/Heading";
-import { useCertificates } from "@/hooks/useCertificates";
+import type { Certificate } from "@/types/certificate";
 import {
   COURSE_RECOMMENDATIONS,
   QUICK_ACTIONS,
 } from "@/constants/certificatesData";
-import { calculateStats } from "@/utils/certificateUtils";
 import {
   Award,
   Clock,
@@ -26,15 +27,131 @@ import {
   Share2,
 } from "lucide-react";
 
+type ApiCertificate = {
+  certificateId: string;
+  userId: string;
+  courseId: string;
+  fullName: string;
+  title: string;
+  description: string;
+  courseStartDate: string; // ISO
+  courseEndDate: string; // ISO
+  issueDate: string; // ISO
+  validUntil: string | null; // ISO
+  issuerName: string;
+  issuerRole: string;
+  certificateCode: string;
+  certificateSlug: string;
+  pdfUrl: string;
+  certificateHash: string;
+  isRevoked: boolean;
+  revokedReason: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+};
+
 export default function CertificatesDashboard() {
-  const {
-    certificates,
-    loading,
-    error,
-    refetchCertificates,
-    generateTestData,
-  } = useCertificates();
-  const stats = calculateStats(certificates);
+  const { user } = useUser();
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Map Clerk user to internal userId
+      const usersRes = await fetch("/api/users", { cache: "no-store" });
+      if (!usersRes.ok) throw new Error("Failed to load users");
+      const users: Array<{ userId: string; clerkId?: string | null }> =
+        await usersRes.json();
+      const me = user ? users.find((u) => u.clerkId === user.id) : null;
+      if (!me) {
+        setCertificates([]);
+        return;
+      }
+
+      // Fetch all certificates and filter client-side by userId
+      const certsRes = await fetch("/api/certificates", { cache: "no-store" });
+      if (!certsRes.ok) throw new Error("Failed to load certificates");
+      const data: ApiCertificate[] = await certsRes.json();
+
+      const mine = data
+        .filter((c) => c.userId === me.userId)
+        .sort((a, b) => {
+          const da = a.issueDate ? new Date(a.issueDate).getTime() : 0;
+          const db = b.issueDate ? new Date(b.issueDate).getTime() : 0;
+          return db - da;
+        })
+        .map<Certificate>((c) => ({
+          id: c.certificateId,
+          title: c.title,
+          ...(c.description ? { description: c.description } : {}),
+          issuedAt: c.issueDate,
+          certificateUrl: c.pdfUrl || "",
+        }));
+
+      setCertificates(mine);
+    } catch (e: any) {
+      setError(e?.message || "Failed to load data");
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const refetchCertificates = useCallback(() => {
+    load();
+  }, [load]);
+
+  // Simple stats derived from real data
+  const stats = useMemo(() => {
+    const totalCertificates = certificates.length;
+    const titleSet = new Set(certificates.map((c) => c.title));
+    const skillsMastered = titleSet.size; // proxy based on unique titles
+    const latestIssue = certificates.length
+      ? new Date(
+          certificates
+            .map((c) => c.issuedAt)
+            .filter(Boolean)
+            .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0]
+        )
+      : null;
+    const latestCertificateDate = latestIssue
+      ? latestIssue.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : "—";
+    const estimatedHours = totalCertificates * 4; // simple proxy if you want a rough estimate
+    const completionRate = "100%"; // certificates imply completed trainings
+
+    return {
+      totalCertificates,
+      skillsMastered,
+      latestCertificateDate,
+      estimatedHours,
+      completionRate,
+    };
+  }, [certificates]);
+
+  const getQuickActionIcon = (actionId: string) => {
+    switch (actionId) {
+      case "browse-courses":
+        return BookOpen;
+      case "download-certificates":
+        return Download;
+      case "share-portfolio":
+        return Share2;
+      default:
+        return BookOpen;
+    }
+  };
 
   if (loading) {
     return (
@@ -55,19 +172,6 @@ export default function CertificatesDashboard() {
       </div>
     );
   }
-
-  const getQuickActionIcon = (actionId: string) => {
-    switch (actionId) {
-      case "browse-courses":
-        return BookOpen;
-      case "download-certificates":
-        return Download;
-      case "share-portfolio":
-        return Share2;
-      default:
-        return BookOpen;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col">
@@ -122,18 +226,21 @@ export default function CertificatesDashboard() {
             </div>
 
             <div className="flex items-center space-x-3">
-              {certificates.length === 0 && (
-                <button
-                  onClick={generateTestData}
-                  className="px-6 py-3 bg-green text-white rounded-xl hover:bg-green/90 transition-all duration-200 font-medium font-Inter shadow-lg hover:shadow-xl"
-                  disabled={loading}
-                >
-                  {loading ? "Generating..." : "Generate Sample Data"}
-                </button>
-              )}
-
               {certificates.length > 0 && (
-                <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium font-Inter">
+                <button
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium font-Inter"
+                  onClick={() => {
+                    // Best-effort open all available PDF URLs in new tabs
+                    certificates.forEach((c) => {
+                      if (c.certificateUrl)
+                        window.open(
+                          c.certificateUrl,
+                          "_blank",
+                          "noopener,noreferrer"
+                        );
+                    });
+                  }}
+                >
                   Download All
                 </button>
               )}
@@ -167,15 +274,41 @@ export default function CertificatesDashboard() {
                 {/* Quick Actions */}
                 <SectionWrapper title="Quick Actions">
                   <div className="space-y-3">
-                    {QUICK_ACTIONS.map((action) => (
-                      <ActionButton
-                        key={action.id}
-                        title={action.title}
-                        description={action.description}
-                        icon={getQuickActionIcon(action.id)}
-                        href={action.href}
-                      />
-                    ))}
+                    {QUICK_ACTIONS.map((action) => {
+                      const commonProps = {
+                        title: action.title,
+                        description: action.description,
+                        icon: getQuickActionIcon(action.id),
+                      } as const;
+
+                      // Wire up special behavior
+                      if (action.id === "download-certificates") {
+                        return (
+                          <ActionButton
+                            key={action.id}
+                            {...commonProps}
+                            onClick={() => {
+                              certificates.forEach((c) => {
+                                if (c.certificateUrl)
+                                  window.open(
+                                    c.certificateUrl,
+                                    "_blank",
+                                    "noopener,noreferrer"
+                                  );
+                              });
+                            }}
+                          />
+                        );
+                      }
+
+                      return (
+                        <ActionButton
+                          key={action.id}
+                          {...commonProps}
+                          {...(action.href ? { href: action.href } : {})}
+                        />
+                      );
+                    })}
                   </div>
                 </SectionWrapper>
 
