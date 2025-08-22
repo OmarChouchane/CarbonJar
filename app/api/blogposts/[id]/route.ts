@@ -7,9 +7,9 @@ import { auth } from "@clerk/nextjs/server";
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();
@@ -30,9 +30,9 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();
@@ -100,9 +100,9 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();

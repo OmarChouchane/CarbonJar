@@ -8,7 +8,7 @@ import * as schema from "../../../../lib/db/schema";
 // Admin-only GET by ID
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -20,7 +20,7 @@ export async function GET(
     await client.connect();
     const db = drizzle(client, { schema });
 
-    const { id } = await params;
+    const { id } = params;
     const notification = await db
       .select()
       .from(schema.notifications)
@@ -43,7 +43,7 @@ export async function GET(
 // Admin-only Update
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -56,7 +56,7 @@ export async function PUT(
     await client.connect();
     const db = drizzle(client, { schema });
 
-    const { id } = await params;
+    const { id } = params;
     const toUpdate: Partial<{
       content: string;
       status: "read" | "unread";
@@ -91,7 +91,7 @@ export async function PUT(
 // Admin-only Delete
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -103,7 +103,7 @@ export async function DELETE(
     await client.connect();
     const db = drizzle(client, { schema });
 
-    const { id } = await params;
+    const { id } = params;
     await db
       .delete(schema.notifications)
       .where(eq(schema.notifications.id, id));

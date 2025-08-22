@@ -9,9 +9,9 @@ const UUID_RE =
 
 export async function GET(
   _req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await context.params;
+  const { id } = params;
   if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
   }
@@ -34,9 +34,9 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await context.params;
+  const { id } = params;
   if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
   }
@@ -84,9 +84,9 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await context.params;
+  const { id } = params;
   if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
   }

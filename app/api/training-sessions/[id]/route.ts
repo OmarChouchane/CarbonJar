@@ -5,7 +5,7 @@ import { trainingSessions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 interface RouteParams {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
@@ -16,7 +16,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { id } = await params;
+    const { id } = params;
     const db = getDb();
     const body = await request.json();
 
@@ -56,7 +56,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { id } = await params;
+    const { id } = params;
     const db = getDb();
 
     // Delete training session

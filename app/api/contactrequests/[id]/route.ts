@@ -7,10 +7,10 @@ import { eq } from "drizzle-orm";
 // Update a contact request by id
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const body = await request.json();
 
     console.log("PUT request - ID:", id);
@@ -57,10 +57,10 @@ export async function PUT(
 // Delete a contact request by id
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     await client.connect();
     const db = drizzle(client, { schema });

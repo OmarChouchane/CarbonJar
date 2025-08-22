@@ -14,9 +14,8 @@ type IncomingModule = {
 
 export async function GET(
   _req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
-  const params = await context.params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();
@@ -37,9 +36,8 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
-  const params = await context.params;
   const courseId = params.id;
   if (!courseId) return new NextResponse("Missing courseId", { status: 400 });
 

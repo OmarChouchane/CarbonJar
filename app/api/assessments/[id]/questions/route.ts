@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 
 export const GET = async (
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) => {
   try {
     const { userId } = await auth();
@@ -15,7 +15,7 @@ export const GET = async (
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { id } = await context.params;
+    const { id } = params;
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
 
@@ -36,7 +36,7 @@ export const GET = async (
 
 export const POST = async (
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) => {
   try {
     const { userId } = await auth();
@@ -44,7 +44,7 @@ export const POST = async (
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { id } = await context.params;
+    const { id } = params;
     const data = await request.json();
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
