@@ -40,6 +40,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ogFallback = `${resolved}/logoCarbonJar.svg`;
 
   return {
+    // Helps Next.js build absolute URLs for meta tags when relative values are used
+    metadataBase: resolved ? new URL(resolved) : undefined,
     title,
     description,
     openGraph: {
@@ -48,7 +50,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: pageUrl,
       type: "article",
       siteName: "Carbon Jar",
-      images: [ogPrimary, ogFallback],
+      images: [
+        {
+          url: ogPrimary,
+          width: 1200,
+          height: 630,
+          type: "image/png",
+          alt: cert?.title || "Certificate",
+        },
+        { url: ogFallback, width: 512, height: 512, alt: "Carbon Jar" },
+      ],
     },
     twitter: {
       card: "summary_large_image",

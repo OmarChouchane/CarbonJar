@@ -1,4 +1,4 @@
-import { CheckCircle, Award, Eye, Linkedin } from "lucide-react";
+import { CheckCircle, Award, Eye } from "lucide-react";
 import type { Certificate } from "@/types/certificate";
 import { useState } from "react";
 import CertificateModal from "@/components/certificate-modal";
@@ -58,27 +58,7 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
   })();
 
   // Build a nicer public URL for sharing when possible
-  const prettyUrl = (() => {
-    if (certificate.slug && typeof window !== "undefined") {
-      // Point to the public page that has proper OG metadata
-      return `${window.location.origin}/certificates/${certificate.slug}`;
-    }
-    // Fallback to PDF URL (may not render rich previews)
-    return certificate.certificateUrl;
-  })();
-
-  // Auto-generated caption for LinkedIn share
-  const shareCaption = (() => {
-    const org = certificate.organizationName || "Carbon Jar";
-    const date = formatDate(certificate.issuedAt);
-    const idPart = certificate.certId ? ` • ID: ${certificate.certId}` : "";
-    return `Proud to earn the "${certificate.title}" certificate from ${org} (issued ${date})${idPart}. #sustainability #learning`;
-  })();
-
-  // LinkedIn share-offsite only accepts a URL; it ignores prefilled text for policy reasons.
-  const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-    prettyUrl
-  )}`;
+  // Removed share feature
 
   return (
     <>
@@ -144,11 +124,11 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
               </button>
 
               <a
-                href={shareUrl}
+                href={addToProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 font-medium group-hover:shadow-lg font-Inter"
-                title={shareCaption}
+                className="inline-flex items-center justify-center px-4 py-3 bg-[#0a66c2] text-white rounded-xl hover:bg-[#084d96] transition-all duration-200 font-medium group-hover:shadow-lg font-Inter"
+                title="Share"
               >
                 <svg
                   className="h-4 w-4 mr-2"
@@ -159,17 +139,6 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                 </svg>
                 <span className="hidden sm:inline">Share</span>
-              </a>
-
-              <a
-                href={addToProfileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-4 py-3 bg-[#0a66c2] text-white rounded-xl hover:bg-[#084d96] transition-all duration-200 font-medium group-hover:shadow-lg font-Inter"
-                title="Add to LinkedIn Profile"
-              >
-                <Linkedin className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Add to profile</span>
               </a>
             </div>
           </div>
