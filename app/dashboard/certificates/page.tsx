@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -71,6 +71,19 @@ export default function CertificatesDashboard() {
     Record<string, number>
   >({});
   const [topicsById, setTopicsById] = useState<Record<string, string>>({});
+  // Slider ref for recommendations
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const scrollRecommendations = useCallback((dir: "left" | "right") => {
+    const el = sliderRef.current;
+    if (!el) return;
+    const first = el.firstElementChild as HTMLElement | null;
+    const cardWidth = first?.clientWidth ?? 360;
+    const gap = 24; // gap-6
+    el.scrollBy({
+      left: (dir === "left" ? -1 : 1) * (cardWidth + gap),
+      behavior: "smooth",
+    });
+  }, []);
 
   const load = useCallback(async () => {
     try {
@@ -139,8 +152,7 @@ export default function CertificatesDashboard() {
             const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
             const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
             return db - da;
-          })
-          .slice(0, 3);
+          });
 
         setRecommendations(
           sorted.map((c) => ({
@@ -497,44 +509,86 @@ export default function CertificatesDashboard() {
                 variant="gradient"
                 className="p-8"
               >
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {recommendations.map((course, idx) => {
-                    const icons = [GraduationCap, Leaf, Building] as const;
-                    const Icon = icons[idx % icons.length];
-                    const href = `/trainings/${course.courseId}`;
-                    const duration = course.duration || undefined;
-                    const levelLabel = course.level
-                      ? String(course.level).charAt(0).toUpperCase() +
-                        String(course.level).slice(1)
-                      : undefined;
-                    const desc = course.description || "";
-                    const enrolled =
-                      typeof enrollmentCounts[course.courseId] === "number"
-                        ? enrollmentCounts[course.courseId]
-                        : undefined;
-                    const topicName = course.carbonTopicId
-                      ? topicsById[course.carbonTopicId]
-                      : undefined;
-                    const tags = topicName ? [topicName] : undefined;
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <div />
+                    <a
+                      href="/trainings"
+                      className="text-sm font-medium transition-colors duration-200 hover:text-green hover:bg-green/10 rounded px-2 py-1 focus:text-green focus:bg-green/10"
+                    >
+                      Explore more
+                    </a>
+                  </div>
 
-                    const optionalProps = {
-                      ...(duration ? { duration } : {}),
-                      ...(levelLabel ? { level: levelLabel } : {}),
-                      ...(typeof enrolled === "number" ? { enrolled } : {}),
-                      ...(tags ? { tags } : {}),
-                    } as const;
+                  <div className="relative">
+                    {/* Slider viewport */}
+                    <div
+                      ref={sliderRef}
+                      className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2"
+                    >
+                      {recommendations.map((course, idx) => {
+                        const icons = [GraduationCap, Leaf, Building] as const;
+                        const Icon = icons[idx % icons.length];
+                        const href = `/trainings/${course.courseId}`;
+                        const duration = course.duration || undefined;
+                        const levelLabel = course.level
+                          ? String(course.level).charAt(0).toUpperCase() +
+                            String(course.level).slice(1)
+                          : undefined;
+                        const desc = course.description || "";
+                        const enrolled =
+                          typeof enrollmentCounts[course.courseId] === "number"
+                            ? enrollmentCounts[course.courseId]
+                            : undefined;
+                        const topicName = course.carbonTopicId
+                          ? topicsById[course.carbonTopicId]
+                          : undefined;
+                        const tags = topicName ? [topicName] : undefined;
 
-                    return (
-                      <CourseRecommendation
-                        key={course.courseId}
-                        title={course.title}
-                        description={desc}
-                        icon={Icon}
-                        href={href}
-                        {...optionalProps}
-                      />
-                    );
-                  })}
+                        const optionalProps = {
+                          ...(duration ? { duration } : {}),
+                          ...(levelLabel ? { level: levelLabel } : {}),
+                          ...(typeof enrolled === "number" ? { enrolled } : {}),
+                          ...(tags ? { tags } : {}),
+                        } as const;
+
+                        return (
+                          <div
+                            key={course.courseId}
+                            className="snap-start shrink-0 w-[320px] md:w-[360px]"
+                          >
+                            <CourseRecommendation
+                              title={course.title}
+                              description={desc}
+                              icon={Icon}
+                              href={href}
+                              {...optionalProps}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Controls */}
+                    <div className="hidden md:block">
+                      <button
+                        type="button"
+                        aria-label="Previous"
+                        onClick={() => scrollRecommendations("left")}
+                        className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 h-10 w-10 rounded-full bg-white text-green shadow hover:bg-gray-50 border border-gray-200 flex items-center justify-center"
+                      >
+                        <span className="sr-only">Previous</span>‹
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Next"
+                        onClick={() => scrollRecommendations("right")}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 h-10 w-10 rounded-full bg-white text-green shadow hover:bg-gray-50 border border-gray-200 flex items-center justify-center"
+                      >
+                        <span className="sr-only">Next</span>›
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </SectionWrapper>
             </>
