@@ -119,6 +119,11 @@ export default function CertificatesDashboard() {
           ...(c.description ? { description: c.description } : {}),
           issuedAt: c.issueDate,
           certificateUrl: c.pdfUrl || "",
+          certId: c.certificateCode,
+          expirationAt: c.validUntil,
+          // Always use company name for LinkedIn issuing organization
+          organizationName: "Carbon Jar",
+          slug: c.certificateSlug,
         }));
 
       setCertificates(mine);
