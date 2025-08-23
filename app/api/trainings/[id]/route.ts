@@ -3,15 +3,16 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Client } from "pg";
 import * as schema from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { auth } from "@clerk/nextjs/server";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
   }
@@ -34,9 +35,12 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { userId: clerkId } = await auth();
+  if (!clerkId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { id } = await params;
   if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
   }
@@ -44,6 +48,16 @@ export async function PUT(
   await client.connect();
   try {
     const db = drizzle(client, { schema });
+    // DB role check
+    const me = await db
+      .select({ role: schema.authUsers.role })
+      .from(schema.authUsers)
+      .where(eq(schema.authUsers.clerkId, clerkId))
+      .limit(1);
+    const role = me[0]?.role;
+    if (role !== "trainer" && role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     const body = await req.json();
     const update: Partial<typeof schema.courses.$inferInsert> = {};
     if (typeof body.title === "string") update.title = body.title;
@@ -57,7 +71,11 @@ export async function PUT(
       update.whyThisCourse = body.whyThisCourse;
     if (["beginner", "intermediate", "expert"].includes(body.level))
       update.level = body.level;
-    if (["Draft", "Published", "Archived"].includes(body.status))
+    // Only admins can change status; mentors must remain Draft until approved
+    if (
+      role === "admin" &&
+      ["Draft", "Published", "Archived"].includes(body.status)
+    )
       update.status = body.status;
     if (typeof body.carbonAccountingFocus === "boolean")
       update.carbonAccountingFocus = body.carbonAccountingFocus;
@@ -84,9 +102,12 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { userId: clerkId } = await auth();
+  if (!clerkId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { id } = await params;
   if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
   }
@@ -94,6 +115,16 @@ export async function DELETE(
   await client.connect();
   try {
     const db = drizzle(client, { schema });
+    // DB role check
+    const me = await db
+      .select({ role: schema.authUsers.role })
+      .from(schema.authUsers)
+      .where(eq(schema.authUsers.clerkId, clerkId))
+      .limit(1);
+    const role = me[0]?.role;
+    if (role !== "trainer" && role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     const rows = await db
       .delete(schema.courses)
       .where(eq(schema.courses.courseId, id))

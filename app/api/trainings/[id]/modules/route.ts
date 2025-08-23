@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Client } from "pg";
 import * as schema from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { auth } from "@clerk/nextjs/server";
 
 type IncomingModule = {
   moduleId?: string;
@@ -14,8 +15,9 @@ type IncomingModule = {
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();
@@ -23,7 +25,7 @@ export async function GET(
     const list = await db
       .select()
       .from(schema.modules)
-      .where(eq(schema.modules.courseId, params.id));
+      .where(eq(schema.modules.courseId, id));
     return NextResponse.json(list);
   } catch (err: any) {
     return new NextResponse(err?.message || "Failed to fetch modules", {
@@ -36,9 +38,12 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const courseId = params.id;
+  const { userId: clerkId } = await auth();
+  if (!clerkId) return new NextResponse("Unauthorized", { status: 401 });
+  const { id } = await params;
+  const courseId = id;
   if (!courseId) return new NextResponse("Missing courseId", { status: 400 });
 
   let body: { modules: IncomingModule[] } | null = null;
@@ -54,6 +59,16 @@ export async function PUT(
   await client.connect();
 
   try {
+    // DB role check
+    const me = await db
+      .select({ role: schema.authUsers.role })
+      .from(schema.authUsers)
+      .where(eq(schema.authUsers.clerkId, clerkId))
+      .limit(1);
+    const role = me[0]?.role;
+    if (role !== "trainer" && role !== "admin")
+      return new NextResponse("Forbidden", { status: 403 });
+
     const exists = await db
       .select({ id: schema.courses.courseId })
       .from(schema.courses)

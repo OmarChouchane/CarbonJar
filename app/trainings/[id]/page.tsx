@@ -33,6 +33,16 @@ type Module = {
   orderIndex?: number | null;
 };
 
+type Session = {
+  sessionId: string;
+  courseId: string;
+  startTime: string;
+  endTime: string;
+  instructorId: string | null;
+  maxParticipants: number | null;
+  instructorName?: string | null;
+};
+
 const levelLabel = (lvl: Course["level"]) =>
   ({ beginner: "Beginner", intermediate: "Intermediate", expert: "Expert" }[
     lvl
@@ -64,12 +74,34 @@ async function getModules(base: string, id: string): Promise<Module[]> {
   }
 }
 
+async function getSessions(base: string, id: string): Promise<Session[]> {
+  try {
+    const res = await fetch(`${base}/api/trainings/${id}/sessions`, {
+      cache: "no-store",
+      next: { revalidate: 0 },
+    });
+    if (!res.ok) return [];
+    const data = (await res.json()) as any[];
+    return data.map((s) => ({
+      sessionId: s.sessionId,
+      courseId: s.courseId,
+      startTime: s.startTime,
+      endTime: s.endTime,
+      instructorId: s.instructorId ?? null,
+      maxParticipants: s.maxParticipants ?? null,
+      instructorName: s.instructorName ?? null,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export default async function TrainingDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host");
   const proto = h.get("x-forwarded-proto") ?? "http";
@@ -90,7 +122,10 @@ export default async function TrainingDetailPage({
       </Page>
     );
   }
-  const modules = await getModules(base, id);
+  const [modules, sessions] = await Promise.all([
+    getModules(base, id),
+    getSessions(base, id),
+  ]);
 
   return (
     <Page>
@@ -189,6 +224,45 @@ export default async function TrainingDetailPage({
                 <H3 className="text-left">
                   Key learning outcomes will be provided soon.
                 </H3>
+              )}
+            </section>
+
+            {/* Upcoming sessions for this course */}
+            <section className="rounded-xl border border-lighter-green bg-white p-6">
+              <SmallerH1 className="mb-3">Upcoming sessions</SmallerH1>
+              {sessions.length === 0 ? (
+                <H3 className="text-left">No upcoming sessions yet.</H3>
+              ) : (
+                <ul className="divide-y divide-lighter-green">
+                  {sessions
+                    .slice()
+                    .sort(
+                      (a, b) =>
+                        new Date(a.startTime).getTime() -
+                        new Date(b.startTime).getTime()
+                    )
+                    .map((s) => (
+                      <li
+                        key={s.sessionId}
+                        className="py-3 flex items-center justify-between gap-4"
+                      >
+                        <div>
+                          <div className="font-Inter text-green">
+                            {new Date(s.startTime).toLocaleString()} —{" "}
+                            {new Date(s.endTime).toLocaleString()}
+                          </div>
+                          <div className="text-sm text-green/80">
+                            Instructor: {s.instructorName || "TBA"}
+                          </div>
+                        </div>
+                        {s.maxParticipants != null && (
+                          <span className="text-xs font-Inter bg-light-green text-green px-2 py-1 rounded">
+                            Max {s.maxParticipants}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                </ul>
               )}
             </section>
 

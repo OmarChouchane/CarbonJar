@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/button";
@@ -75,7 +75,13 @@ const MenuButton = ({ toggleMenu, showMenu }: IMenuButton) => (
   </button>
 );
 
-const MobileMenu = ({ isVisible }: { isVisible: boolean }) => (
+const MobileMenu = ({
+  isVisible,
+  showDashboard,
+}: {
+  isVisible: boolean;
+  showDashboard: boolean;
+}) => (
   <div
     className={`md:hidden absolute top-full left-3.5 right-3.5 z-30 bg-green/90 backdrop-blur-sm rounded-b-3xl border border-border-white shadow-xl transition-all duration-300 ease-in-out overflow-hidden -mt-1 ${
       isVisible
@@ -97,8 +103,8 @@ const MobileMenu = ({ isVisible }: { isVisible: boolean }) => (
 
       <div className="pt-4 space-y-3 flex flex-col items-center">
         <SignedIn>
-          <Link href="/dashboard/certificates">
-            <Button>Certificates</Button>
+          <Link href={showDashboard ? "/mentor" : "/dashboard/certificates"}>
+            <Button>{showDashboard ? "Dashboard" : "Certificates"}</Button>
           </Link>
         </SignedIn>
         <SignedOut>
@@ -114,6 +120,36 @@ const MobileMenu = ({ isVisible }: { isVisible: boolean }) => (
 const Navigation = () => {
   const [showMenu, setShowMenu] = useState(false);
   const toggleMenu = () => setShowMenu(!showMenu);
+  const [showDashboard, setShowDashboard] = useState(false);
+
+  // Determine if current signed-in user is trainer/admin by querying /api/users?role=trainer/admin
+  useEffect(() => {
+    let active = true;
+    const checkRole = async () => {
+      try {
+        // Grab all users (small list) and match by Clerk ID via /api/users
+        const res = await fetch("/api/users", { cache: "no-store" });
+        if (!res.ok) return;
+        const users: Array<{ clerkId?: string | null; role?: string | null }> =
+          await res.json();
+        // Clerk user id is only available client-side via window.Clerk?.user?; easier path: hit dedicated endpoint for me only if exists.
+        // Fallback: we infer by checking window.Clerk.user.id if available
+        const clerkId = (globalThis as any)?.Clerk?.user?.id ?? null;
+        if (!clerkId) return;
+        const me = users.find((u) => u.clerkId === clerkId);
+        if (!me) return;
+        if (me.role === "trainer" || me.role === "admin") {
+          if (active) setShowDashboard(true);
+        }
+      } catch {
+        // ignore
+      }
+    };
+    checkRole();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <div className="relative z-50">
@@ -152,8 +188,10 @@ const Navigation = () => {
           </div>
           <div className="hidden md:flex items-center space-x-4 ml-auto">
             <SignedIn>
-              <Link href="/dashboard/certificates">
-                <Button>Certificates</Button>
+              <Link
+                href={showDashboard ? "/mentor" : "/dashboard/certificates"}
+              >
+                <Button>{showDashboard ? "Dashboard" : "Certificates"}</Button>
               </Link>
               {/* Notifications */}
               <NotificationBell />
@@ -196,7 +234,7 @@ const Navigation = () => {
           </div>
         </div>
       </nav>
-      <MobileMenu isVisible={showMenu} />
+      <MobileMenu isVisible={showMenu} showDashboard={showDashboard} />
     </div>
   );
 };

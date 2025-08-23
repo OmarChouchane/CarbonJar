@@ -5,17 +5,15 @@ import * as schema from "../../../../lib/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, context: { params: any }) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
-    const { id } = params;
+    const p = context?.params;
+    const resolved = typeof p?.then === "function" ? await p : p;
+    const { id } = (resolved || {}) as { id: string };
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
 
@@ -33,17 +31,15 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, context: { params: any }) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
-    const { id } = params;
+    const p = context?.params;
+    const resolved = typeof p?.then === "function" ? await p : p;
+    const { id } = (resolved || {}) as { id: string };
     const data = await request.json();
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
@@ -70,17 +66,15 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: { params: any }) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
-    const { id } = params;
+    const p = context?.params;
+    const resolved = typeof p?.then === "function" ? await p : p;
+    const { id } = (resolved || {}) as { id: string };
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });

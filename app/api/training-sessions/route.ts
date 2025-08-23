@@ -48,6 +48,16 @@ export async function POST(request: NextRequest) {
     }
 
     const db = getDb();
+    // Fetch DB role from auth_users by clerkId=userId
+    const who = await db
+      .select({ role: authUsers.role })
+      .from(authUsers)
+      .where(eq(authUsers.clerkId, userId))
+      .limit(1);
+    const role = who[0]?.role;
+    if (role !== "trainer" && role !== "admin") {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
     const body = await request.json();
 
     const { courseId, startTime, endTime, instructorId, maxParticipants } =

@@ -79,26 +79,63 @@ export const POST = async (req: NextRequest) => {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
-    const data = await req.json();
+
+    // Safely parse JSON body
+    let data: any;
+    try {
+      data = await req.json();
+    } catch {
+      return NextResponse.json(
+        { message: "Invalid JSON body" },
+        { status: 400 }
+      );
+    }
+
+    await client.connect();
+
+    // DB role check and identity
+    const me = await db
+      .select({ role: schema.authUsers.role, userId: schema.authUsers.userId })
+      .from(schema.authUsers)
+      .where(eq(schema.authUsers.clerkId, userId))
+      .limit(1);
+    const role = me[0]?.role;
+    const meUserId = me[0]?.userId as string | undefined;
+    // Allow self-enrollment; otherwise require trainer/admin
+    const isSelf = meUserId && String(data?.userId) === meUserId;
+    if (!isSelf && role !== "trainer" && role !== "admin") {
+      await client.end();
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
+    // Validate required fields
+    if (!data?.userId || !data?.courseId) {
+      await client.end();
+      return NextResponse.json(
+        { message: "Missing required fields: userId and courseId" },
+        { status: 400 }
+      );
+    }
 
     // Prepare the enrollment data with proper timestamp handling
     const enrollmentData = {
-      userId: data.userId,
-      courseId: data.courseId,
+      userId: String(data.userId),
+      courseId: String(data.courseId),
       completionStatus: data.completionStatus || "in_progress",
-      progressPercentage: data.progressPercentage || 0,
-      // Let the database handle timestamp defaults, or convert string to Date if provided
+      progressPercentage:
+        typeof data.progressPercentage === "number"
+          ? data.progressPercentage
+          : 0,
       ...(data.enrollmentDate && {
         enrollmentDate: new Date(data.enrollmentDate),
       }),
     };
 
-    await client.connect();
     const inserted = await db
       .insert(schema.enrollments)
       .values(enrollmentData)
@@ -108,6 +145,9 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(inserted[0]);
   } catch (error) {
     console.error("Failed to create enrollment:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 };

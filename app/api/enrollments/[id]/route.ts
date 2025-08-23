@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -17,8 +17,19 @@ export async function PUT(
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
-    const { id } = params;
+    const { id } = await params;
     const data = await request.json();
+
+    // DB role check
+    const me = await db
+      .select({ role: schema.authUsers.role })
+      .from(schema.authUsers)
+      .where(eq(schema.authUsers.clerkId, userId))
+      .limit(1);
+    const role = me[0]?.role;
+    if (role !== "trainer" && role !== "admin") {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
 
     await client.connect();
     const updated = await db
@@ -40,7 +51,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -50,7 +61,18 @@ export async function DELETE(
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
-    const { id } = params;
+    const { id } = await params;
+
+    // DB role check
+    const me = await db
+      .select({ role: schema.authUsers.role })
+      .from(schema.authUsers)
+      .where(eq(schema.authUsers.clerkId, userId))
+      .limit(1);
+    const role = me[0]?.role;
+    if (role !== "trainer" && role !== "admin") {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
 
     await client.connect();
     const deleted = await db

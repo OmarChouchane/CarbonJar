@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getDb } from "@/lib/db/drizzle";
-import { trainingSessions } from "@/lib/db/schema";
+import { trainingSessions, authUsers } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 interface RouteParams {
@@ -18,6 +18,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const { id } = params;
     const db = getDb();
+    // DB role check
+    const who = await db
+      .select({ role: authUsers.role })
+      .from(authUsers)
+      .where(eq(authUsers.clerkId, userId))
+      .limit(1);
+    const role = who[0]?.role;
+    if (role !== "trainer" && role !== "admin") {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
     const body = await request.json();
 
     const { courseId, startTime, endTime, instructorId, maxParticipants } =
@@ -58,6 +68,16 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     const { id } = params;
     const db = getDb();
+    // DB role check
+    const who = await db
+      .select({ role: authUsers.role })
+      .from(authUsers)
+      .where(eq(authUsers.clerkId, userId))
+      .limit(1);
+    const role = who[0]?.role;
+    if (role !== "trainer" && role !== "admin") {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
 
     // Delete training session
     const deletedSession = await db

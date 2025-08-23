@@ -5,17 +5,16 @@ import * as schema from "../../../../../lib/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
 
-export const GET = async (
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) => {
+export const GET = async (request: NextRequest, context: { params: any }) => {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { id } = params;
+    const p = context?.params;
+    const resolved = typeof p?.then === "function" ? await p : p;
+    const { id } = (resolved || {}) as { id: string };
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
 
@@ -34,17 +33,16 @@ export const GET = async (
   }
 };
 
-export const POST = async (
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) => {
+export const POST = async (request: NextRequest, context: { params: any }) => {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { id } = params;
+    const p = context?.params;
+    const resolved = typeof p?.then === "function" ? await p : p;
+    const { id } = (resolved || {}) as { id: string };
     const data = await request.json();
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
