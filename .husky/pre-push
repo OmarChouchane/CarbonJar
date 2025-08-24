@@ -1,0 +1,2 @@
+echo "Running typecheck and tests before push..."
+"npm" run typecheck && "npm" test

@@ -1,0 +1,49 @@
+openapi: 3.1.0
+info:
+  title: CarbonJar API
+  version: 1.0.0
+  description: Public API for CarbonJar (MVP endpoints; expand as routes stabilize)
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /api/contactrequests:
+    get:
+      summary: List contact requests
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create contact request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                email: { type: string, format: email }
+                message: { type: string }
+              required: [name, email, message]
+      responses:
+        '201': { description: Created }
+  /api/trainings:
+    get:
+      summary: List trainings
+      responses:
+        '200': { description: OK }
+  /api/trainings/{id}:
+    get:
+      summary: Get training by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }

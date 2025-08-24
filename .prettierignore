@@ -1,0 +1,10 @@
+.next
+node_modules
+coverage
+dist
+build
+out
+.turbo
+drizzle
+migrations/meta
+*.log
