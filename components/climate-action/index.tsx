@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
+
+import { motion } from "framer-motion";
+
 import { H2, SmallerH1 } from "../Heading";
 import StatisticBlock from "../static-bloc";
-import { motion } from "framer-motion";
 
 const ClimateActionSection: React.FC = () => {
   return (

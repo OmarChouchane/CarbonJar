@@ -1,7 +1,9 @@
 import React from "react";
-import { H2, H2Bold } from "../Heading";
+
 import { motion } from "framer-motion";
 import Image from "next/image";
+
+import { H2, H2Bold } from "../Heading";
 
 interface CardComponentProps {
   rating: number;

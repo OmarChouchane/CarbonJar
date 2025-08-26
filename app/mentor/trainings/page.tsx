@@ -1,19 +1,21 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import Link from "next/link";
-import { H1, H2 } from "@/components/Heading";
-import SectionWrapper from "@/components/section-wrapper";
-import Button from "@/components/button";
-import { BookOpen, BadgeCheck } from "lucide-react";
+import { useEffect, useMemo, useState } from 'react';
+
+import { useUser } from '@clerk/nextjs';
+import { BookOpen, BadgeCheck } from 'lucide-react';
+import Link from 'next/link';
+
+import Button from '@/components/button';
+import { H1, H2 } from '@/components/Heading';
+import SectionWrapper from '@/components/section-wrapper';
 
 type Course = {
   courseId: string;
   title: string;
   description: string | null;
-  level: "beginner" | "intermediate" | "expert";
-  status: "Draft" | "Published" | "Archived";
+  level: 'beginner' | 'intermediate' | 'expert';
+  status: 'Draft' | 'Published' | 'Archived';
 };
 
 type Session = {
@@ -39,18 +41,22 @@ export default function MentorTrainingsPage() {
         // Map Clerk user to internal user id (trainer or admin)
         let myId: string | null = null;
         if (user) {
-          const resUsers = await fetch("/api/users?role=trainer", {
-            cache: "no-store",
+          const resUsers = await fetch('/api/users?role=trainer', {
+            cache: 'no-store',
           });
-          const users: Array<{ userId: string; clerkId?: string | null }> =
-            await resUsers.json();
+          const users = (await resUsers.json()) as unknown as Array<{
+            userId: string;
+            clerkId?: string | null;
+          }>;
           myId = users.find((u) => u.clerkId === user.id)?.userId ?? null;
           if (!myId) {
-            const resAdmins = await fetch("/api/users?role=admin", {
-              cache: "no-store",
+            const resAdmins = await fetch('/api/users?role=admin', {
+              cache: 'no-store',
             });
-            const admins: Array<{ userId: string; clerkId?: string | null }> =
-              await resAdmins.json();
+            const admins = (await resAdmins.json()) as unknown as Array<{
+              userId: string;
+              clerkId?: string | null;
+            }>;
             myId = admins.find((u) => u.clerkId === user.id)?.userId ?? null;
           }
         }
@@ -58,11 +64,15 @@ export default function MentorTrainingsPage() {
         setMeId(myId);
 
         const [resCourses, resSessions] = await Promise.all([
-          fetch("/api/trainings", { cache: "no-store" }),
-          fetch("/api/training-sessions", { cache: "no-store" }),
+          fetch('/api/trainings', { cache: 'no-store' }),
+          fetch('/api/training-sessions', { cache: 'no-store' }),
         ]);
-        const allCourses: Course[] = await resCourses.json();
-        const allSessions: any[] = await resSessions.json();
+        const allCourses = (await resCourses.json()) as unknown as Course[];
+        const allSessions = (await resSessions.json()) as unknown as Array<{
+          sessionId: string;
+          courseId: string;
+          instructorId?: string | null;
+        }>;
         const mappedSessions: Session[] = allSessions.map((s) => ({
           sessionId: s.sessionId,
           courseId: s.courseId,
@@ -71,13 +81,13 @@ export default function MentorTrainingsPage() {
         if (!active) return;
         setCourses(allCourses);
         setSessions(mappedSessions);
-      } catch (e: any) {
-        if (active) setErr(e?.message || "Failed to load trainings");
+      } catch (e: unknown) {
+        if (active) setErr(e instanceof Error ? e.message : 'Failed to load trainings');
       } finally {
         if (active) setLoading(false);
       }
     };
-    load();
+    void load();
     return () => {
       active = false;
     };
@@ -85,9 +95,7 @@ export default function MentorTrainingsPage() {
 
   const myCourseIds = useMemo(() => {
     if (!meId) return new Set<string>();
-    return new Set(
-      sessions.filter((s) => s.instructorId === meId).map((s) => s.courseId)
-    );
+    return new Set(sessions.filter((s) => s.instructorId === meId).map((s) => s.courseId));
   }, [sessions, meId]);
 
   const myCourses = useMemo(() => {
@@ -95,29 +103,27 @@ export default function MentorTrainingsPage() {
   }, [courses, myCourseIds]);
 
   // Helpers for styling badges
-  const statusStyles = (status: Course["status"]) => {
+  const statusStyles = (status: Course['status']) => {
     switch (status) {
-      case "Published":
-        return "bg-light-green text-green border border-light-green/70";
-      case "Draft":
-        return "bg-gray-100 text-gray-700 border border-gray-200";
-      case "Archived":
-        return "bg-yellow-100 text-yellow-800 border border-yellow-200";
+      case 'Published':
+        return 'bg-light-green text-green border border-light-green/70';
+      case 'Draft':
+        return 'bg-gray-100 text-gray-700 border border-gray-200';
+      case 'Archived':
+        return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
       default:
-        return "bg-gray-100 text-gray-700 border border-gray-200";
+        return 'bg-gray-100 text-gray-700 border border-gray-200';
     }
   };
 
-  const levelLabel = (lvl: Course["level"]) =>
-    ({ beginner: "Beginner", intermediate: "Intermediate", expert: "Expert" }[
-      lvl
-    ]);
+  const levelLabel = (lvl: Course['level']) =>
+    ({ beginner: 'Beginner', intermediate: 'Intermediate', expert: 'Expert' })[lvl];
 
   return (
-    <div className="lg:mx-32 md:mx-12 mx-4 my-8 space-y-6">
+    <div className="mx-4 my-8 space-y-6 md:mx-12 lg:mx-32">
       <SectionWrapper variant="green" className="py-8">
         <H1 className="text-white">My Trainings</H1>
-        <H2 className="text-white/90 mt-2">Create and manage your courses.</H2>
+        <H2 className="mt-2 text-white/90">Create and manage your courses.</H2>
         <div className="mt-4 flex items-center justify-center">
           <Link href="/mentor/trainings/new">
             <Button modifier="bg-white text-green !border-green hover:bg-green hover:text-white hover:border-green">
@@ -133,45 +139,45 @@ export default function MentorTrainingsPage() {
         ) : err ? (
           <div className="text-red-600">{err}</div>
         ) : myCourses.length === 0 ? (
-          <div className="text-gray-600 text-center py-8">
+          <div className="py-8 text-center text-gray-600">
             No trainings yet. Click “New Training” to get started.
           </div>
         ) : (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {myCourses.map((c) => (
               <li key={c.courseId}>
-                <div className="group relative h-full rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-light-green/20 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+                <div className="group to-light-green/20 relative h-full rounded-2xl border border-gray-100 bg-gradient-to-br from-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
                   {/* Card body */}
-                  <div className="p-5 flex flex-col h-full">
+                  <div className="flex h-full flex-col p-5">
                     {/* Icon + Title */}
                     <div className="flex items-start gap-3">
-                      <div className="shrink-0 rounded-xl bg-light-green p-2 text-green border border-light-green/70">
+                      <div className="bg-light-green text-green border-light-green/70 shrink-0 rounded-xl border p-2">
                         <BookOpen size={18} />
                       </div>
                       <div className="min-w-0">
-                        <div className="font-semibold text-green text-base leading-6 line-clamp-2">
+                        <div className="text-green line-clamp-2 text-base leading-6 font-semibold">
                           {c.title}
                         </div>
-                        <p className="mt-1 text-sm text-gray-600 line-clamp-3">
-                          {c.description || "No description provided."}
+                        <p className="mt-1 line-clamp-3 text-sm text-gray-600">
+                          {c.description || 'No description provided.'}
                         </p>
                       </div>
                     </div>
 
                     {/* Badges */}
                     <div className="mt-4 flex items-center gap-2">
-                      <span className="text-[11px] uppercase tracking-wide px-2.5 py-1 rounded-full bg-white text-gray-700 border border-gray-200">
+                      <span className="rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[11px] tracking-wide text-gray-700 uppercase">
                         {levelLabel(c.level)}
                       </span>
                       <span
-                        className={`text-[11px] tracking-wide px-2.5 py-1 rounded-full ${statusStyles(
-                          c.status
+                        className={`rounded-full px-2.5 py-1 text-[11px] tracking-wide ${statusStyles(
+                          c.status,
                         )}`}
                       >
                         {c.status}
                       </span>
-                      {c.status === "Published" && (
-                        <span className="ml-auto inline-flex items-center gap-1 text-[11px] text-green">
+                      {c.status === 'Published' && (
+                        <span className="text-green ml-auto inline-flex items-center gap-1 text-[11px]">
                           <BadgeCheck size={14} />
                           Live
                         </span>
@@ -179,7 +185,7 @@ export default function MentorTrainingsPage() {
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-auto pt-4 flex items-center justify-between">
+                    <div className="mt-auto flex items-center justify-between pt-4">
                       <div className="text-xs text-gray-500">
                         Course ID: {c.courseId.slice(0, 8)}…
                       </div>
@@ -190,7 +196,7 @@ export default function MentorTrainingsPage() {
                   </div>
 
                   {/* Hover ring */}
-                  <div className="pointer-events-none absolute inset-0 rounded-2xl ring-0 ring-green/0 group-hover:ring-2 group-hover:ring-green/20 transition" />
+                  <div className="ring-green/0 group-hover:ring-green/20 pointer-events-none absolute inset-0 rounded-2xl ring-0 transition group-hover:ring-2" />
                 </div>
               </li>
             ))}

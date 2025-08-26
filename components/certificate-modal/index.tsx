@@ -1,7 +1,8 @@
 "use client";
 
-import { X, ExternalLink, Download } from "lucide-react";
 import { useEffect } from "react";
+
+import { X, ExternalLink, Download } from "lucide-react";
 
 interface CertificateModalProps {
   isOpen: boolean;

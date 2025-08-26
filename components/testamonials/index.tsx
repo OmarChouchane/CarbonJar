@@ -1,19 +1,20 @@
 "use client";
 
 import React from "react";
+
+import { motion } from "framer-motion";
 import Image from "next/image";
-import CardComponent from "../testamonial-card";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
-import { Autoplay, Navigation } from "swiper/modules";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import Button from "../button";
 
+import Button from "../button";
 import { SmallerH1, H2 } from "../Heading";
-import { motion } from "framer-motion";
+import CardComponent from "../testamonial-card";
 
 interface CardData {
   rating: number;

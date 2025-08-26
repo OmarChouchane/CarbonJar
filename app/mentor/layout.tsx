@@ -1,11 +1,15 @@
 import type { ReactNode } from "react";
-import { redirect } from "next/navigation";
+
 import { auth } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
+
+import Footer from "@/components/footer";
+import Navigation from "@/components/navigation";
 import { getDb } from "@/lib/db/drizzle";
 import { authUsers } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import Navigation from "@/components/navigation";
-import Footer from "@/components/footer";
+
+
 
 export const metadata = {
   title: "Mentor Dashboard",

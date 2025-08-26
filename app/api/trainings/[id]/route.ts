@@ -1,20 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Client } from "pg";
-import * as schema from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { Client } from 'pg';
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+import * as schema from '@/lib/db/schema';
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!UUID_RE.test(id)) {
-    return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid course id' }, { status: 400 });
   }
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   await client.connect();
@@ -26,23 +24,19 @@ export async function GET(
       .where(eq(schema.courses.courseId, id))
       .limit(1);
     const row = rows[0];
-    if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 });
     return NextResponse.json(row);
   } finally {
     await client.end();
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { userId: clerkId } = await auth();
-  if (!clerkId)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { id } = await params;
   if (!UUID_RE.test(id)) {
-    return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid course id' }, { status: 400 });
   }
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   await client.connect();
@@ -55,36 +49,40 @@ export async function PUT(
       .where(eq(schema.authUsers.clerkId, clerkId))
       .limit(1);
     const role = me[0]?.role;
-    if (role !== "trainer" && role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (role !== 'trainer' && role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-    const body = await req.json();
+    const bodyUnknown = (await req.json()) as unknown;
+    const body = bodyUnknown as Record<string, unknown>;
     const update: Partial<typeof schema.courses.$inferInsert> = {};
-    if (typeof body.title === "string") update.title = body.title;
-    if (typeof body.description === "string" || body.description === null)
+    if (typeof body.title === 'string') update.title = body.title;
+    if (typeof body.description === 'string' || body.description === null)
       update.description = body.description;
-    if (typeof body.duration === "string" || body.duration === null)
+    if (typeof body.duration === 'string' || body.duration === null)
       update.duration = body.duration;
-    if (typeof body.price === "string" || body.price === null)
-      update.price = body.price;
-    if (typeof body.whyThisCourse === "string" || body.whyThisCourse === null)
+    if (typeof body.price === 'string' || body.price === null) update.price = body.price;
+    if (typeof body.whyThisCourse === 'string' || body.whyThisCourse === null)
       update.whyThisCourse = body.whyThisCourse;
-    if (["beginner", "intermediate", "expert"].includes(body.level))
-      update.level = body.level;
+    if (
+      typeof body.level === 'string' &&
+      ['beginner', 'intermediate', 'expert'].includes(body.level)
+    )
+      update.level = body.level as 'beginner' | 'intermediate' | 'expert';
     // Only admins can change status; mentors must remain Draft until approved
     if (
-      role === "admin" &&
-      ["Draft", "Published", "Archived"].includes(body.status)
+      role === 'admin' &&
+      typeof body.status === 'string' &&
+      ['Draft', 'Published', 'Archived'].includes(body.status)
     )
-      update.status = body.status;
-    if (typeof body.carbonAccountingFocus === "boolean")
+      update.status = body.status as 'Draft' | 'Published' | 'Archived';
+    if (typeof body.carbonAccountingFocus === 'boolean')
       update.carbonAccountingFocus = body.carbonAccountingFocus;
-    if (typeof body.carbonTopicId === "string" || body.carbonTopicId === null)
+    if (typeof body.carbonTopicId === 'string' || body.carbonTopicId === null)
       update.carbonTopicId = body.carbonTopicId;
     update.lastUpdated = new Date();
 
     if (Object.keys(update).length === 0) {
-      return NextResponse.json({ error: "No valid fields" }, { status: 400 });
+      return NextResponse.json({ error: 'No valid fields' }, { status: 400 });
     }
 
     const rows = await db
@@ -93,23 +91,19 @@ export async function PUT(
       .where(eq(schema.courses.courseId, id))
       .returning();
     const row = rows[0];
-    if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 });
     return NextResponse.json(row);
   } finally {
     await client.end();
   }
 }
 
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { userId: clerkId } = await auth();
-  if (!clerkId)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!clerkId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { id } = await params;
   if (!UUID_RE.test(id)) {
-    return NextResponse.json({ error: "Invalid course id" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid course id' }, { status: 400 });
   }
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   await client.connect();
@@ -122,13 +116,10 @@ export async function DELETE(
       .where(eq(schema.authUsers.clerkId, clerkId))
       .limit(1);
     const role = me[0]?.role;
-    if (role !== "trainer" && role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (role !== 'trainer' && role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-    const rows = await db
-      .delete(schema.courses)
-      .where(eq(schema.courses.courseId, id))
-      .returning();
+    const rows = await db.delete(schema.courses).where(eq(schema.courses.courseId, id)).returning();
     return NextResponse.json(rows[0] ?? null);
   } finally {
     await client.end();

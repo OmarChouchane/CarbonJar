@@ -1,6 +1,8 @@
 import React from "react";
-import { H2, H2Bold, SmallerH1 } from "../Heading";
+
 import { motion } from "framer-motion";
+
+import { H2, H2Bold, SmallerH1 } from "../Heading";
 
 interface TextCardProps {
   texts: { title: string; text: string }[];

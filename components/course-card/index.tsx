@@ -1,13 +1,15 @@
 "use client";
 
 import React from "react";
+
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { FaCheck } from "react-icons/fa";
 import { MdArrowForwardIos } from "react-icons/md";
+
+import ContentCard from "../content-card";
 import { H1Inter, H2, H3 } from "../Heading";
 import SmallerBox from "../smallbox";
-import ContentCard from "../content-card";
-import Image from "next/image";
 
 interface CourseCardProps {
   index: number;

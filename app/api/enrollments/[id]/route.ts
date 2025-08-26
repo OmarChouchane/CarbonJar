@@ -1,24 +1,27 @@
-import { NextRequest, NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Client } from "pg";
-import * as schema from "../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { Client } from 'pg';
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+import * as schema from '../../../../lib/db/schema';
+
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
     const { id } = await params;
-    const data = await request.json();
+    const dataUnknown = (await request.json()) as unknown;
+    type EnrollmentUpdate = Partial<typeof schema.enrollments.$inferInsert>;
+    const data = dataUnknown as EnrollmentUpdate & {
+      enrollmentDate?: string | Date | null;
+    };
 
     // DB role check
     const me = await db
@@ -27,15 +30,23 @@ export async function PUT(
       .where(eq(schema.authUsers.clerkId, userId))
       .limit(1);
     const role = me[0]?.role;
-    if (role !== "trainer" && role !== "admin") {
-      return new NextResponse("Forbidden", { status: 403 });
+    if (role !== 'trainer' && role !== 'admin') {
+      return new NextResponse('Forbidden', { status: 403 });
     }
 
     await client.connect();
     const updated = await db
       .update(schema.enrollments)
       .set({
-        ...data,
+        ...(typeof data.userId === 'string' ? { userId: data.userId } : {}),
+        ...(typeof data.courseId === 'string' ? { courseId: data.courseId } : {}),
+        ...(typeof data.completionStatus === 'string'
+          ? { completionStatus: data.completionStatus }
+          : {}),
+        ...(typeof data.progressPercentage === 'number' && Number.isFinite(data.progressPercentage)
+          ? { progressPercentage: data.progressPercentage }
+          : {}),
+        ...(data.enrollmentDate ? { enrollmentDate: new Date(String(data.enrollmentDate)) } : {}),
         updatedAt: new Date(),
       })
       .where(eq(schema.enrollments.enrollmentId, id))
@@ -44,19 +55,19 @@ export async function PUT(
 
     return NextResponse.json(updated[0] || null);
   } catch (error) {
-    console.error("Failed to update enrollment:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Failed to update enrollment:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
@@ -70,8 +81,8 @@ export async function DELETE(
       .where(eq(schema.authUsers.clerkId, userId))
       .limit(1);
     const role = me[0]?.role;
-    if (role !== "trainer" && role !== "admin") {
-      return new NextResponse("Forbidden", { status: 403 });
+    if (role !== 'trainer' && role !== 'admin') {
+      return new NextResponse('Forbidden', { status: 403 });
     }
 
     await client.connect();
@@ -83,7 +94,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, deleted: deleted[0] });
   } catch (error) {
-    console.error("Failed to delete enrollment:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Failed to delete enrollment:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

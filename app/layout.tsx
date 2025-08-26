@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
+
 import ClientLayout from "./ClientLayout";
 
 const inter = Inter({

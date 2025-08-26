@@ -1,20 +1,22 @@
-import { NextRequest, NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Client } from "pg";
-import * as schema from "../../../lib/db/schema";
-import { eq, desc } from "drizzle-orm";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from '@clerk/nextjs/server';
+import { eq, desc } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { Client } from 'pg';
+
+import * as schema from '../../../lib/db/schema';
 
 export const GET = async (req: NextRequest) => {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const { searchParams } = new URL(req.url);
-    const search = searchParams.get("search") || "";
-    const status = searchParams.get("status") || "all";
+    const search = searchParams.get('search') || '';
+    const status = searchParams.get('status') || 'all';
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
@@ -37,41 +39,33 @@ export const GET = async (req: NextRequest) => {
         courseTitle: schema.courses.title,
       })
       .from(schema.enrollments)
-      .leftJoin(
-        schema.authUsers,
-        eq(schema.enrollments.userId, schema.authUsers.userId)
-      )
-      .leftJoin(
-        schema.courses,
-        eq(schema.enrollments.courseId, schema.courses.courseId)
-      )
+      .leftJoin(schema.authUsers, eq(schema.enrollments.userId, schema.authUsers.userId))
+      .leftJoin(schema.courses, eq(schema.enrollments.courseId, schema.courses.courseId))
       .orderBy(desc(schema.enrollments.enrollmentDate));
 
     await client.end();
 
     // Filter results based on search and status
     const filteredEnrollments = enrollments.filter((enrollment) => {
-      const fullName =
-        `${enrollment.userName} ${enrollment.userLastName}`.toLowerCase();
-      const courseTitle = enrollment.courseTitle?.toLowerCase() || "";
-      const email = enrollment.userEmail?.toLowerCase() || "";
+      const fullName = `${enrollment.userName} ${enrollment.userLastName}`.toLowerCase();
+      const courseTitle = enrollment.courseTitle?.toLowerCase() || '';
+      const email = enrollment.userEmail?.toLowerCase() || '';
 
       const matchesSearch =
-        search === "" ||
+        search === '' ||
         fullName.includes(search.toLowerCase()) ||
         courseTitle.includes(search.toLowerCase()) ||
         email.includes(search.toLowerCase());
 
-      const matchesStatus =
-        status === "all" || enrollment.completionStatus === status;
+      const matchesStatus = status === 'all' || enrollment.completionStatus === status;
 
       return matchesSearch && matchesStatus;
     });
 
     return NextResponse.json(filteredEnrollments);
   } catch (error) {
-    console.error("Failed to fetch enrollments:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Failed to fetch enrollments:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 };
 
@@ -79,22 +73,23 @@ export const POST = async (req: NextRequest) => {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
 
     // Safely parse JSON body
-    let data: any;
+    let dataUnknown: unknown;
     try {
-      data = await req.json();
+      dataUnknown = await req.json();
     } catch {
-      return NextResponse.json(
-        { message: "Invalid JSON body" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: 'Invalid JSON body' }, { status: 400 });
     }
+    type EnrollmentInsert = typeof schema.enrollments.$inferInsert;
+    const data = dataUnknown as Partial<EnrollmentInsert> & {
+      enrollmentDate?: string | Date | null;
+    };
 
     await client.connect();
 
@@ -107,47 +102,40 @@ export const POST = async (req: NextRequest) => {
     const role = me[0]?.role;
     const meUserId = me[0]?.userId as string | undefined;
     // Allow self-enrollment; otherwise require trainer/admin
-    const isSelf = meUserId && String(data?.userId) === meUserId;
-    if (!isSelf && role !== "trainer" && role !== "admin") {
+    const isSelf = meUserId && typeof data?.userId === 'string' && data.userId === meUserId;
+    if (!isSelf && role !== 'trainer' && role !== 'admin') {
       await client.end();
-      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+      return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
     }
 
     // Validate required fields
-    if (!data?.userId || !data?.courseId) {
+    if (typeof data?.userId !== 'string' || typeof data?.courseId !== 'string') {
       await client.end();
       return NextResponse.json(
-        { message: "Missing required fields: userId and courseId" },
-        { status: 400 }
+        { message: 'Missing required fields: userId and courseId' },
+        { status: 400 },
       );
     }
 
     // Prepare the enrollment data with proper timestamp handling
-    const enrollmentData = {
-      userId: String(data.userId),
-      courseId: String(data.courseId),
-      completionStatus: data.completionStatus || "in_progress",
+    const enrollmentData: EnrollmentInsert = {
+      userId: data.userId,
+      courseId: data.courseId,
+      completionStatus:
+        typeof data.completionStatus === 'string' ? data.completionStatus : 'in_progress',
       progressPercentage:
-        typeof data.progressPercentage === "number"
+        typeof data.progressPercentage === 'number' && Number.isFinite(data.progressPercentage)
           ? data.progressPercentage
           : 0,
-      ...(data.enrollmentDate && {
-        enrollmentDate: new Date(data.enrollmentDate),
-      }),
+      ...(data.enrollmentDate ? { enrollmentDate: new Date(String(data.enrollmentDate)) } : {}),
     };
 
-    const inserted = await db
-      .insert(schema.enrollments)
-      .values(enrollmentData)
-      .returning();
+    const inserted = await db.insert(schema.enrollments).values(enrollmentData).returning();
     await client.end();
 
     return NextResponse.json(inserted[0]);
   } catch (error) {
-    console.error("Failed to create enrollment:", error);
-    return NextResponse.json(
-      { message: "Internal Server Error" },
-      { status: 500 }
-    );
+    console.error('Failed to create enrollment:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 };

@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Client } from "pg";
-import * as schema from "../../../lib/db/schema";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from '@clerk/nextjs/server';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { Client } from 'pg';
+
+import * as schema from '../../../lib/db/schema';
 
 export const GET = async () => {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
@@ -17,31 +19,30 @@ export const POST = async (req: NextRequest) => {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
 
-  const data = await req.json();
+  const dataUnknown = (await req.json()) as unknown;
+  type BlogStatus = (typeof schema.blogStatus.enumValues)[number];
+  type BlogInsert = typeof schema.blogposts.$inferInsert;
+  const data = dataUnknown as Partial<BlogInsert> & { status?: BlogStatus };
 
   // Get current authenticated user (author)
   const { userId } = await auth();
   if (!userId) {
-    return new NextResponse("Unauthorized", { status: 401 });
+    return new NextResponse('Unauthorized', { status: 401 });
   }
 
   // Normalize payload: ensure Date objects for timestamp columns
-  const isPublished = data?.status === "published";
-  const payload = {
-    title: data?.title ?? "",
-    slug: data?.slug ?? "",
-    content: data?.content ?? null,
-    status: isPublished ? ("published" as const) : ("draft" as const),
+  const isPublished: boolean = data?.status === 'published';
+  const payload: BlogInsert = {
+    title: typeof data?.title === 'string' ? data.title : '',
+    slug: typeof data?.slug === 'string' ? data.slug : '',
+    content: typeof data?.content === 'string' ? data.content : null,
+    status: isPublished ? 'published' : 'draft',
     publishDate: isPublished ? new Date() : null,
     authorId: userId,
-    // createdAt/updatedAt have DB defaults; don't set them here
   };
 
   await client.connect();
-  const inserted = await db
-    .insert(schema.blogposts)
-    .values(payload)
-    .returning();
+  const inserted = await db.insert(schema.blogposts).values(payload).returning();
   await client.end();
   return NextResponse.json(inserted[0]);
 };

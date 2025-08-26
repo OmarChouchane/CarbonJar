@@ -1,10 +1,12 @@
 "use client";
 
 import React from "react";
+
 import Image from "next/image";
-import { SmallerH1, H2 } from "../Heading";
-import Button from "../button";
 import { IoIosArrowForward } from "react-icons/io";
+
+import Button from "../button";
+import { SmallerH1, H2 } from "../Heading";
 
 interface BigCardProps {
   title: string;

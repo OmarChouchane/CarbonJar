@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import type { MouseEventHandler } from "react";
+
+import { motion } from "framer-motion";
 
 interface IButton {
   primary?: boolean;

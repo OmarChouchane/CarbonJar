@@ -1,12 +1,12 @@
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import CarbonManagement from "@/components/carbon-management";
-import ClimateActionSection from "@/components/climate-action";
 import CardsSection from "@/components/cards-section";
-import CardSection from "@/components/testamonials";
+import ClimateActionSection from "@/components/climate-action";
 import FAQSection from "@/components/faq-section";
-import ScrollProgress from "@/components/scroll";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
 import Page from "@/components/page";
+import ScrollProgress from "@/components/scroll";
+import CardSection from "@/components/testamonials";
 
 
 export default function HomePage() {

@@ -1,13 +1,14 @@
-import { getDb } from "@/lib/db/drizzle";
-import { courses, enrollments, trainingSessions } from "@/lib/db/schema";
-import { count, eq, inArray } from "drizzle-orm";
-import { auth } from "@clerk/nextjs/server";
-import { authUsers } from "@/lib/db/schema";
-import { H1, H2 } from "@/components/Heading";
-import SectionWrapper from "@/components/section-wrapper";
-import StatsCard from "@/components/stats-card";
-import Button from "@/components/button";
-import { GraduationCap, CalendarDays, Users } from "lucide-react";
+import { auth } from '@clerk/nextjs/server';
+import { count, eq, inArray } from 'drizzle-orm';
+import { GraduationCap, CalendarDays, Users } from 'lucide-react';
+import Link from 'next/link';
+
+import Button from '@/components/button';
+import { H1, H2 } from '@/components/Heading';
+import SectionWrapper from '@/components/section-wrapper';
+import StatsCard from '@/components/stats-card';
+import { getDb } from '@/lib/db/drizzle';
+import { authUsers, enrollments, trainingSessions } from '@/lib/db/schema';
 
 export default async function MentorHome() {
   const { userId: clerkId } = await auth();
@@ -17,7 +18,7 @@ export default async function MentorHome() {
   const me = await db
     .select({ userId: authUsers.userId })
     .from(authUsers)
-    .where(eq(authUsers.clerkId, clerkId!))
+    .where(eq(authUsers.clerkId, clerkId ?? ''))
     .limit(1);
   const myId = me[0]?.userId;
 
@@ -34,7 +35,7 @@ export default async function MentorHome() {
   const [sessionsCountRow] = await db
     .select({ c: count() })
     .from(trainingSessions)
-    .where(eq(trainingSessions.instructorId, myId!));
+    .where(eq(trainingSessions.instructorId, myId ?? ''));
 
   const enrollmentsRows = myCourseIds.length
     ? await db
@@ -45,34 +46,34 @@ export default async function MentorHome() {
   const enrollmentsCount = enrollmentsRows.length;
 
   return (
-    <div className="lg:mx-32 md:mx-12 mx-4 my-8 space-y-8">
+    <div className="mx-4 my-8 space-y-8 md:mx-12 lg:mx-32">
       {/* Hero */}
       <SectionWrapper variant="green" className="py-10">
-        <div className="max-w-3xl mx-auto">
+        <div className="mx-auto max-w-3xl">
           <H1 className="text-white">Mentor Dashboard</H1>
-          <H2 className="text-white/90 mt-3">
+          <H2 className="mt-3 text-white/90">
             Manage your trainings, sessions, and learners—all in one place.
           </H2>
           <div className="mt-6 flex items-center justify-center gap-3">
-            <a href="/mentor/trainings">
+            <Link href="/mentor/trainings">
               <Button
                 primary
-                className="bg-green-700 hover:bg-green-800 text-white font-semibold px-6 py-3 rounded-lg shadow cursor-pointer"
+                className="cursor-pointer rounded-lg bg-green-700 px-6 py-3 font-semibold text-white shadow hover:bg-green-800"
               >
                 Manage Trainings
               </Button>
-            </a>
-            <a href="/mentor/trainings/new">
+            </Link>
+            <Link href="/mentor/trainings/new">
               <Button
                 secondary
-                className="bg-white text-green-700 border border-green-700 hover:bg-green-50 font-semibold px-6 py-3 rounded-lg shadow cursor-pointer"
+                className="cursor-pointer rounded-lg border border-green-700 bg-white px-6 py-3 font-semibold text-green-700 shadow hover:bg-green-50"
               >
                 Create Training
               </Button>
-            </a>
+            </Link>
           </div>
         </div>
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        <div className="mx-auto mt-8 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3">
           <StatsCard
             title="My Trainings"
             value={trainingsCount}
@@ -100,35 +101,31 @@ export default async function MentorHome() {
         subtitle="Jump into your most common tasks"
         className="bg-white"
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <a href="/mentor/trainings" className="block">
-            <div className="p-5 rounded-xl border hover:shadow-lg transition-shadow bg-gray-50 h-full">
-              <div className="text-green font-semibold mb-1">My Trainings</div>
-              <div className="text-gray-600 font-Inter text-sm">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <Link href="/mentor/trainings" className="block">
+            <div className="h-full rounded-xl border bg-gray-50 p-5 transition-shadow hover:shadow-lg">
+              <div className="text-green mb-1 font-semibold">My Trainings</div>
+              <div className="font-Inter text-sm text-gray-600">
                 View and edit your courses and content modules.
               </div>
             </div>
-          </a>
-          <a href="/mentor/trainings/new" className="block">
-            <div className="p-5 rounded-xl border hover:shadow-lg transition-shadow bg-gray-50 h-full">
-              <div className="text-green font-semibold mb-1">
-                Create Training
-              </div>
-              <div className="text-gray-600 font-Inter text-sm">
+          </Link>
+          <Link href="/mentor/trainings/new" className="block">
+            <div className="h-full rounded-xl border bg-gray-50 p-5 transition-shadow hover:shadow-lg">
+              <div className="text-green mb-1 font-semibold">Create Training</div>
+              <div className="font-Inter text-sm text-gray-600">
                 Start a new course and publish when ready.
               </div>
             </div>
-          </a>
-          <a href="/trainings" className="block">
-            <div className="p-5 rounded-xl border hover:shadow-lg transition-shadow bg-gray-50 h-full">
-              <div className="text-green font-semibold mb-1">
-                Browse Catalog
-              </div>
-              <div className="text-gray-600 font-Inter text-sm">
+          </Link>
+          <Link href="/trainings" className="block">
+            <div className="h-full rounded-xl border bg-gray-50 p-5 transition-shadow hover:shadow-lg">
+              <div className="text-green mb-1 font-semibold">Browse Catalog</div>
+              <div className="font-Inter text-sm text-gray-600">
                 Explore published trainings on CarbonJar.
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </SectionWrapper>
     </div>

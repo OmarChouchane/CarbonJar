@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+
 import Image from "next/image";
+
 import { H2, H2Bold } from "../Heading";
 
 interface BigCardProps {

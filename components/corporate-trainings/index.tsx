@@ -1,12 +1,17 @@
 "use client";
 
 import React from "react";
-import BigCard2 from "../big-card2";
+
 import { motion } from "framer-motion";
-import { SmallerH1, H2 } from "../Heading";
-import CourseCard from "../course-card";
-import Button from "@/components/button";
 import { IoIosArrowForward } from "react-icons/io";
+
+import Button from "@/components/button";
+
+import BigCard2 from "../big-card2";
+import CourseCard from "../course-card";
+import { SmallerH1, H2 } from "../Heading";
+
+
 
 const CorporateTrainings: React.FC = () => {
   interface CourseCardType {

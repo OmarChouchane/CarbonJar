@@ -1,9 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Client } from "pg";
-import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
-import * as schema from "@/lib/db/schema";
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { Client } from 'pg';
+
+import * as schema from '@/lib/db/schema';
 
 const getHandler = async () => {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
@@ -17,7 +19,7 @@ export const GET = getHandler;
 
 const postHandler = async (req: NextRequest) => {
   const { userId: clerkId } = await auth();
-  if (!clerkId) return new NextResponse("Unauthorized", { status: 401 });
+  if (!clerkId) return new NextResponse('Unauthorized', { status: 401 });
 
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   await client.connect();
@@ -31,26 +33,37 @@ const postHandler = async (req: NextRequest) => {
     .limit(1);
   const role = me[0]?.role;
   const meUserId = me[0]?.userId as string | undefined;
-  if (role !== "trainer" && role !== "admin") {
+  if (role !== 'trainer' && role !== 'admin') {
     await client.end();
-    return new NextResponse("Forbidden", { status: 403 });
+    return new NextResponse('Forbidden', { status: 403 });
   }
 
-  const data = await req.json();
+  const dataUnknown = (await req.json()) as unknown;
+  type TrainingCreate = {
+    title: string;
+    description?: string | null;
+    level: 'beginner' | 'intermediate' | 'expert';
+    status?: 'Draft' | 'Published' | 'Archived';
+    carbonTopicId?: string | null;
+    carbonAccountingFocus?: boolean;
+    duration?: string | null;
+    price?: string | null;
+    whyThisCourse?: string | null;
+  };
+  const data = dataUnknown as TrainingCreate;
   // Whitelist fields aligned with schema
   // Determine status: trainers always create Draft; admins may set explicitly
   const requestedStatus = data?.status;
   const normalizedStatus =
-    role === "admin" &&
-    ["Draft", "Published", "Archived"].includes(requestedStatus)
+    role === 'admin' && ['Draft', 'Published', 'Archived'].includes(requestedStatus ?? '')
       ? requestedStatus
-      : "Draft";
+      : 'Draft';
 
   const values = {
-    title: String(data.title || ""),
+    title: String(data.title || ''),
     description: data.description ?? null,
-    level: data.level, // "beginner" | "intermediate" | "expert"
-    status: normalizedStatus, // enforce Draft for mentors
+    level: data.level,
+    status: normalizedStatus,
     carbonTopicId: data.carbonTopicId ?? null,
     carbonAccountingFocus: Boolean(data.carbonAccountingFocus),
     duration: data.duration ?? null,
@@ -78,7 +91,7 @@ const postHandler = async (req: NextRequest) => {
     }
   } catch (e) {
     // non-fatal
-    console.error("Failed to create default training session:", e);
+    console.error('Failed to create default training session:', e);
   }
 
   await client.end();

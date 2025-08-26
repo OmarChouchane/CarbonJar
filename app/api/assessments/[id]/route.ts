@@ -1,19 +1,34 @@
-import { NextRequest, NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Client } from "pg";
-import * as schema from "../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { Client } from 'pg';
 
-export async function GET(request: NextRequest, context: { params: any }) {
+import * as schema from '../../../../lib/db/schema';
+
+function isPromise<T>(v: unknown): v is Promise<T> {
+  return typeof v === 'object' && v !== null && 'then' in v;
+}
+
+function resolveParams(
+  p: { id: string } | Promise<{ id: string }>,
+): Promise<{ id: string }> | { id: string } {
+  return isPromise<{ id: string }>(p) ? p : p;
+}
+
+export async function GET(
+  _request: NextRequest,
+  context: { params: { id: string } | Promise<{ id: string }> },
+) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
     const p = context?.params;
-    const resolved = typeof p?.then === "function" ? await p : p;
-    const { id } = (resolved || {}) as { id: string };
+    const resolved = await resolveParams(p);
+    const { id } = resolved || { id: '' };
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
 
@@ -26,21 +41,26 @@ export async function GET(request: NextRequest, context: { params: any }) {
 
     return NextResponse.json(assessment[0] || null);
   } catch (error) {
-    console.error("Failed to fetch assessment:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Failed to fetch assessment:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
 
-export async function PUT(request: NextRequest, context: { params: any }) {
+export async function PUT(
+  request: NextRequest,
+  context: { params: { id: string } | Promise<{ id: string }> },
+) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
     const p = context?.params;
-    const resolved = typeof p?.then === "function" ? await p : p;
-    const { id } = (resolved || {}) as { id: string };
-    const data = await request.json();
+    const resolved = await resolveParams(p);
+    const { id } = resolved || { id: '' };
+    const dataUnknown = (await request.json()) as unknown;
+    type AssessmentUpdate = Partial<typeof schema.assessments.$inferInsert>;
+    const data = dataUnknown as AssessmentUpdate;
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
@@ -49,10 +69,21 @@ export async function PUT(request: NextRequest, context: { params: any }) {
     const updated = await db
       .update(schema.assessments)
       .set({
-        assessmentType: data.assessmentType,
-        maxScore: data.maxScore,
-        passingScore: data.passingScore,
-        timeLimit: data.timeLimit,
+        ...(typeof data.assessmentType === 'string' &&
+        schema.assessmentType.enumValues.includes(data.assessmentType)
+          ? {
+              assessmentType: data.assessmentType,
+            }
+          : {}),
+        ...(typeof data.maxScore === 'number' && Number.isFinite(data.maxScore)
+          ? { maxScore: data.maxScore }
+          : {}),
+        ...(typeof data.passingScore === 'number' && Number.isFinite(data.passingScore)
+          ? { passingScore: data.passingScore }
+          : {}),
+        ...(typeof data.timeLimit === 'number' && Number.isFinite(data.timeLimit)
+          ? { timeLimit: data.timeLimit }
+          : {}),
         updatedAt: new Date(),
       })
       .where(eq(schema.assessments.assessmentId, id))
@@ -61,20 +92,23 @@ export async function PUT(request: NextRequest, context: { params: any }) {
 
     return NextResponse.json(updated[0] || null);
   } catch (error) {
-    console.error("Failed to update assessment:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Failed to update assessment:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
 
-export async function DELETE(request: NextRequest, context: { params: any }) {
+export async function DELETE(
+  _request: NextRequest,
+  context: { params: { id: string } | Promise<{ id: string }> },
+) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
     const p = context?.params;
-    const resolved = typeof p?.then === "function" ? await p : p;
-    const { id } = (resolved || {}) as { id: string };
+    const resolved = await resolveParams(p);
+    const { id } = resolved || { id: '' };
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
@@ -88,7 +122,7 @@ export async function DELETE(request: NextRequest, context: { params: any }) {
 
     return NextResponse.json(deleted[0] || null);
   } catch (error) {
-    console.error("Failed to delete assessment:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Failed to delete assessment:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

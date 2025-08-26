@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
-import { getDb } from "@/lib/db/drizzle";
-import * as schema from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import Navigation from "@/components/navigation";
-import Footer from "@/components/footer";
-import { headers } from "next/headers";
+import { eq } from 'drizzle-orm';
+import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+
+import Footer from '@/components/footer';
+import Navigation from '@/components/navigation';
+import { getDb } from '@/lib/db/drizzle';
+import * as schema from '@/lib/db/schema';
 
 type Props = {
   params: { slug: string };
@@ -22,17 +23,16 @@ async function getCertificateBySlug(slug: string) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cert = await getCertificateBySlug(params.slug);
-  const title = cert ? `${cert.title} • Certificate` : "Certificate";
-  const description = cert?.description || "Verified training certificate.";
+  const title = cert ? `${cert.title} • Certificate` : 'Certificate';
+  const description = cert?.description || 'Verified training certificate.';
   const origin = (async () => {
-    if (process.env.NEXT_PUBLIC_SITE_URL)
-      return process.env.NEXT_PUBLIC_SITE_URL;
+    if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
     const h = await headers();
-    const host = h.get("x-forwarded-host") ?? h.get("host");
-    const proto = h.get("x-forwarded-proto") ?? "http";
-    return host ? `${proto}://${host}` : "";
+    const host = h.get('x-forwarded-host') ?? h.get('host');
+    const proto = h.get('x-forwarded-proto') ?? 'http';
+    return host ? `${proto}://${host}` : '';
   })();
-  const resolved = typeof origin === "string" ? origin : await origin;
+  const resolved = typeof origin === 'string' ? origin : await origin;
   const pageUrl = `${resolved}/certificates/${params.slug}`;
 
   // Use an existing PNG so LinkedIn/Twitter render previews reliably
@@ -48,21 +48,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: pageUrl,
-      type: "article",
-      siteName: "Carbon Jar",
+      type: 'article',
+      siteName: 'Carbon Jar',
       images: [
         {
           url: ogPrimary,
           width: 1200,
           height: 630,
-          type: "image/png",
-          alt: cert?.title || "Certificate",
+          type: 'image/png',
+          alt: cert?.title || 'Certificate',
         },
-        { url: ogFallback, width: 512, height: 512, alt: "Carbon Jar" },
+        { url: ogFallback, width: 512, height: 512, alt: 'Carbon Jar' },
       ],
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title,
       description,
       images: [ogPrimary],
@@ -74,46 +74,39 @@ export default async function CertificatePublicPage({ params }: Props) {
   const cert = await getCertificateBySlug(params.slug);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-gray-50 to-white">
       <Navigation />
       <main className="flex-1 pt-20">
         <div className="container mx-auto px-4 pb-16">
           {!cert ? (
-            <div className="max-w-3xl mx-auto text-center py-24">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Certificate not found
-              </h1>
-              <p className="text-gray-600">
-                This certificate may have been moved or revoked.
-              </p>
+            <div className="mx-auto max-w-3xl py-24 text-center">
+              <h1 className="mb-2 text-3xl font-bold text-gray-900">Certificate not found</h1>
+              <p className="text-gray-600">This certificate may have been moved or revoked.</p>
             </div>
           ) : (
-            <div className="max-w-5xl mx-auto">
+            <div className="mx-auto max-w-5xl">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {cert.title}
-                </h1>
+                <h1 className="mb-2 text-3xl font-bold text-gray-900">{cert.title}</h1>
                 {cert.description ? (
-                  <p className="text-gray-600 max-w-3xl">{cert.description}</p>
+                  <p className="max-w-3xl text-gray-600">{cert.description}</p>
                 ) : null}
                 <div className="mt-3 text-sm text-gray-500">
-                  Issued on{" "}
-                  {new Date(cert.issueDate as any).toLocaleDateString()} by{" "}
+                  Issued on {new Date(String(cert.issueDate)).toLocaleDateString()} by{' '}
                   {cert.issuerName}
                 </div>
               </div>
 
               {/* PDF Viewer */}
               {cert.pdfUrl ? (
-                <div className="w-full h-[75vh] rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white">
+                <div className="h-[75vh] w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
                   <iframe
                     src={`${cert.pdfUrl}#toolbar=1&navpanes=0&scrollbar=1`}
-                    className="w-full h-full border-0"
+                    className="h-full w-full border-0"
                     title={cert.title}
                   />
                 </div>
               ) : (
-                <div className="p-8 bg-white rounded-xl border border-gray-200 text-gray-500">
+                <div className="rounded-xl border border-gray-200 bg-white p-8 text-gray-500">
                   No certificate file available.
                 </div>
               )}

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { type HTMLAttributes } from "react";
 
-interface HeadingProps extends React.HTMLAttributes<HTMLElement> {
+interface HeadingProps extends HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
   className?: string;
 }

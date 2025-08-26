@@ -1,6 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-import { getDb } from "@/lib/db/drizzle";
+import { auth } from '@clerk/nextjs/server';
+import { sql, count, desc } from 'drizzle-orm';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
+import { getDb } from '@/lib/db/drizzle';
 import {
   authUsers,
   courses,
@@ -10,15 +13,14 @@ import {
   trainingSessions,
   modules,
   blogposts,
-} from "@/lib/db/schema";
-import { sql, count, avg, desc } from "drizzle-orm";
+} from '@/lib/db/schema';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Check authentication
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const db = getDb();
@@ -64,10 +66,7 @@ export async function GET(request: NextRequest) {
       })
       .from(courses)
       .leftJoin(enrollments, sql`${enrollments.courseId} = ${courses.courseId}`)
-      .leftJoin(
-        certificates,
-        sql`${certificates.courseId} = ${courses.courseId}`
-      )
+      .leftJoin(certificates, sql`${certificates.courseId} = ${courses.courseId}`)
       .groupBy(courses.courseId, courses.title)
       .limit(5);
 
@@ -84,6 +83,20 @@ export async function GET(request: NextRequest) {
       .orderBy(desc(trainingSessions.startTime))
       .limit(5);
 
+    type TrendRow = { date: string; enrollments: number };
+    type RateRow = {
+      courseName: string | null;
+      totalEnrollments: number;
+      totalCertificates: number;
+    };
+    type SessionRow = {
+      sessionId: string;
+      courseId: string;
+      startTime: Date;
+      endTime: Date;
+      maxParticipants: number | null;
+    };
+
     const analytics = {
       overview: {
         totalUsers: totalUsers[0]?.count || 0,
@@ -95,20 +108,20 @@ export async function GET(request: NextRequest) {
         totalModules: totalModules[0]?.count || 0,
         totalBlogs: totalBlogs[0]?.count || 0,
       },
-      enrollmentTrends: enrollmentTrends.map((item: any) => ({
+      enrollmentTrends: enrollmentTrends.map((item: TrendRow) => ({
         date: item.date,
-        enrollments: item.enrollments,
+        enrollments: Number(item.enrollments) || 0,
       })),
-      certificateRates: certificateRates.map((item: any) => ({
-        courseName: item.courseName,
+      certificateRates: certificateRates.map((item: RateRow) => ({
+        courseName: item.courseName ?? '',
         completionRate:
-          item.totalEnrollments > 0
-            ? Math.round((item.totalCertificates / item.totalEnrollments) * 100)
+          Number(item.totalEnrollments) > 0
+            ? Math.round((Number(item.totalCertificates) / Number(item.totalEnrollments)) * 100)
             : 0,
-        totalEnrollments: item.totalEnrollments,
-        totalCertificates: item.totalCertificates,
+        totalEnrollments: Number(item.totalEnrollments) || 0,
+        totalCertificates: Number(item.totalCertificates) || 0,
       })),
-      recentTrainingSessions: recentTrainingSessions.map((item: any) => ({
+      recentTrainingSessions: recentTrainingSessions.map((item: SessionRow) => ({
         sessionId: item.sessionId,
         courseId: item.courseId,
         startTime: item.startTime,
@@ -119,7 +132,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(analytics);
   } catch (error) {
-    console.error("Error fetching learning analytics:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Error fetching learning analytics:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

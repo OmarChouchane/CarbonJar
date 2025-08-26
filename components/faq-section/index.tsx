@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+
 import { motion } from "framer-motion";
+
 import { SmallerH1, H2 } from "../Heading";
 import QuestionCard from "../question-card";
 

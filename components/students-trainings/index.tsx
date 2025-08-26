@@ -1,9 +1,12 @@
 import React from "react";
+
 import { motion } from "framer-motion";
-import { SmallerH1, H2 } from "../Heading";
-import CourseCard from "../course-card-student";
-import Button from "../button";
 import { IoIosArrowForward } from "react-icons/io";
+
+import Button from "../button";
+import CourseCard from "../course-card-student";
+import { SmallerH1, H2 } from "../Heading";
+
 
 type NestedList = (string | NestedList)[];
 

@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
+
+import { motion } from "framer-motion";
+
 import BigCard1 from "../big-card1";
 import BigCard2 from "../big-card2";
-import { motion } from "framer-motion";
 
 const CardsSection: React.FC = () => {
   const card1 = {

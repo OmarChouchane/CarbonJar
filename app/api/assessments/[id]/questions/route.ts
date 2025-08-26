@@ -1,20 +1,34 @@
-import { NextRequest, NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Client } from "pg";
-import * as schema from "../../../../../lib/db/schema";
-import { eq, asc } from "drizzle-orm";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from '@clerk/nextjs/server';
+import { eq, asc } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { Client } from 'pg';
 
-export const GET = async (request: NextRequest, context: { params: any }) => {
+import * as schema from '../../../../../lib/db/schema';
+
+function isPromise<T>(v: unknown): v is Promise<T> {
+  return typeof v === 'object' && v !== null && 'then' in (v as Record<string, unknown>);
+}
+function resolveParams(
+  p: { id: string } | Promise<{ id: string }>,
+): Promise<{ id: string }> | { id: string } {
+  return isPromise<{ id: string }>(p) ? p : (p as { id: string });
+}
+
+export const GET = async (
+  request: NextRequest,
+  context: { params: { id: string } | Promise<{ id: string }> },
+) => {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const p = context?.params;
-    const resolved = typeof p?.then === "function" ? await p : p;
-    const { id } = (resolved || {}) as { id: string };
+    const p = context?.params as { id: string } | Promise<{ id: string }>;
+    const resolved = await resolveParams(p);
+    const { id } = resolved || { id: '' };
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
 
@@ -28,46 +42,53 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
 
     return NextResponse.json(questions);
   } catch (error) {
-    console.error("Failed to fetch questions:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Failed to fetch questions:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 };
 
-export const POST = async (request: NextRequest, context: { params: any }) => {
+export const POST = async (
+  request: NextRequest,
+  context: { params: { id: string } | Promise<{ id: string }> },
+) => {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const p = context?.params;
-    const resolved = typeof p?.then === "function" ? await p : p;
-    const { id } = (resolved || {}) as { id: string };
-    const data = await request.json();
+    const p = context?.params as { id: string } | Promise<{ id: string }>;
+    const resolved = await resolveParams(p);
+    const { id } = resolved || { id: '' };
+    const dataUnknown = (await request.json()) as unknown;
+    type QuestionInsert = typeof schema.questions.$inferInsert;
+    const data = dataUnknown as Partial<QuestionInsert> & {
+      options?: unknown;
+    };
 
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
 
     // Prepare question data
-    const questionData = {
+    const questionData: QuestionInsert = {
       assessmentId: id,
-      text: data.text,
-      options: data.options,
-      correctAnswer: data.correctAnswer,
-      explanation: data.explanation,
-      order: data.order || 1,
+      text: typeof data.text === 'string' ? data.text : '',
+      options:
+        Array.isArray(data.options) || typeof data.options === 'object'
+          ? (data.options as QuestionInsert['options'])
+          : null,
+      correctAnswer: typeof data.correctAnswer === 'string' ? data.correctAnswer : null,
+      explanation: typeof data.explanation === 'string' ? data.explanation : null,
+      order: typeof data.order === 'number' && Number.isFinite(data.order) ? data.order : 1,
     };
 
     await client.connect();
-    const inserted = await db
-      .insert(schema.questions)
-      .values(questionData)
-      .returning();
+    const inserted = await db.insert(schema.questions).values(questionData).returning();
     await client.end();
 
     return NextResponse.json(inserted[0]);
   } catch (error) {
-    console.error("Failed to create question:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Failed to create question:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 };

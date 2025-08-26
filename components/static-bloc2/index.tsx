@@ -1,6 +1,8 @@
 import React from "react";
-import { H2, H1 } from "../Heading";
+
 import { motion } from "framer-motion";
+
+import { H2, H1 } from "../Heading";
 
 interface StatisticBlockProps {
   number: string;

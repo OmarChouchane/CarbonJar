@@ -1,11 +1,16 @@
 "use client";
 
 import React from "react";
-import Button from "@/components/button";
-import { IoIosArrowForward } from "react-icons/io";
-import { H1, H2, H3 } from "../Heading";
-import LinkImageGrid from "@/components/LinkImageGrid"; // Updated to correct component
+
 import { motion } from "framer-motion";
+import { IoIosArrowForward } from "react-icons/io";
+
+import Button from "@/components/button";
+import LinkImageGrid from "@/components/LinkImageGrid"; // Updated to correct component
+
+import { H1, H2, H3 } from "../Heading";
+
+
 
 interface Link {
   url: string;

@@ -1,7 +1,10 @@
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import React, { useState } from "react";
-import { Title, H2 } from "../Heading";
+
 import { motion } from "framer-motion";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+
+import { Title, H2 } from "../Heading";
+
 
 interface QuestionCardProps {
   question: string;

@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import Button from "@/components/button";
+import { useEffect, useMemo, useState } from 'react';
+
+import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+
+import Button from '@/components/button';
 
 type EnrollButtonProps = {
   courseId: string;
@@ -25,6 +27,11 @@ export default function EnrollButton({
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [enrollmentId, setEnrollmentId] = useState<string | null>(null);
 
+  type ErrorResponse = { message?: string };
+  function isErrorResponse(x: unknown): x is ErrorResponse {
+    return typeof x === 'object' && x !== null && 'message' in x;
+  }
+
   // Precompute redirect URL for sign-in
   const redirectUrl = useMemo(() => `/trainings/${courseId}`, [courseId]);
 
@@ -37,7 +44,7 @@ export default function EnrollButton({
         if (!user) return;
 
         // Map Clerk user to internal user
-        const usersRes = await fetch(`/api/users`, { cache: "no-store" });
+        const usersRes = await fetch(`/api/users`, { cache: 'no-store' });
         if (!usersRes.ok) return;
         const users = (await usersRes.json()) as Array<{
           userId: string;
@@ -46,7 +53,7 @@ export default function EnrollButton({
         const me = users.find((u) => u.clerkId === user.id);
         if (!me?.userId) return;
 
-        const res = await fetch(`/api/enrollments`, { cache: "no-store" });
+        const res = await fetch(`/api/enrollments`, { cache: 'no-store' });
         if (!res.ok) return; // silently ignore
         const data = (await res.json()) as Array<{
           enrollmentId: string;
@@ -55,9 +62,7 @@ export default function EnrollButton({
         }>;
         if (cancelled) return;
         if (Array.isArray(data)) {
-          const match = data.find(
-            (e) => e.courseId === courseId && e.userId === me.userId
-          );
+          const match = data.find((e) => e.courseId === courseId && e.userId === me.userId);
           setIsEnrolled(Boolean(match));
           setEnrollmentId(match?.enrollmentId ?? null);
         }
@@ -65,7 +70,7 @@ export default function EnrollButton({
         // no-op
       }
     };
-    checkEnrollment();
+    void checkEnrollment();
     return () => {
       cancelled = true;
     };
@@ -85,9 +90,9 @@ export default function EnrollButton({
       if (isEnrolled) return;
 
       // Map Clerk user to internal user by fetching existing users
-      const usersRes = await fetch(`/api/users`, { cache: "no-store" });
+      const usersRes = await fetch(`/api/users`, { cache: 'no-store' });
       if (!usersRes.ok) {
-        throw new Error("Failed to fetch users.");
+        throw new Error('Failed to fetch users.');
       }
       const users = (await usersRes.json()) as Array<{
         userId: string;
@@ -95,20 +100,22 @@ export default function EnrollButton({
       }>;
       const me = users.find((u) => u.clerkId === user.id);
       if (!me?.userId) {
-        throw new Error("User record not found. Please try again later.");
+        throw new Error('User record not found. Please try again later.');
       }
 
-      const res = await fetch("/api/enrollments", {
-        method: "POST",
+      const res = await fetch('/api/enrollments', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ courseId, userId: me.userId }),
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to enroll.");
+        const errorData = (await res.json().catch(() => ({}))) as unknown;
+        const message =
+          isErrorResponse(errorData) && errorData.message ? errorData.message : 'Failed to enroll.';
+        throw new Error(message);
       }
 
       setIsEnrolled(true);
@@ -119,8 +126,8 @@ export default function EnrollButton({
       try {
         router.refresh();
       } catch {}
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
     } finally {
       setIsLoading(false);
     }
@@ -132,11 +139,13 @@ export default function EnrollButton({
     setError(null);
     try {
       const res = await fetch(`/api/enrollments/${enrollmentId}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || "Failed to unenroll.");
+        const errData = (await res.json().catch(() => ({}))) as unknown;
+        const message =
+          isErrorResponse(errData) && errData.message ? errData.message : 'Failed to unenroll.';
+        throw new Error(message);
       }
       setIsEnrolled(false);
       setEnrollmentId(null);
@@ -144,8 +153,8 @@ export default function EnrollButton({
       try {
         router.refresh();
       } catch {}
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
     } finally {
       setIsLoading(false);
     }
@@ -157,14 +166,14 @@ export default function EnrollButton({
         <Button
           onClick={(e) => {
             e.stopPropagation();
-            handleUnenroll();
+            void handleUnenroll();
           }}
           disabled={isLoading}
-          modifier={fullWidth ? "w-full" : undefined}
+          modifier={fullWidth ? 'w-full' : undefined}
         >
-          {isLoading ? "Processing..." : "Unenroll"}
+          {isLoading ? 'Processing...' : 'Unenroll'}
         </Button>
-        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
       </div>
     );
   }
@@ -173,16 +182,16 @@ export default function EnrollButton({
     <div>
       <Button
         secondary
-        modifier={fullWidth ? "w-full" : undefined}
+        modifier={fullWidth ? 'w-full' : undefined}
         onClick={(e) => {
           e.stopPropagation();
-          handleEnroll();
+          void handleEnroll();
         }}
         disabled={isLoading}
       >
-        {isLoading ? "Enrolling..." : "Enroll"}
+        {isLoading ? 'Enrolling...' : 'Enroll'}
       </Button>
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
     </div>
   );
 }

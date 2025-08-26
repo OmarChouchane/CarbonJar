@@ -1,11 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { H1, H2 } from "@/components/Heading";
-import SectionWrapper from "@/components/section-wrapper";
-import Button from "@/components/button";
-import { useUser } from "@clerk/nextjs";
+import { useEffect, useState } from 'react';
+
+import { useUser } from '@clerk/nextjs';
+import { useRouter, useParams } from 'next/navigation';
+
+import Button from '@/components/button';
+import { H1, H2 } from '@/components/Heading';
+import SectionWrapper from '@/components/section-wrapper';
 
 type Course = {
   courseId: string;
@@ -14,15 +16,15 @@ type Course = {
   duration: string | null;
   price: string | null;
   whyThisCourse: string | null;
-  level: "beginner" | "intermediate" | "expert";
-  status: "Draft" | "Published" | "Archived";
+  level: 'beginner' | 'intermediate' | 'expert';
+  status: 'Draft' | 'Published' | 'Archived';
 };
 
 type Module = {
   moduleId?: string;
   title: string;
   content: string;
-  contentType: "Video" | "Text" | "Quiz";
+  contentType: 'Video' | 'Text' | 'Quiz';
   order: number;
 };
 
@@ -63,25 +65,24 @@ export default function ManageTrainingPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [meUserId, setMeUserId] = useState<string | null>(null);
   // New session form state
-  const [newStart, setNewStart] = useState<string>(""); // datetime-local
-  const [newEnd, setNewEnd] = useState<string>("");
-  const [newMax, setNewMax] = useState<string>("");
+  const [newStart, setNewStart] = useState<string>(''); // datetime-local
+  const [newEnd, setNewEnd] = useState<string>('');
+  const [newMax, setNewMax] = useState<string>('');
   // Edit session state
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editStart, setEditStart] = useState<string>("");
-  const [editEnd, setEditEnd] = useState<string>("");
-  const [editMax, setEditMax] = useState<string>("");
+  const [editStart, setEditStart] = useState<string>('');
+  const [editEnd, setEditEnd] = useState<string>('');
+  const [editMax, setEditMax] = useState<string>('');
 
   // Mini navbar setup
   const sections = [
-    { id: "details", label: "Edit" },
-    { id: "modules", label: "Modules" },
-    { id: "sessions", label: "Sessions" },
-    { id: "enrollments", label: "Enrolled Users" },
-    { id: "resources", label: "Resources" },
+    { id: 'details', label: 'Edit' },
+    { id: 'modules', label: 'Modules' },
+    { id: 'sessions', label: 'Sessions' },
+    { id: 'enrollments', label: 'Enrolled Users' },
+    { id: 'resources', label: 'Resources' },
   ] as const;
-  const [activeSection, setActiveSection] =
-    useState<(typeof sections)[number]["id"]>("details");
+  const [activeSection, setActiveSection] = useState<(typeof sections)[number]['id']>('details');
 
   // Show only the selected section from the mini navbar
 
@@ -92,22 +93,22 @@ export default function ManageTrainingPage() {
       try {
         if (!user?.id) return;
         // Fetch all users to determine my DB userId and admin role
-        const res = await fetch("/api/users", { cache: "no-store" });
+        const res = await fetch('/api/users', { cache: 'no-store' });
         if (!res.ok) return;
-        const users: Array<{
+        const users = (await res.json()) as unknown as Array<{
           userId: string;
           clerkId?: string | null;
           role?: string | null;
-        }> = await res.json();
+        }>;
         if (!mounted) return;
         const me = users.find((u) => u.clerkId === user.id);
         setMeUserId(me?.userId ?? null);
-        setIsAdmin((me?.role ?? "") === "admin");
+        setIsAdmin((me?.role ?? '') === 'admin');
       } catch {
         /* noop */
       }
     };
-    checkAdmin();
+    void checkAdmin();
     return () => {
       mounted = false;
     };
@@ -119,25 +120,42 @@ export default function ManageTrainingPage() {
       try {
         setLoading(true);
         const [cRes, mRes, eRes, sRes] = await Promise.all([
-          fetch(`/api/trainings/${id}`, { cache: "no-store" }),
-          fetch(`/api/trainings/${id}/modules`, { cache: "no-store" }),
-          fetch(`/api/enrollments`, { cache: "no-store" }),
-          fetch(`/api/training-sessions`, { cache: "no-store" }),
+          fetch(`/api/trainings/${id}`, { cache: 'no-store' }),
+          fetch(`/api/trainings/${id}/modules`, { cache: 'no-store' }),
+          fetch(`/api/enrollments`, { cache: 'no-store' }),
+          fetch(`/api/training-sessions`, { cache: 'no-store' }),
         ]);
-        if (!cRes.ok) throw new Error("Training not found");
-        const c: Course = await cRes.json();
-        const m: Module[] = await mRes.json();
-        const eAll: any[] = await eRes.json();
-        const sAll: any[] = await sRes.json();
+        if (!cRes.ok) throw new Error('Training not found');
+        const c = (await cRes.json()) as unknown as Course;
+        const m = (await mRes.json()) as unknown as Module[];
+        const eAll = (await eRes.json()) as unknown as Array<{
+          enrollmentId: string;
+          userId: string;
+          courseId: string;
+          userName?: string | null;
+          userLastName?: string | null;
+          userEmail?: string | null;
+          progressPercentage: number;
+          completionStatus: string;
+        }>;
+        const sAll = (await sRes.json()) as unknown as Array<{
+          sessionId: string;
+          courseId: string;
+          startTime: string;
+          endTime: string;
+          instructorId?: string | null;
+          maxParticipants?: number | null;
+          instructorName?: string | null;
+        }>;
         const e: Enrollment[] = eAll
           .filter((x) => x.courseId === id)
           .map((x) => ({
             enrollmentId: x.enrollmentId,
             userId: x.userId,
             courseId: x.courseId,
-            userName: x.userName,
-            userLastName: x.userLastName,
-            userEmail: x.userEmail,
+            userName: x.userName ?? null,
+            userLastName: x.userLastName ?? null,
+            userEmail: x.userEmail ?? null,
             progressPercentage: x.progressPercentage,
             completionStatus: x.completionStatus,
           }));
@@ -154,21 +172,18 @@ export default function ManageTrainingPage() {
           }));
         if (!active) return;
         setCourse(c);
-        setModules(m.sort((a, b) => a.order - b.order));
+        setModules(m.sort((a: Module, b: Module) => a.order - b.order));
         setEnrollments(e);
         setSessions(
-          s.sort(
-            (a, b) =>
-              new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-          )
+          s.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()),
         );
-      } catch (e: any) {
-        if (active) setErr(e?.message || "Failed to load training");
+      } catch (e: unknown) {
+        if (active) setErr(e instanceof Error ? e.message : 'Failed to load training');
       } finally {
         if (active) setLoading(false);
       }
     };
-    if (id) load();
+    if (id) void load();
     return () => {
       active = false;
     };
@@ -176,40 +191,40 @@ export default function ManageTrainingPage() {
 
   const updateCourse = async (patch: Partial<Course>) => {
     const res = await fetch(`/api/trainings/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(patch),
     });
-    if (!res.ok) throw new Error("Failed to update training");
-    const updated: Course = await res.json();
+    if (!res.ok) throw new Error('Failed to update training');
+    const updated = (await res.json()) as unknown as Course;
     setCourse(updated);
   };
 
   const saveModules = async () => {
     const res = await fetch(`/api/trainings/${id}/modules`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ modules }),
     });
-    if (!res.ok) throw new Error("Failed to save modules");
-    const saved = await res.json();
-    setModules(saved.sort((a: Module, b: Module) => a.order - b.order));
+    if (!res.ok) throw new Error('Failed to save modules');
+    const saved = (await res.json()) as unknown as Module[];
+    setModules(saved.sort((a, b) => a.order - b.order));
   };
 
   const setCompletion = async (enrollmentId: string, status: string) => {
     const res = await fetch(`/api/enrollments/${enrollmentId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ completionStatus: status }),
     });
-    if (!res.ok) throw new Error("Failed to update completion");
-    const updated = await res.json();
+    if (!res.ok) throw new Error('Failed to update completion');
+    const updated = (await res.json()) as unknown as Enrollment;
     setEnrollments((prev) =>
       prev.map((e) =>
         e.enrollmentId === updated.enrollmentId
           ? { ...e, completionStatus: updated.completionStatus }
-          : e
-      )
+          : e,
+      ),
     );
   };
 
@@ -218,28 +233,26 @@ export default function ManageTrainingPage() {
     // minimal POST to certificates API; mentor can refine later on dedicated UI
     const now = new Date();
     const res = await fetch(`/api/certificates`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         userId: enr.userId,
         courseId: course.courseId,
-        fullName:
-          `${enr.userName ?? ""} ${enr.userLastName ?? ""}`.trim() ||
-          "Participant",
+        fullName: `${enr.userName ?? ''} ${enr.userLastName ?? ''}`.trim() || 'Participant',
         title: course.title,
-        description: course.description ?? "",
+        description: course.description ?? '',
         courseStartDate: now.toISOString().slice(0, 10),
         courseEndDate: now.toISOString().slice(0, 10),
         issueDate: now.toISOString().slice(0, 10),
         validUntil: null,
-        pdfUrl: "",
-        certificateHash: "temp", // server generates
+        pdfUrl: '',
+        certificateHash: 'temp', // server generates
       }),
     });
     if (!res.ok) {
-      alert("Failed to request certificate");
+      alert('Failed to request certificate');
     } else {
-      alert("Certificate requested/created");
+      alert('Certificate requested/created');
     }
   };
 
@@ -256,7 +269,7 @@ export default function ManageTrainingPage() {
   const createSession = async () => {
     if (!course) return;
     if (!newStart || !newEnd) {
-      alert("Start and End time are required");
+      alert('Start and End time are required');
       return;
     }
     const payload = {
@@ -267,31 +280,30 @@ export default function ManageTrainingPage() {
       maxParticipants: newMax ? Number(newMax) : null,
     };
     const res = await fetch(`/api/training-sessions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
     if (!res.ok) {
-      alert("Failed to create session");
+      alert('Failed to create session');
       return;
     }
-    const created: Session = await res.json();
+    const created = (await res.json()) as unknown as Session;
     setSessions((prev) =>
       [...prev, created].sort(
-        (a, b) =>
-          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-      )
+        (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
+      ),
     );
-    setNewStart("");
-    setNewEnd("");
-    setNewMax("");
+    setNewStart('');
+    setNewEnd('');
+    setNewMax('');
   };
 
   const startEditSession = (s: Session) => {
     setEditingId(s.sessionId);
     const toLocalInput = (iso: string) => {
       const d = new Date(iso);
-      const pad = (n: number) => String(n).padStart(2, "0");
+      const pad = (n: number) => String(n).padStart(2, '0');
       const yyyy = d.getFullYear();
       const mm = pad(d.getMonth() + 1);
       const dd = pad(d.getDate());
@@ -301,14 +313,14 @@ export default function ManageTrainingPage() {
     };
     setEditStart(toLocalInput(s.startTime));
     setEditEnd(toLocalInput(s.endTime));
-    setEditMax(s.maxParticipants != null ? String(s.maxParticipants) : "");
+    setEditMax(s.maxParticipants != null ? String(s.maxParticipants) : '');
   };
 
   const saveEditSession = async () => {
     if (!editingId) return;
     const res = await fetch(`/api/training-sessions/${editingId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         startTime: editStart ? new Date(editStart).toISOString() : undefined,
         endTime: editEnd ? new Date(editEnd).toISOString() : undefined,
@@ -316,81 +328,71 @@ export default function ManageTrainingPage() {
       }),
     });
     if (!res.ok) {
-      alert("Failed to update session");
+      alert('Failed to update session');
       return;
     }
-    const updated: Session = await res.json();
+    const updated = (await res.json()) as unknown as Session;
     setSessions((prev) =>
       prev
-        .map((s) =>
-          s.sessionId === updated.sessionId ? { ...s, ...updated } : s
-        )
-        .sort(
-          (a, b) =>
-            new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-        )
+        .map((s) => (s.sessionId === updated.sessionId ? { ...s, ...updated } : s))
+        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()),
     );
     setEditingId(null);
-    setEditStart("");
-    setEditEnd("");
-    setEditMax("");
+    setEditStart('');
+    setEditEnd('');
+    setEditMax('');
   };
 
   const deleteSession = async (sessionId: string) => {
-    if (!confirm("Delete this session?")) return;
+    if (!confirm('Delete this session?')) return;
     const res = await fetch(`/api/training-sessions/${sessionId}`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
     if (!res.ok) {
-      alert("Failed to delete session");
+      alert('Failed to delete session');
       return;
     }
     setSessions((prev) => prev.filter((s) => s.sessionId !== sessionId));
   };
 
-  if (loading)
-    return <div className="lg:mx-32 md:mx-12 mx-4 my-8">Loading…</div>;
-  if (err)
-    return (
-      <div className="lg:mx-32 md:mx-12 mx-4 my-8 text-red-600">{err}</div>
-    );
-  if (!course)
-    return <div className="lg:mx-32 md:mx-12 mx-4 my-8">Not found</div>;
+  if (loading) return <div className="mx-4 my-8 md:mx-12 lg:mx-32">Loading…</div>;
+  if (err) return <div className="mx-4 my-8 text-red-600 md:mx-12 lg:mx-32">{err}</div>;
+  if (!course) return <div className="mx-4 my-8 md:mx-12 lg:mx-32">Not found</div>;
 
   return (
-    <div className="lg:mx-32 md:mx-12 mx-4 my-8 space-y-6">
+    <div className="mx-4 my-8 space-y-6 md:mx-12 lg:mx-32">
       {/* Hero */}
       <SectionWrapper variant="green" className="py-8">
         <H1 className="text-white">Manage: {course.title}</H1>
         <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-          <span className="text-[11px] uppercase tracking-wide px-2.5 py-1 rounded-full bg-white text-gray-800 border border-white/60">
+          <span className="rounded-full border border-white/60 bg-white px-2.5 py-1 text-[11px] tracking-wide text-gray-800 uppercase">
             {course.level}
           </span>
           <span
             className={
-              course.status === "Published"
-                ? "text-[11px] tracking-wide px-2.5 py-1 rounded-full bg-light-green text-green border border-light-green/70"
-                : course.status === "Draft"
-                ? "text-[11px] tracking-wide px-2.5 py-1 rounded-full bg-white/90 text-gray-800 border border-white/60"
-                : "text-[11px] tracking-wide px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-800 border border-yellow-200"
+              course.status === 'Published'
+                ? 'bg-light-green text-green border-light-green/70 rounded-full border px-2.5 py-1 text-[11px] tracking-wide'
+                : course.status === 'Draft'
+                  ? 'rounded-full border border-white/60 bg-white/90 px-2.5 py-1 text-[11px] tracking-wide text-gray-800'
+                  : 'rounded-full border border-yellow-200 bg-yellow-100 px-2.5 py-1 text-[11px] tracking-wide text-yellow-800'
             }
           >
             {course.status}
           </span>
         </div>
-        <H2 className="text-white/90 mt-2">
-          Edit details, modules, and enrollments.
-        </H2>
+        <H2 className="mt-2 text-white/90">Edit details, modules, and enrollments.</H2>
         <div className="mt-5 flex items-center justify-center gap-3">
           <Button
             secondary
             modifier="!text-red-600 !border-red-200 !bg-white"
-            onClick={async () => {
-              if (!confirm("Delete this training?")) return;
-              const res = await fetch(`/api/trainings/${id}`, {
-                method: "DELETE",
-              });
-              if (res.ok) router.push("/mentor/trainings");
+            onClick={() => {
+              void (async () => {
+                if (!confirm('Delete this training?')) return;
+                const res = await fetch(`/api/trainings/${id}`, {
+                  method: 'DELETE',
+                });
+                if (res.ok) router.push('/mentor/trainings');
+              })();
             }}
           >
             Delete
@@ -399,19 +401,19 @@ export default function ManageTrainingPage() {
       </SectionWrapper>
 
       {/* Sticky mini navbar */}
-      <div className="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-gray-100">
-        <nav className="max-w-screen-xl mx-auto px-2 sm:px-4">
+      <div className="sticky top-0 z-20 border-b border-gray-100 bg-white/90 backdrop-blur">
+        <nav className="mx-auto max-w-screen-xl px-2 sm:px-4">
           <ul className="flex gap-2 overflow-x-auto py-2">
             {sections.map((s) => (
               <li key={s.id}>
                 <button
                   type="button"
                   onClick={() => setActiveSection(s.id)}
-                  aria-current={activeSection === s.id ? "page" : undefined}
+                  aria-current={activeSection === s.id ? 'page' : undefined}
                   className={
                     activeSection === s.id
-                      ? "text-green bg-light-green/60 border border-light-green rounded-full px-3 py-1 text-sm"
-                      : "text-gray-700 hover:text-green border border-transparent hover:border-light-green rounded-full px-3 py-1 text-sm"
+                      ? 'text-green bg-light-green/60 border-light-green rounded-full border px-3 py-1 text-sm'
+                      : 'hover:text-green hover:border-light-green rounded-full border border-transparent px-3 py-1 text-sm text-gray-700'
                   }
                 >
                   {s.label}
@@ -423,33 +425,27 @@ export default function ManageTrainingPage() {
       </div>
 
       {/* Details */}
-      {activeSection === "details" && (
+      {activeSection === 'details' && (
         <div id="details">
           <SectionWrapper title="Details" className="bg-white">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-green">
-                  Title
-                </label>
+                <label className="text-green block text-sm font-medium">Title</label>
                 <input
-                  className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                  className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
                   value={course.title}
-                  onChange={(e) =>
-                    setCourse({ ...course, title: e.target.value })
-                  }
+                  onChange={(e) => setCourse({ ...course, title: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-green">
-                  Level
-                </label>
+                <label className="text-green block text-sm font-medium">Level</label>
                 <select
-                  className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                  className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
                   value={course.level}
                   onChange={(e) =>
                     setCourse({
                       ...course,
-                      level: e.target.value as Course["level"],
+                      level: e.target.value as Course['level'],
                     })
                   }
                 >
@@ -459,29 +455,23 @@ export default function ManageTrainingPage() {
                 </select>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-green">
-                  Description
-                </label>
+                <label className="text-green block text-sm font-medium">Description</label>
                 <textarea
-                  className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                  className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
                   rows={4}
-                  value={course.description ?? ""}
-                  onChange={(e) =>
-                    setCourse({ ...course, description: e.target.value })
-                  }
+                  value={course.description ?? ''}
+                  onChange={(e) => setCourse({ ...course, description: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-green">
-                  Status
-                </label>
+                <label className="text-green block text-sm font-medium">Status</label>
                 <select
-                  className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                  className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
                   value={course.status}
                   onChange={(e) =>
                     setCourse({
                       ...course,
-                      status: e.target.value as Course["status"],
+                      status: e.target.value as Course['status'],
                     })
                   }
                   disabled={!isAdmin}
@@ -492,57 +482,44 @@ export default function ManageTrainingPage() {
                 </select>
                 {!isAdmin && (
                   <p className="mt-1 text-xs text-gray-500">
-                    Only admins can change status. New trainings start as Draft
-                    until approved.
+                    Only admins can change status. New trainings start as Draft until approved.
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-green">
-                  Duration
-                </label>
+                <label className="text-green block text-sm font-medium">Duration</label>
                 <input
-                  className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
-                  value={course.duration ?? ""}
-                  onChange={(e) =>
-                    setCourse({ ...course, duration: e.target.value })
-                  }
+                  className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
+                  value={course.duration ?? ''}
+                  onChange={(e) => setCourse({ ...course, duration: e.target.value })}
                   placeholder="e.g. 1 day (8 hours)"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-green">
-                  Price
-                </label>
+                <label className="text-green block text-sm font-medium">Price</label>
                 <input
-                  className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
-                  value={course.price ?? ""}
-                  onChange={(e) =>
-                    setCourse({ ...course, price: e.target.value })
-                  }
+                  className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
+                  value={course.price ?? ''}
+                  onChange={(e) => setCourse({ ...course, price: e.target.value })}
                   placeholder="e.g. €199 or 199 TND"
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-green">
-                  Why this course?
-                </label>
+                <label className="text-green block text-sm font-medium">Why this course?</label>
                 <textarea
-                  className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                  className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
                   rows={3}
-                  value={course.whyThisCourse ?? ""}
-                  onChange={(e) =>
-                    setCourse({ ...course, whyThisCourse: e.target.value })
-                  }
+                  value={course.whyThisCourse ?? ''}
+                  onChange={(e) => setCourse({ ...course, whyThisCourse: e.target.value })}
                   placeholder="Explain the key benefits and outcomes."
                 />
               </div>
             </div>
-            <div className="mt-4 flex gap-3 justify-end">
+            <div className="mt-4 flex justify-end gap-3">
               <Button
                 primary
                 onClick={() =>
-                  updateCourse({
+                  void updateCourse({
                     title: course.title,
                     description: course.description,
                     level: course.level,
@@ -561,48 +538,47 @@ export default function ManageTrainingPage() {
       )}
 
       {/* Sessions */}
-      {activeSection === "sessions" && (
+      {activeSection === 'sessions' && (
         <div id="sessions">
           <SectionWrapper title="Schedule Sessions" className="bg-white">
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
                 <div>
-                  <label className="block text-sm font-medium text-green">
-                    Start
-                  </label>
+                  <label className="text-green block text-sm font-medium">Start</label>
                   <input
                     type="datetime-local"
-                    className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                    className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
                     value={newStart}
                     onChange={(e) => setNewStart(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-green">
-                    End
-                  </label>
+                  <label className="text-green block text-sm font-medium">End</label>
                   <input
                     type="datetime-local"
-                    className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                    className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
                     value={newEnd}
                     onChange={(e) => setNewEnd(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-green">
-                    Max participants
-                  </label>
+                  <label className="text-green block text-sm font-medium">Max participants</label>
                   <input
                     type="number"
                     min={1}
-                    className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                    className="focus:ring-light-green focus:border-light-green/60 mt-1 w-full rounded border px-3 py-2 focus:ring-2 focus:outline-none"
                     value={newMax}
                     onChange={(e) => setNewMax(e.target.value)}
                     placeholder="e.g. 25"
                   />
                 </div>
-                <div className="md:col-span-2 flex items-end">
-                  <Button primary onClick={createSession}>
+                <div className="flex items-end md:col-span-2">
+                  <Button
+                    primary
+                    onClick={() => {
+                      void createSession();
+                    }}
+                  >
                     Add Session
                   </Button>
                 </div>
@@ -611,28 +587,25 @@ export default function ManageTrainingPage() {
               {sessions.length === 0 ? (
                 <div className="text-gray-600">No sessions scheduled yet.</div>
               ) : (
-                <div className="overflow-x-auto rounded-xl border border-green/10">
+                <div className="border-green/10 overflow-x-auto rounded-xl border">
                   <table className="min-w-full text-sm">
                     <thead className="bg-light-green/40">
                       <tr className="text-left">
-                        <th className="py-2 px-3 text-green">Start</th>
-                        <th className="py-2 px-3 text-green">End</th>
-                        <th className="py-2 px-3 text-green">Instructor</th>
-                        <th className="py-2 px-3 text-green">Max</th>
-                        <th className="py-2 px-3 text-green">Actions</th>
+                        <th className="text-green px-3 py-2">Start</th>
+                        <th className="text-green px-3 py-2">End</th>
+                        <th className="text-green px-3 py-2">Instructor</th>
+                        <th className="text-green px-3 py-2">Max</th>
+                        <th className="text-green px-3 py-2">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {sessions.map((s, i) => (
-                        <tr
-                          key={s.sessionId}
-                          className={i % 2 ? "bg-white" : "bg-gray-50/60"}
-                        >
-                          <td className="py-2 px-3">
+                        <tr key={s.sessionId} className={i % 2 ? 'bg-white' : 'bg-gray-50/60'}>
+                          <td className="px-3 py-2">
                             {editingId === s.sessionId ? (
                               <input
                                 type="datetime-local"
-                                className="border rounded px-2 py-1"
+                                className="rounded border px-2 py-1"
                                 value={editStart}
                                 onChange={(e) => setEditStart(e.target.value)}
                               />
@@ -640,11 +613,11 @@ export default function ManageTrainingPage() {
                               new Date(s.startTime).toLocaleString()
                             )}
                           </td>
-                          <td className="py-2 px-3">
+                          <td className="px-3 py-2">
                             {editingId === s.sessionId ? (
                               <input
                                 type="datetime-local"
-                                className="border rounded px-2 py-1"
+                                className="rounded border px-2 py-1"
                                 value={editEnd}
                                 onChange={(e) => setEditEnd(e.target.value)}
                               />
@@ -652,28 +625,28 @@ export default function ManageTrainingPage() {
                               new Date(s.endTime).toLocaleString()
                             )}
                           </td>
-                          <td className="py-2 px-3">
-                            {s.instructorName || "—"}
-                          </td>
-                          <td className="py-2 px-3">
+                          <td className="px-3 py-2">{s.instructorName || '—'}</td>
+                          <td className="px-3 py-2">
                             {editingId === s.sessionId ? (
                               <input
                                 type="number"
-                                className="border rounded px-2 py-1"
+                                className="rounded border px-2 py-1"
                                 value={editMax}
                                 onChange={(e) => setEditMax(e.target.value)}
                               />
                             ) : (
-                              s.maxParticipants ?? "—"
+                              (s.maxParticipants ?? '—')
                             )}
                           </td>
-                          <td className="py-2 px-3">
+                          <td className="px-3 py-2">
                             {editingId === s.sessionId ? (
                               <div className="flex gap-2">
                                 <Button
                                   secondary
                                   modifier="!py-1 !px-3"
-                                  onClick={saveEditSession}
+                                  onClick={() => {
+                                    void saveEditSession();
+                                  }}
                                 >
                                   Save
                                 </Button>
@@ -682,9 +655,9 @@ export default function ManageTrainingPage() {
                                   modifier="!py-1 !px-3"
                                   onClick={() => {
                                     setEditingId(null);
-                                    setEditStart("");
-                                    setEditEnd("");
-                                    setEditMax("");
+                                    setEditStart('');
+                                    setEditEnd('');
+                                    setEditMax('');
                                   }}
                                 >
                                   Cancel
@@ -702,7 +675,9 @@ export default function ManageTrainingPage() {
                                 <Button
                                   secondary
                                   modifier="!py-1 !px-3 !text-red-600 !border-red-200"
-                                  onClick={() => deleteSession(s.sessionId)}
+                                  onClick={() => {
+                                    void deleteSession(s.sessionId);
+                                  }}
                                 >
                                   Delete
                                 </Button>
@@ -721,13 +696,11 @@ export default function ManageTrainingPage() {
       )}
 
       {/* Modules */}
-      {activeSection === "modules" && (
+      {activeSection === 'modules' && (
         <div id="modules">
           <SectionWrapper title="Modules" className="bg-white">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-sm text-gray-600">
-                Define the learning units of this course.
-              </p>
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm text-gray-600">Define the learning units of this course.</p>
               <Button
                 secondary
                 modifier="!py-1 !px-3"
@@ -735,9 +708,9 @@ export default function ManageTrainingPage() {
                   setModules((prev) => [
                     ...prev,
                     {
-                      title: "New Module",
-                      content: "",
-                      contentType: "Text",
+                      title: 'New Module',
+                      content: '',
+                      contentType: 'Text',
                       order: prev.length + 1,
                     },
                   ])
@@ -750,22 +723,20 @@ export default function ManageTrainingPage() {
               {modules.map((m, idx) => (
                 <li
                   key={idx}
-                  className="rounded-xl border border-green/10 p-3 space-y-2 bg-gray-50"
+                  className="border-green/10 space-y-2 rounded-xl border bg-gray-50 p-3"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
                     <input
-                      className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                      className="focus:ring-light-green focus:border-light-green/60 rounded border px-2 py-1 focus:ring-2 focus:outline-none"
                       value={m.title}
                       onChange={(e) =>
                         setModules((prev) =>
-                          prev.map((x, i) =>
-                            i === idx ? { ...x, title: e.target.value } : x
-                          )
+                          prev.map((x, i) => (i === idx ? { ...x, title: e.target.value } : x)),
                         )
                       }
                     />
                     <select
-                      className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                      className="focus:ring-light-green focus:border-light-green/60 rounded border px-2 py-1 focus:ring-2 focus:outline-none"
                       value={m.contentType}
                       onChange={(e) =>
                         setModules((prev) =>
@@ -773,11 +744,10 @@ export default function ManageTrainingPage() {
                             i === idx
                               ? {
                                   ...x,
-                                  contentType: e.target
-                                    .value as Module["contentType"],
+                                  contentType: e.target.value as Module['contentType'],
                                 }
-                              : x
-                          )
+                              : x,
+                          ),
                         )
                       }
                     >
@@ -787,37 +757,31 @@ export default function ManageTrainingPage() {
                     </select>
                     <input
                       type="number"
-                      className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                      className="focus:ring-light-green focus:border-light-green/60 rounded border px-2 py-1 focus:ring-2 focus:outline-none"
                       value={m.order}
                       onChange={(e) =>
                         setModules((prev) =>
                           prev.map((x, i) =>
-                            i === idx
-                              ? { ...x, order: Number(e.target.value) }
-                              : x
-                          )
+                            i === idx ? { ...x, order: Number(e.target.value) } : x,
+                          ),
                         )
                       }
                     />
                     <Button
                       secondary
                       modifier="!py-1 !px-3 !text-red-600 !border-red-200"
-                      onClick={() =>
-                        setModules((prev) => prev.filter((_, i) => i !== idx))
-                      }
+                      onClick={() => setModules((prev) => prev.filter((_, i) => i !== idx))}
                     >
                       Remove
                     </Button>
                   </div>
                   <textarea
-                    className="w-full border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                    className="focus:ring-light-green focus:border-light-green/60 w-full rounded border px-2 py-1 focus:ring-2 focus:outline-none"
                     rows={3}
                     value={m.content}
                     onChange={(e) =>
                       setModules((prev) =>
-                        prev.map((x, i) =>
-                          i === idx ? { ...x, content: e.target.value } : x
-                        )
+                        prev.map((x, i) => (i === idx ? { ...x, content: e.target.value } : x)),
                       )
                     }
                   />
@@ -825,7 +789,12 @@ export default function ManageTrainingPage() {
               ))}
             </ul>
             <div className="mt-4">
-              <Button primary onClick={saveModules}>
+              <Button
+                primary
+                onClick={() => {
+                  void saveModules();
+                }}
+              >
                 Save Modules
               </Button>
             </div>
@@ -834,50 +803,49 @@ export default function ManageTrainingPage() {
       )}
 
       {/* Enrolled users */}
-      {activeSection === "enrollments" && (
+      {activeSection === 'enrollments' && (
         <div id="enrollments">
           <SectionWrapper title="Enrolled Users" className="bg-white">
             {enrollments.length === 0 ? (
               <div className="text-gray-600">No enrollments yet.</div>
             ) : (
-              <div className="overflow-x-auto rounded-xl border border-green/10">
+              <div className="border-green/10 overflow-x-auto rounded-xl border">
                 <table className="min-w-full text-sm">
                   <thead className="bg-light-green/40">
                     <tr className="text-left">
-                      <th className="py-2 px-3 text-green">Name</th>
-                      <th className="py-2 px-3 text-green">Email</th>
-                      <th className="py-2 px-3 text-green">Progress</th>
-                      <th className="py-2 px-3 text-green">Status</th>
-                      <th className="py-2 px-3 text-green">Actions</th>
+                      <th className="text-green px-3 py-2">Name</th>
+                      <th className="text-green px-3 py-2">Email</th>
+                      <th className="text-green px-3 py-2">Progress</th>
+                      <th className="text-green px-3 py-2">Status</th>
+                      <th className="text-green px-3 py-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {enrollments.map((e, i) => (
-                      <tr
-                        key={e.enrollmentId}
-                        className={i % 2 ? "bg-white" : "bg-gray-50/60"}
-                      >
-                        <td className="py-2 px-3">{`${e.userName ?? ""} ${
-                          e.userLastName ?? ""
+                      <tr key={e.enrollmentId} className={i % 2 ? 'bg-white' : 'bg-gray-50/60'}>
+                        <td className="px-3 py-2">{`${e.userName ?? ''} ${
+                          e.userLastName ?? ''
                         }`}</td>
-                        <td className="py-2 px-3">{e.userEmail}</td>
-                        <td className="py-2 px-3">{e.progressPercentage}%</td>
-                        <td className="py-2 px-3">{e.completionStatus}</td>
-                        <td className="py-2 px-3">
+                        <td className="px-3 py-2">{e.userEmail}</td>
+                        <td className="px-3 py-2">{e.progressPercentage}%</td>
+                        <td className="px-3 py-2">{e.completionStatus}</td>
+                        <td className="px-3 py-2">
                           <div className="flex gap-2">
                             <Button
                               secondary
                               modifier="!py-1 !px-3 !text-green !border-green/30"
-                              onClick={() =>
-                                setCompletion(e.enrollmentId, "completed")
-                              }
+                              onClick={() => {
+                                void setCompletion(e.enrollmentId, 'completed');
+                              }}
                             >
                               Mark Completed
                             </Button>
                             <Button
                               secondary
                               modifier="!py-1 !px-3 !text-blue-700 !border-blue-200"
-                              onClick={() => requestCertificate(e)}
+                              onClick={() => {
+                                void requestCertificate(e);
+                              }}
                             >
                               Request Certificate
                             </Button>
@@ -894,35 +862,31 @@ export default function ManageTrainingPage() {
       )}
 
       {/* Resources */}
-      {activeSection === "resources" && (
+      {activeSection === 'resources' && (
         <div id="resources">
           <SectionWrapper title="Resources" className="bg-white">
             <div className="flex gap-2">
               <input
                 id="resInput"
-                className="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-light-green focus:border-light-green/60"
+                className="focus:ring-light-green focus:border-light-green/60 flex-1 rounded border px-3 py-2 focus:ring-2 focus:outline-none"
                 placeholder="https://…"
               />
               <Button
                 primary
                 onClick={() => {
-                  const el = document.getElementById(
-                    "resInput"
-                  ) as HTMLInputElement | null;
+                  const el = document.getElementById('resInput') as HTMLInputElement | null;
                   if (!el) return;
                   addResource(el.value.trim());
-                  el.value = "";
+                  el.value = '';
                 }}
               >
                 Add
               </Button>
             </div>
             {resources.length === 0 ? (
-              <div className="text-sm text-gray-600 mt-3">
-                No resources added.
-              </div>
+              <div className="mt-3 text-sm text-gray-600">No resources added.</div>
             ) : (
-              <ul className="space-y-2 mt-3">
+              <ul className="mt-3 space-y-2">
                 {resources.map((u) => (
                   <li key={u} className="flex items-center justify-between">
                     <a
@@ -944,10 +908,9 @@ export default function ManageTrainingPage() {
                 ))}
               </ul>
             )}
-            <p className="text-xs text-gray-500 mt-3">
-              Note: This prototype stores resources client-side only. We can add
-              a backend table later (training_resources) to persist
-              uploads/links.
+            <p className="mt-3 text-xs text-gray-500">
+              Note: This prototype stores resources client-side only. We can add a backend table
+              later (training_resources) to persist uploads/links.
             </p>
           </SectionWrapper>
         </div>

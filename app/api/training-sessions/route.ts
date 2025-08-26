@@ -1,15 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-import { getDb } from "@/lib/db/drizzle";
-import { trainingSessions, courses, authUsers } from "@/lib/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { auth } from '@clerk/nextjs/server';
+import { eq, sql } from 'drizzle-orm';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+import { getDb } from '@/lib/db/drizzle';
+import { trainingSessions, courses, authUsers } from '@/lib/db/schema';
+
+export async function GET(_request: NextRequest) {
   try {
     // Check authentication
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const db = getDb();
@@ -34,8 +36,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(sessions);
   } catch (error) {
-    console.error("Error fetching training sessions:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Error fetching training sessions:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
 
@@ -44,7 +46,7 @@ export async function POST(request: NextRequest) {
     // Check authentication
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const db = getDb();
@@ -55,34 +57,40 @@ export async function POST(request: NextRequest) {
       .where(eq(authUsers.clerkId, userId))
       .limit(1);
     const role = who[0]?.role;
-    if (role !== "trainer" && role !== "admin") {
-      return new NextResponse("Forbidden", { status: 403 });
+    if (role !== 'trainer' && role !== 'admin') {
+      return new NextResponse('Forbidden', { status: 403 });
     }
-    const body = await request.json();
-
-    const { courseId, startTime, endTime, instructorId, maxParticipants } =
-      body;
+    const bodyUnknown = (await request.json()) as unknown;
+    type CreatePayload = {
+      courseId: string;
+      startTime: string;
+      endTime: string;
+      instructorId?: string | null;
+      maxParticipants?: number | null;
+    };
+    const body = bodyUnknown as Partial<CreatePayload>;
+    const { courseId, startTime, endTime, instructorId, maxParticipants } = body;
 
     // Validate required fields
     if (!courseId || !startTime || !endTime) {
-      return new NextResponse("Missing required fields", { status: 400 });
+      return new NextResponse('Missing required fields', { status: 400 });
     }
 
     // Create new training session
     const newSession = await db
       .insert(trainingSessions)
       .values({
-        courseId,
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
-        instructorId: instructorId || null,
-        maxParticipants: maxParticipants || null,
+        courseId: String(courseId),
+        startTime: new Date(String(startTime)),
+        endTime: new Date(String(endTime)),
+        instructorId: typeof instructorId === 'string' ? instructorId : null,
+        maxParticipants: typeof maxParticipants === 'number' ? maxParticipants : null,
       })
       .returning();
 
     return NextResponse.json(newSession[0]);
   } catch (error) {
-    console.error("Error creating training session:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Error creating training session:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

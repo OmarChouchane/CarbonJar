@@ -1,10 +1,13 @@
 "use client";
 
 import React from "react";
+
 import { motion } from "framer-motion";
-import { H2Bold, H3 } from "../Heading";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+
+import { H2Bold, H3 } from "../Heading";
+
 
 interface CardProps {
   icon?: string;

@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
+
 import { motion } from "framer-motion";
-import { H2, SmallerH1 } from "../Heading";
+
 import Card from "../card";
+import { H2, SmallerH1 } from "../Heading";
 
 const CarbonManagement: React.FC = () => {
   const cards = [

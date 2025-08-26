@@ -1,7 +1,9 @@
-import { CheckCircle, Award, Eye } from "lucide-react";
-import type { Certificate } from "@/types/certificate";
 import { useState } from "react";
+
+import { CheckCircle, Award, Eye } from "lucide-react";
+
 import CertificateModal from "@/components/certificate-modal";
+import type { Certificate } from "@/types/certificate";
 
 interface CertificateCardProps {
   certificate: Certificate;

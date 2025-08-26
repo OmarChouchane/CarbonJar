@@ -2,15 +2,17 @@
 
 "use client";
 
+import { motion } from "framer-motion";
+
+import BigCard1 from "@/components/big-card1";
+import BigCard3 from "@/components/big-card3";
+import FAQSection from "@/components/faq-section";
 import Footer from "@/components/footer";
 import { SmallerH1, H2 } from "@/components/Heading";
-import BigCard3 from "@/components/big-card3";
-import BigCard1 from "@/components/big-card1";
-import FAQSection from "@/components/faq-section";
-import TextCard from "@/components/TextCard";
-import ScrollProgress from "@/components/scroll";
-import { motion } from "framer-motion";
 import Page from "@/components/page";
+import ScrollProgress from "@/components/scroll";
+import TextCard from "@/components/TextCard";
+
 
 export default function AboutPage() {
   const texts = [

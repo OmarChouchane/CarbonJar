@@ -1,0 +1,2444 @@
+﻿node.exe : 
+At C:\Program 
+Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : No 
+   tSpecified: (:String) [], Re  
+  moteException
+    + FullyQualifiedErrorId : Na 
+   tiveCommandError
+ 
+./app/(auth)/layout.tsx
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./app/about/page.tsx
+7:1  Warning: 
+`@/components/big-card3` import 
+should occur before import of 
+`@/components/footer`  
+import/order
+8:1  Warning: 
+`@/components/big-card1` import 
+should occur before import of 
+`@/components/footer`  
+import/order
+9:1  Warning: 
+`@/components/faq-section` 
+import should occur before 
+import of `@/components/footer`  
+import/order
+11:1  Warning: There should be 
+at least one empty line between 
+import groups  import/order
+11:1  Warning: 
+`@/components/scroll` import 
+should occur before import of 
+`@/components/TextCard`  
+import/order
+12:1  Warning: There should be 
+at least one empty line between 
+import groups  import/order
+12:1  Warning: `framer-motion` 
+import should occur before 
+import of `@/components/footer`  
+import/order
+13:1  Warning: 
+`@/components/page` import 
+should occur before import of 
+`@/components/TextCard`  
+import/order
+
+./app/api/assessments/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+6:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+8:27  Warning: 'req' is defined 
+but never used. Allowed unused 
+args must match /^_/u.  
+@typescript-eslint/no-unused-vars
+62:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+66:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+66:22  Error: Unsafe member 
+access .moduleId on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+67:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+67:28  Error: Unsafe member 
+access .assessmentType on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+68:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+68:22  Error: Unsafe member 
+access .maxScore on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+69:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+69:26  Error: Unsafe member 
+access .passingScore on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+70:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+70:23  Error: Unsafe member 
+access .timeLimit on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+
+./app/api/assessments/[id]/questi
+ons/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+6:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+8:68  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+15:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+16:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+16:32  Error: Unsafe member 
+access .then on an `any` value.  
+@typescript-eslint/no-unsafe-memb
+er-access
+36:69  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+43:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+44:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+44:32  Error: Unsafe member 
+access .then on an `any` value.  
+@typescript-eslint/no-unsafe-memb
+er-access
+46:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+54:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+54:18  Error: Unsafe member 
+access .text on an `any` value.  
+@typescript-eslint/no-unsafe-memb
+er-access
+55:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+55:21  Error: Unsafe member 
+access .options on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+56:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+56:27  Error: Unsafe member 
+access .correctAnswer on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+57:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+57:25  Error: Unsafe member 
+access .explanation on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+58:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+58:19  Error: Unsafe member 
+access .order on an `any` value. 
+ @typescript-eslint/no-unsafe-mem
+ber-access
+
+./app/api/assessments/[id]/route.
+ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+6:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+8:68  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+14:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+15:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+15:32  Error: Unsafe member 
+access .then on an `any` value.  
+@typescript-eslint/no-unsafe-memb
+er-access
+34:68  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+40:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+41:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+41:32  Error: Unsafe member 
+access .then on an `any` value.  
+@typescript-eslint/no-unsafe-memb
+er-access
+43:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+52:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+52:30  Error: Unsafe member 
+access .assessmentType on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+53:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+53:24  Error: Unsafe member 
+access .maxScore on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+54:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+54:28  Error: Unsafe member 
+access .passingScore on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+55:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+55:25  Error: Unsafe member 
+access .timeLimit on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+69:71  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+75:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+76:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+76:32  Error: Unsafe member 
+access .then on an `any` value.  
+@typescript-eslint/no-unsafe-memb
+er-access
+
+./app/api/auth-users/route.ts
+4:8  Error: Async function 'GET' 
+has no 'await' expression.  
+@typescript-eslint/require-await
+11:8  Error: Async function 
+'POST' has no 'await' 
+expression.  
+@typescript-eslint/require-await
+18:8  Error: Async function 
+'PUT' has no 'await' expression. 
+ @typescript-eslint/require-await
+25:8  Error: Async function 
+'DELETE' has no 'await' 
+expression.  
+@typescript-eslint/require-await
+
+./app/api/blogposts/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+20:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+29:29  Error: Unsafe member 
+access .status on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+31:5  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+31:18  Error: Unsafe member 
+access .title on an `any` value. 
+ @typescript-eslint/no-unsafe-mem
+ber-access
+32:5  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+32:17  Error: Unsafe member 
+access .slug on an `any` value.  
+@typescript-eslint/no-unsafe-memb
+er-access
+33:5  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+33:20  Error: Unsafe member 
+access .content on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+
+./app/api/blogposts/[id]/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+6:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+
+./app/api/carbon-topics/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+22:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+26:13  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `{ name: 
+string | SQL<unknown> | 
+Placeholder<string, any>; 
+description?: string | 
+SQL<unknown> | 
+Placeholder<string, any> | null 
+| undefined; topicId?: string | 
+SQL<...> | Placeholder<...> | 
+undefined; }`.  @typescript-eslin
+t/no-unsafe-argument
+
+./app/api/certificates/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+4:1  Warning: `crypto` import 
+should occur before import of 
+`next/server`  import/order
+21:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+23:30  Error: Unsafe call of 
+a(n) `any` typed value.  
+@typescript-eslint/no-unsafe-call
+23:30  Error: Unsafe call of 
+a(n) `any` typed value.  
+@typescript-eslint/no-unsafe-call
+23:35  Error: Unsafe member 
+access .fullName on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+25:6  Error: Unsafe member 
+access .toLowerCase on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+25:23  Error: Unsafe call of 
+a(n) `any` typed value.  
+@typescript-eslint/no-unsafe-call
+25:23  Error: Unsafe call of 
+a(n) `any` typed value.  
+@typescript-eslint/no-unsafe-call
+25:28  Error: Unsafe member 
+access .title on an `any` value. 
+ @typescript-eslint/no-unsafe-mem
+ber-access
+25:55  Error: Unsafe member 
+access .toLowerCase on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+29:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+31:39  Error: Unsafe member 
+access .courseStartDate on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+32:37  Error: Unsafe member 
+access .courseEndDate on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+33:40  Error: Unsafe member 
+access .issueDate on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+34:41  Error: Unsafe member 
+access .validUntil on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+46:20  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `{ [s: 
+string]: unknown; } | 
+ArrayLike<unknown>`.  @typescript
+-eslint/no-unsafe-argument
+52:15  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `{ title: 
+string | SQL<unknown> | 
+Placeholder<string, any>; 
+description: string | 
+SQL<unknown> | 
+Placeholder<string, any>; 
+userId: string | SQL<unknown> | 
+Placeholder<...>; ... 16 more 
+...; revokedReason?: string | 
+... 3 more ... | undefined; }`.  
+@typescript-eslint/no-unsafe-argu
+ment
+67:29  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+79:36  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+
+./app/api/certificates/[id]/route
+.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be no 
+empty line within import group  
+import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+13:1  Warning: 
+`drizzle-orm/node-postgres` type 
+import should occur before 
+import of `next/server`  
+import/order
+66:13  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+68:5  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+73:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+89:32  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+
+./app/api/contactrequests/route.t
+s
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+28:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+35:15  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `{ name: 
+string | SQL<unknown> | 
+Placeholder<string, any>; email: 
+string | SQL<unknown> | 
+Placeholder<string, any>; type: 
+"message" | "booking" | 
+SQL<unknown> | Placeholder<...>; 
+... 13 more ...; respondedAt?: 
+SQL<...> | ... 3 more ... | 
+undefined; }`.  @typescript-eslin
+t/no-unsafe-argument
+
+./app/api/contactrequests/[id]/ro
+ute.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+14:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+24:23  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+25:14  Error: Unsafe member 
+access .status on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+25:36  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+25:47  Error: Unsafe member 
+access .status on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+25:61  Error: Unsafe member 
+access .status on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+26:14  Error: Unsafe member 
+access .priority on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+26:38  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+26:49  Error: Unsafe member 
+access .priority on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+26:65  Error: Unsafe member 
+access .priority on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+27:14  Error: Unsafe member 
+access .respondedAt on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+29:18  Error: Unsafe member 
+access .respondedAt on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+29:41  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `string | 
+number | Date`.  @typescript-esli
+nt/no-unsafe-argument
+29:46  Error: Unsafe member 
+access .respondedAt on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+36:12  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `{ name?: 
+string | SQL<unknown> | PgColumn<
+ColumnBaseConfig<ColumnDataType, 
+string>, {}, {}> | undefined; 
+email?: string | SQL<unknown> | 
+PgColumn<...> | undefined; ... 
+14 more ...; respondedAt?: 
+SQL<...> | ... 3 more ... | 
+undefined; }`.  @typescript-eslin
+t/no-unsafe-argument
+
+./app/api/course-prerequisites/ro
+ute.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+25:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+39:56  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `string | 
+SQLWrapper`.  @typescript-eslint/
+no-unsafe-argument
+44:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+45:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+
+./app/api/enrollments/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+6:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+89:15  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+91:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+110:45  Error: Unsafe member 
+access .userId on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+117:16  Error: Unsafe member 
+access .userId on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+117:33  Error: Unsafe member 
+access .courseId on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+126:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+127:27  Error: Unsafe member 
+access .userId on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+128:29  Error: Unsafe member 
+access .courseId on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+129:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+129:30  Error: Unsafe member 
+access .completionStatus on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+130:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+131:21  Error: Unsafe member 
+access .progressPercentage on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+132:18  Error: Unsafe member 
+access .progressPercentage on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+134:16  Error: Unsafe member 
+access .enrollmentDate on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+135:34  Error: Unsafe argument 
+of type `any` assigned to a 
+parameter of type `string | 
+number | Date`.  @typescript-esli
+nt/no-unsafe-argument
+135:39  Error: Unsafe member 
+access .enrollmentDate on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+141:15  Error: Unsafe argument 
+of type `any` assigned to a 
+parameter of type `{ userId: 
+string | SQL<unknown> | 
+Placeholder<string, any>; 
+courseId: string | SQL<unknown> 
+| Placeholder<string, any>; 
+createdAt?: SQL<unknown> | Date 
+| Placeholder<...> | null | 
+undefined; ... 4 more ...; 
+completionStatus?: string | ... 
+3 more ... | undefined; }`.  @typ
+escript-eslint/no-unsafe-argument
+
+./app/api/enrollments/[id]/route.
+ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+6:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+21:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+37:12  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `{ userId?: 
+string | SQL<unknown> | PgColumn<
+ColumnBaseConfig<ColumnDataType, 
+string>, {}, {}> | undefined; 
+courseId?: string | SQL<...> | 
+PgColumn<...> | undefined; ... 5 
+more ...; completionStatus?: 
+string | ... 3 more ... | 
+undefined; }`.  @typescript-eslin
+t/no-unsafe-argument
+
+./app/api/learning-analytics/rout
+e.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+14:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+14:22  Warning: 'avg' is defined 
+but never used.  
+@typescript-eslint/no-unused-vars
+16:27  Warning: 'request' is 
+defined but never used. Allowed 
+unused args must match /^_/u.  
+@typescript-eslint/no-unused-vars
+98:53  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+99:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+99:20  Error: Unsafe member 
+access .date on an `any` value.  
+@typescript-eslint/no-unsafe-memb
+er-access
+100:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+100:27  Error: Unsafe member 
+access .enrollments on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+102:53  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+103:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+103:26  Error: Unsafe member 
+access .courseName on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+105:16  Error: Unsafe member 
+access .totalEnrollments on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+106:32  Error: Unsafe member 
+access .totalCertificates on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+106:57  Error: Unsafe member 
+access .totalEnrollments on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+108:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+108:32  Error: Unsafe member 
+access .totalEnrollments on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+109:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+109:33  Error: Unsafe member 
+access .totalCertificates on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+111:65  Warning: Unexpected any. 
+Specify a different type.  @types
+cript-eslint/no-explicit-any
+112:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+112:25  Error: Unsafe member 
+access .sessionId on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+113:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+113:24  Error: Unsafe member 
+access .courseId on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+114:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+114:25  Error: Unsafe member 
+access .startTime on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+115:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+115:23  Error: Unsafe member 
+access .endTime on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+116:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+116:31  Error: Unsafe member 
+access .maxParticipants on an 
+`any` value.  @typescript-eslint/
+no-unsafe-member-access
+
+./app/api/modules/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+5:14  Warning: 'desc' is defined 
+but never used.  
+@typescript-eslint/no-unused-vars
+6:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+8:27  Warning: 'req' is defined 
+but never used. Allowed unused 
+args must match /^_/u.  
+@typescript-eslint/no-unused-vars
+58:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+61:61  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `{ title: 
+string | SQL<unknown> | 
+Placeholder<string, any>; order: 
+number | SQL<unknown> | 
+Placeholder<string, any>; 
+contentType: "Video" | "Text" | 
+"Quiz" | SQL<...> | 
+Placeholder<...>; ... 5 more 
+...; estimatedDuration?: number 
+| ... 3 more ... | undefined; 
+}`.  @typescript-eslint/no-unsafe
+-argument
+
+./app/api/modules/[id]/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+30:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+34:10  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `{ title?: 
+string | SQL<unknown> | PgColumn<
+ColumnBaseConfig<ColumnDataType, 
+string>, {}, {}> | undefined; 
+order?: number | SQL<unknown> | 
+PgColumn<...> | undefined; ... 6 
+more ...; estimatedDuration?: 
+number | ... 3 more ... | 
+undefined; }`.  @typescript-eslin
+t/no-unsafe-argument
+
+./app/api/notifications/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+4:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+9:27  Warning: 'req' is defined 
+but never used. Allowed unused 
+args must match /^_/u.  
+@typescript-eslint/no-unused-vars
+56:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+57:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+79:46  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `"admin" | 
+"trainer" | "trainee" | "user" | 
+SQLWrapper`.  @typescript-eslint/
+no-unsafe-argument
+90:52  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `string | 
+SQLWrapper`.  @typescript-eslint/
+no-unsafe-argument
+101:53  Error: Unsafe argument 
+of type `any` assigned to a 
+parameter of type `string | 
+SQLWrapper`.  @typescript-eslint/
+no-unsafe-argument
+119:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+138:44  Error: Unsafe argument 
+of type `any` assigned to a 
+parameter of type `string | 
+SQLWrapper`.  @typescript-eslint/
+no-unsafe-argument
+149:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+150:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+
+./app/api/notifications/[id]/rout
+e.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+4:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+54:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+67:21  Error: Unsafe member 
+access .content on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+67:43  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+67:67  Error: Unsafe member 
+access .content on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+68:14  Error: Unsafe member 
+access .status on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+68:40  Error: Unsafe member 
+access .status on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+69:7  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+69:30  Error: Unsafe member 
+access .status on an `any` 
+value.  @typescript-eslint/no-uns
+afe-member-access
+
+./app/api/questions/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+18:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+20:61  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `{ text: 
+string | SQL<unknown> | 
+Placeholder<string, any>; 
+assessmentId: string | 
+SQL<unknown> | 
+Placeholder<string, any>; 
+order?: number | SQL<unknown> | 
+Placeholder<...> | null | 
+undefined; questionId?: string | 
+... 2 more ... | undefined; 
+options?: unknown; 
+correctAnswer?: string | ... 3 
+more ... | undefined; expl...`.  
+@typescript-eslint/no-unsafe-argu
+ment
+
+./app/api/questions/[id]/route.ts
+3:8  Error: Async function 'GET' 
+has no 'await' expression.  
+@typescript-eslint/require-await
+12:8  Error: Async function 
+'PUT' has no 'await' expression. 
+ @typescript-eslint/require-await
+21:8  Error: Async function 
+'DELETE' has no 'await' 
+expression.  
+@typescript-eslint/require-await
+
+./app/api/training-sessions/route
+.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+7:27  Warning: 'request' is 
+defined but never used. Allowed 
+unused args must match /^_/u.  
+@typescript-eslint/no-unused-vars
+61:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+63:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+75:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+76:29  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `string | 
+number | Date`.  @typescript-esli
+nt/no-unsafe-argument
+77:27  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `string | 
+number | Date`.  @typescript-esli
+nt/no-unsafe-argument
+78:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+79:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+
+./app/api/training-sessions/[id]/
+route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+31:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+33:11  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+40:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+41:41  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `string | 
+number | Date`.  @typescript-esli
+nt/no-unsafe-argument
+42:37  Error: Unsafe argument of 
+type `any` assigned to a 
+parameter of type `string | 
+number | Date`.  @typescript-esli
+nt/no-unsafe-argument
+43:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+44:9  Error: Unsafe assignment 
+of an `any` value.  @typescript-e
+slint/no-unsafe-assignment
+
+./app/api/trainings/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+4:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+
+./app/api/trainings/[id]/modules/
+route.ts
+3:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before type 
+import of `next/server`  
+import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `drizzle-orm` 
+import should occur before type 
+import of `next/server`  
+import/order
+7:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before type import 
+of `next/server`  import/order
+
+./app/api/trainings/[id]/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur before 
+import of `next/server`  
+import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+6:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+
+./app/api/trainings/[id]/sessions
+/route.ts
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+
+./app/api/user/notifications/rout
+e.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+
+./app/api/user/notifications/[id]
+/route.ts
+1:1  Warning: Imports 
+"NextRequest" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/server`  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/server`  
+import/order
+
+./app/api/users/route.ts
+1:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur after import 
+of `drizzle-orm`  import/order
+3:1  Warning: `pg` import should 
+occur after import of 
+`next/server`  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./app/api/users/[id]/route.ts
+1:1  Warning: 
+`drizzle-orm/node-postgres` 
+import should occur after import 
+of `drizzle-orm`  import/order
+3:1  Warning: `pg` import should 
+occur after import of 
+`next/server`  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./app/api/webhooks/user/route.ts
+2:1  Warning: 
+`@clerk/nextjs/server` type 
+import should occur before 
+import of `svix`  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `svix`  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `next/server` 
+import should occur before 
+import of `svix`  import/order
+
+./app/blogs/page.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: 
+`@/components/Heading` import 
+should occur before import of 
+`@/components/page`  import/order
+7:1  Warning: 
+`@/components/footer` import 
+should occur before import of 
+`@/components/page`  import/order
+
+./app/blogs/[id]/page.tsx
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: 
+`@/components/Heading` import 
+should occur before import of 
+`@/components/page`  import/order
+6:1  Warning: 
+`@/components/footer` import 
+should occur before import of 
+`@/components/page`  import/order
+
+./app/certificate/[slug]/page.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: `drizzle-orm` 
+import should occur before type 
+import of `next`  import/order
+5:1  Warning: 
+`@/components/navigation` import 
+should occur before import of 
+`@/lib/db/drizzle`  import/order
+6:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: 
+`@/components/footer` import 
+should occur before import of 
+`@/lib/db/drizzle`  import/order
+7:1  Warning: `next/headers` 
+import should occur before 
+import of `@/lib/db/drizzle`  
+import/order
+
+./app/certificates/[slug]/page.ts
+x
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: `drizzle-orm` 
+import should occur before type 
+import of `next`  import/order
+5:1  Warning: 
+`@/components/navigation` import 
+should occur before import of 
+`@/lib/db/drizzle`  import/order
+6:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: 
+`@/components/footer` import 
+should occur before import of 
+`@/lib/db/drizzle`  import/order
+7:1  Warning: `next/headers` 
+import should occur before 
+import of `@/lib/db/drizzle`  
+import/order
+
+./app/dashboard/certificates/page
+.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: 
+`@/components/footer` import 
+should occur before import of 
+`@/components/navigation`  
+import/order
+7:1  Warning: 
+`@/components/certificate-card` 
+import should occur before 
+import of 
+`@/components/navigation`  
+import/order
+8:1  Warning: 
+`@/components/empty-state` 
+import should occur before 
+import of 
+`@/components/navigation`  
+import/order
+9:1  Warning: 
+`@/components/loading-state` 
+import should occur before 
+import of 
+`@/components/navigation`  
+import/order
+10:1  Warning: 
+`@/components/error-state` 
+import should occur before 
+import of 
+`@/components/navigation`  
+import/order
+12:1  Warning: 
+`@/components/action-button` 
+import should occur before 
+import of 
+`@/components/navigation`  
+import/order
+13:1  Warning: `@/components/cour
+se-recommendation` import should 
+occur before import of 
+`@/components/navigation`  
+import/order
+14:1  Warning: 
+`@/components/section-wrapper` 
+import should occur before 
+import of 
+`@/components/stats-card`  
+import/order
+15:1  Warning: 
+`@/components/Heading` import 
+should occur before import of 
+`@/components/navigation`  
+import/order
+16:1  Warning: There should be 
+at least one empty line between 
+import groups  import/order
+17:1  Warning: `next/link` 
+import should occur before 
+import of 
+`@/components/navigation`  
+import/order
+18:1  Warning: `lucide-react` 
+import should occur before 
+import of 
+`@/components/navigation`  
+import/order
+188:16  Warning: 'e' is defined 
+but never used.  
+@typescript-eslint/no-unused-vars
+
+./app/expertise/page.tsx
+3:1  Warning: 
+`@/components/footer` import 
+should occur after import of 
+`@/components/faq-section2`  
+import/order
+6:1  Warning: 
+`@/components/scroll` import 
+should occur after import of 
+`@/components/page`  import/order
+
+./app/layout.tsx
+2:1  Warning: `@clerk/nextjs` 
+import should occur before type 
+import of `next`  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./app/mentor/layout.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`next/navigation`  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `next/navigation`  
+import/order
+7:1  Warning: 
+`@/components/navigation` import 
+should occur before import of 
+`@/lib/db/drizzle`  import/order
+8:1  Warning: 
+`@/components/footer` import 
+should occur before import of 
+`@/lib/db/drizzle`  import/order
+
+./app/mentor/page.tsx
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: 
+`@/components/button` import 
+should occur before import of 
+`@/components/Heading`  
+import/order
+5:1  Warning: `lucide-react` 
+import should occur before 
+import of `@/components/Heading` 
+ import/order
+6:1  Warning: `next/link` import 
+should occur before import of 
+`@/components/Heading`  
+import/order
+7:1  Warning: 
+`@clerk/nextjs/server` import 
+should occur before import of 
+`@/components/Heading`  
+import/order
+8:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+8:1  Warning: `drizzle-orm` 
+import should occur before 
+import of `@/components/Heading` 
+ import/order
+
+./app/mentor/trainings/new/page.t
+sx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `@clerk/nextjs` 
+import should occur before 
+import of `next/link`  
+import/order
+9:1  Warning: 
+`@/components/button` import 
+should occur before import of 
+`@/components/Heading`  
+import/order
+15:6  Warning: 'Status' is 
+defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./app/mentor/trainings/page.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+8:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+8:1  Warning: 
+`@/components/button` import 
+should occur before import of 
+`@/components/Heading`  
+import/order
+9:1  Warning: `lucide-react` 
+import should occur before 
+import of `next/link`  
+import/order
+
+./app/mentor/trainings/[id]/page.
+tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+8:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+8:1  Warning: 
+`@/components/button` import 
+should occur before import of 
+`@/components/Heading`  
+import/order
+9:1  Warning: `@clerk/nextjs` 
+import should occur before 
+import of `next/navigation`  
+import/order
+
+./app/page.tsx
+1:1  Warning: 
+`@/components/header` import 
+should occur after import of 
+`@/components/faq-section`  
+import/order
+2:1  Warning: 
+`@/components/footer` import 
+should occur after import of 
+`@/components/faq-section`  
+import/order
+4:1  Warning: 
+`@/components/climate-action` 
+import should occur after import 
+of `@/components/cards-section`  
+import/order
+6:1  Warning: 
+`@/components/testamonials` 
+import should occur after import 
+of `@/components/page`  
+import/order
+8:1  Warning: 
+`@/components/scroll` import 
+should occur after import of 
+`@/components/page`  import/order
+
+./app/trainings/page.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+9:1  Warning: 
+`@/components/Heading` import 
+should occur before import of 
+`@/components/scroll`  
+import/order
+10:1  Warning: 
+`@/components/enroll-button` 
+import should occur before 
+import of `@/components/footer`  
+import/order
+12:1  Warning: 
+`@/components/static-bloc2` 
+import should occur before 
+import of 
+`@/components/TextCard`  
+import/order
+13:1  Warning: 
+`@/components/faq-section` 
+import should occur before 
+import of `@/components/footer`  
+import/order
+14:1  Warning: 
+`@/components/page` import 
+should occur before import of 
+`@/components/scroll`  
+import/order
+
+./app/trainings/[id]/page.tsx
+2:1  Warning: 
+`@/components/button` import 
+should occur before import of 
+`@/components/Heading`  
+import/order
+2:8  Warning: 'Button' is 
+defined but never used.  
+@typescript-eslint/no-unused-vars
+3:1  Warning: 
+`@/components/enroll-button` 
+import should occur before 
+import of `@/components/Heading` 
+ import/order
+4:1  Warning: 
+`@/components/footer` import 
+should occur before import of 
+`@/components/Heading`  
+import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `next/link` import 
+should occur before import of 
+`@/components/Heading`  
+import/order
+7:1  Warning: `next/headers` 
+import should occur before 
+import of `@/components/Heading` 
+ import/order
+
+./components/action-button/index.
+tsx
+1:1  Warning: Imports 
+"LucideIcon" are only used as 
+type.  @typescript-eslint/consist
+ent-type-imports
+
+./components/big-card1/index.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: `../button` import 
+should occur before import of 
+`../Heading`  import/order
+5:1  Warning: `react-icons/io` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./components/big-card2/index.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `../button` import 
+should occur before import of 
+`../Heading`  import/order
+7:1  Warning: `react-icons/io` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./components/big-card3/index.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/button/index.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: `react` type 
+import should occur before 
+import of `framer-motion`  
+import/order
+
+./components/carbon-management/in
+dex.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `../card` import 
+should occur before import of 
+`../Heading`  import/order
+
+./components/card/index.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `framer-motion` 
+import should occur before 
+import of `next/image`  
+import/order
+
+./components/card2/index.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `next/link` import 
+should occur before import of 
+`../Heading`  import/order
+7:1  Warning: `next/image` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./components/cards-section/index.
+tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `framer-motion` 
+import should occur before 
+import of `../big-card1`  
+import/order
+
+./components/cards-section2/index
+.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `../card2` import 
+should occur before import of 
+`../Heading`  import/order
+6:1  Warning: `framer-motion` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./components/certificate-card/ind
+ex.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: `react` import 
+should occur before import of 
+`lucide-react`  import/order
+4:1  Warning: 
+`@/components/certificate-modal` 
+import should occur before type 
+import of `@/types/certificate`  
+import/order
+
+./components/certificate-modal/in
+dex.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: `react` import 
+should occur before import of 
+`lucide-react`  import/order
+
+./components/climate-action/index
+.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `framer-motion` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./components/content-card/index.t
+sx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/corporate-trainings/
+index.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `framer-motion` 
+import should occur before 
+import of `../big-card2`  
+import/order
+7:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+7:1  Warning: `../course-card` 
+import should occur before 
+import of `../Heading`  
+import/order
+8:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+8:1  Warning: 
+`@/components/button` import 
+should occur before import of 
+`../big-card2`  import/order
+9:1  Warning: `react-icons/io` 
+import should occur before 
+import of `../big-card2`  
+import/order
+
+./components/course-card/index.ts
+x
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+9:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+9:1  Warning: `../content-card` 
+import should occur before 
+import of `../Heading`  
+import/order
+10:1  Warning: `next/image` 
+import should occur before 
+import of `react-icons/fa`  
+import/order
+
+./components/course-card-student/
+index.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+9:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+9:1  Warning: `../content-card` 
+import should occur before 
+import of `../Heading`  
+import/order
+10:1  Warning: `next/image` 
+import should occur before 
+import of `react-icons/fa`  
+import/order
+
+./components/enroll-button/index.
+tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/faq-section/index.ts
+x
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/faq-section2/index.t
+sx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/footer/index.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/Grid/index.tsx
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `next/image` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./components/header/index.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `react-icons/io` 
+import should occur before 
+import of `@/components/button`  
+import/order
+6:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+7:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+7:1  Warning: 
+`@/components/LinkImageGrid` 
+import should occur before 
+import of `../Heading`  
+import/order
+8:1  Warning: `framer-motion` 
+import should occur before 
+import of `@/components/button`  
+import/order
+
+./components/Heading.tsx
+3:32  Warning: Caution: `React` 
+also has a named export 
+`HTMLAttributes`. Check if you 
+meant to write `import 
+{HTMLAttributes} from 'react'` 
+instead.  
+import/no-named-as-default-member
+
+./components/LinkImageGrid/index.
+tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/navigation/index.tsx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `next/image` 
+import should occur before 
+import of `next/link`  
+import/order
+7:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+8:1  Warning: `@clerk/nextjs` 
+import should occur before 
+import of `next/link`  
+import/order
+
+./components/notifications/Notifi
+cationBell.tsx
+148:20  Warning: `'` can be 
+escaped with `&apos;`, 
+`&lsquo;`, `&#39;`, `&rsquo;`.  
+react/no-unescaped-entities
+
+./components/page/index.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/question-card/index.
+tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: `react` import 
+should occur before import of 
+`react-icons/io`  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: `framer-motion` 
+import should occur before 
+import of `react-icons/io`  
+import/order
+
+./components/question-card2/index
+.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: `react` import 
+should occur before import of 
+`react-icons/io`  import/order
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: `framer-motion` 
+import should occur before 
+import of `react-icons/io`  
+import/order
+
+./components/section-wrapper/inde
+x.tsx
+1:1  Warning: All imports in the 
+declaration are only used as 
+types. Use `import type`.  @types
+cript-eslint/consistent-type-impo
+rts
+
+./components/smallbox/index.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/static-bloc/index.ts
+x
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: `framer-motion` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./components/static-bloc2/index.t
+sx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: `framer-motion` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./components/stats-card/index.tsx
+1:1  Warning: All imports in the 
+declaration are only used as 
+types. Use `import type`.  @types
+cript-eslint/consistent-type-impo
+rts
+
+./components/students-trainings/i
+ndex.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: 
+`../course-card-student` import 
+should occur before import of 
+`../Heading`  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: `../button` import 
+should occur before import of 
+`../Heading`  import/order
+6:1  Warning: `react-icons/io` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./components/subscribe-newsletter
+/index.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+
+./components/testamonial-card/ind
+ex.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: `../Heading` 
+import should occur after import 
+of `next/image`  import/order
+
+./components/testamonials/index.t
+sx
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+4:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+5:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+6:1  Warning: `swiper/react` 
+import should occur before 
+import of `../testamonial-card`  
+import/order
+11:1  Warning: `swiper/modules` 
+import should occur before 
+import of `../testamonial-card`  
+import/order
+12:1  Warning: There should be 
+at least one empty line between 
+import groups  import/order
+12:1  Warning: `react-icons/io` 
+import should occur before 
+import of `../testamonial-card`  
+import/order
+13:1  Warning: There should be 
+no empty line within import 
+group  import/order
+13:1  Warning: `../button` 
+import should occur before 
+import of `../testamonial-card`  
+import/order
+15:1  Warning: There should be 
+at least one empty line between 
+import groups  import/order
+15:1  Warning: `../Heading` 
+import should occur before 
+import of `../testamonial-card`  
+import/order
+16:1  Warning: `framer-motion` 
+import should occur before 
+import of `next/image`  
+import/order
+
+./components/TextCard/index.tsx
+1:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+2:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: `framer-motion` 
+import should occur before 
+import of `../Heading`  
+import/order
+
+./lib/db/drizzle.ts
+3:1  Warning: There should be at 
+least one empty line between 
+import groups  import/order
+3:1  Warning: 
+`@neondatabase/serverless` 
+import should occur before 
+import of 
+`drizzle-orm/neon-http`  
+import/order
+
+info  - Need to disable some 
+ESLint rules? Learn more here: ht
+tps://nextjs.org/docs/app/api-ref
+erence/config/eslint#disabling-ru
+les

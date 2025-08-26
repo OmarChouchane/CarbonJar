@@ -1,9 +1,10 @@
-import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db/drizzle";
-import { authUsers } from "@/lib/db/schema";
-import { Webhook } from "svix";
-import type { WebhookEvent } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+import type { WebhookEvent } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import { NextResponse } from 'next/server';
+import { Webhook } from 'svix';
+
+import { getDb } from '@/lib/db/drizzle';
+import { authUsers } from '@/lib/db/schema';
 
 // Interface for Clerk user data
 interface ClerkUser {
@@ -23,40 +24,40 @@ interface ClerkSession {
 }
 
 // Handle GET requests for testing
-export async function GET() {
+export function GET() {
   return NextResponse.json({
-    message: "Webhook endpoint is working",
+    message: 'Webhook endpoint is working',
     timestamp: new Date().toISOString(),
   });
 }
 
 export async function POST(req: Request) {
-  console.log("🔔 Webhook received");
+  console.log('🔔 Webhook received');
 
   try {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
     if (!WEBHOOK_SECRET) {
-      console.error("❌ CLERK_WEBHOOK_SECRET not found");
-      return new Response("Webhook secret not configured", { status: 500 });
+      console.error('❌ CLERK_WEBHOOK_SECRET not found');
+      return new Response('Webhook secret not configured', { status: 500 });
     }
 
     // Get the headers
     const headerPayload = req.headers;
-    const svix_id = headerPayload.get("svix-id");
-    const svix_timestamp = headerPayload.get("svix-timestamp");
-    const svix_signature = headerPayload.get("svix-signature");
+    const svix_id = headerPayload.get('svix-id');
+    const svix_timestamp = headerPayload.get('svix-timestamp');
+    const svix_signature = headerPayload.get('svix-signature');
 
     // If there are no headers, error out
     if (!svix_id || !svix_timestamp || !svix_signature) {
-      return new Response("Error occured -- no svix headers", {
+      return new Response('Error occured -- no svix headers', {
         status: 400,
       });
     }
 
     // Get the body
-    const payload = await req.json();
-    const body = JSON.stringify(payload);
+    const payloadUnknown = (await req.json()) as unknown;
+    const body = JSON.stringify(payloadUnknown);
 
     // Create a new Svix instance with your secret.
     const wh = new Webhook(WEBHOOK_SECRET);
@@ -66,13 +67,13 @@ export async function POST(req: Request) {
     // Verify the payload with the headers
     try {
       evt = wh.verify(body, {
-        "svix-id": svix_id,
-        "svix-timestamp": svix_timestamp,
-        "svix-signature": svix_signature,
+        'svix-id': svix_id,
+        'svix-timestamp': svix_timestamp,
+        'svix-signature': svix_signature,
       }) as WebhookEvent;
     } catch (err) {
-      console.error("❌ Webhook verification failed:", err);
-      return new Response("Error occured", {
+      console.error('❌ Webhook verification failed:', err);
+      return new Response('Error occured', {
         status: 400,
       });
     }
@@ -83,31 +84,29 @@ export async function POST(req: Request) {
     try {
       const db = getDb();
 
-      if (eventType === "user.created") {
+      if (eventType === 'user.created') {
         const user = evt.data as ClerkUser;
         const email = user.email_addresses?.[0]?.email_address;
 
         await db.insert(authUsers).values({
           clerkId: user.id,
-          email: email || "",
-          passwordHash: "", // Clerk handles auth, so we use empty hash
-          firstName: user.first_name || "Unknown",
-          lastName: user.last_name || "User",
+          email: email || '',
+          passwordHash: '', // Clerk handles auth, so we use empty hash
+          firstName: user.first_name || 'Unknown',
+          lastName: user.last_name || 'User',
           profileImageUrl: user.image_url || undefined,
-          lastLogin: user.last_sign_in_at
-            ? new Date(user.last_sign_in_at)
-            : undefined,
+          lastLogin: user.last_sign_in_at ? new Date(user.last_sign_in_at) : undefined,
         });
 
-        console.log("✅ User created in database:", user.id);
-      } else if (eventType === "user.updated") {
+        console.log('✅ User created in database:', user.id);
+      } else if (eventType === 'user.updated') {
         const user = evt.data as ClerkUser;
         const email = user.email_addresses?.[0]?.email_address;
 
         const updateData: Partial<typeof authUsers.$inferInsert> = {
-          email: email || "",
-          firstName: user.first_name || "Unknown",
-          lastName: user.last_name || "User",
+          email: email || '',
+          firstName: user.first_name || 'Unknown',
+          lastName: user.last_name || 'User',
           profileImageUrl: user.image_url || undefined,
         };
 
@@ -116,13 +115,10 @@ export async function POST(req: Request) {
           updateData.lastLogin = new Date(user.last_sign_in_at);
         }
 
-        await db
-          .update(authUsers)
-          .set(updateData)
-          .where(eq(authUsers.clerkId, user.id));
+        await db.update(authUsers).set(updateData).where(eq(authUsers.clerkId, user.id));
 
-        console.log("✅ User updated in database:", user.id);
-      } else if (eventType === "user.deleted") {
+        console.log('✅ User updated in database:', user.id);
+      } else if (eventType === 'user.deleted') {
         const user = evt.data as ClerkUser;
 
         // Soft delete by setting isActive to false, or hard delete
@@ -139,8 +135,8 @@ export async function POST(req: Request) {
         //   .delete(authUsers)
         //   .where(eq(authUsers.clerkId, user.id));
 
-        console.log("✅ User soft-deleted in database:", user.id);
-      } else if (eventType === "session.created") {
+        console.log('✅ User soft-deleted in database:', user.id);
+      } else if (eventType === 'session.created') {
         const session = evt.data as ClerkSession;
 
         // Update last login time when a new session is created
@@ -151,18 +147,18 @@ export async function POST(req: Request) {
           })
           .where(eq(authUsers.clerkId, session.user_id));
 
-        console.log("✅ User last login updated:", session.user_id);
+        console.log('✅ User last login updated:', session.user_id);
       } else {
-        console.log("⚠️ Unhandled webhook event type:", eventType);
+        console.log('⚠️ Unhandled webhook event type:', eventType);
       }
     } catch (dbError) {
-      console.error("❌ Database operation failed:", dbError);
-      return new Response("Database error", { status: 500 });
+      console.error('❌ Database operation failed:', dbError);
+      return new Response('Database error', { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("❌ Webhook processing failed:", error);
-    return new Response("Internal server error", { status: 500 });
+    console.error('❌ Webhook processing failed:', error);
+    return new Response('Internal server error', { status: 500 });
   }
 }

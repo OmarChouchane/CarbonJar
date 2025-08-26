@@ -1,8 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { and, desc, eq } from "drizzle-orm";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
+
 import { getDb } from "@/lib/db/drizzle";
 import { authUsers, notifications } from "@/lib/db/schema";
-import { and, desc, eq } from "drizzle-orm";
+
 
 // GET /api/user/notifications -> list current user's notifications
 // PATCH /api/user/notifications -> mark all as read for current user

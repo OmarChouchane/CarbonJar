@@ -1,7 +1,8 @@
+import { eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
+
 import { getDb } from "@/lib/db/drizzle";
 import { trainingSessions, courses, authUsers } from "@/lib/db/schema";
-import { eq, sql } from "drizzle-orm";
 
 interface RouteParams {
   params: { id: string };

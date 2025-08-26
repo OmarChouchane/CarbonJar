@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import Page from "@/components/page";
-import ScrollProgress from "@/components/scroll";
-import { H1, H2, H1Inter } from "@/components/Heading";
-import Footer from "@/components/footer";
+import { useEffect, useMemo, useState } from 'react';
+
+import Footer from '@/components/footer';
+import { H1, H2, H1Inter } from '@/components/Heading';
+import Page from '@/components/page';
+import ScrollProgress from '@/components/scroll';
 // No per-post pages; single feed
 
 type BlogPost = {
@@ -14,30 +15,30 @@ type BlogPost = {
   content: string | null;
   authorId: string | null;
   publishDate: string | null;
-  status: "draft" | "published";
+  status: 'draft' | 'published';
   createdAt?: string | null;
   updatedAt?: string | null;
 };
 
 function formatDate(iso: string | null) {
-  if (!iso) return "";
+  if (!iso) return '';
   const d = new Date(iso);
-  if (isNaN(d.getTime())) return "";
+  if (isNaN(d.getTime())) return '';
   return d.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   });
 }
 
 function getExcerpt(text: string | null, len = 160) {
-  if (!text) return "";
+  if (!text) return '';
   const t = text
-    .replace(/<[^>]+>/g, "")
-    .replace(/\s+/g, " ")
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
     .trim();
   if (t.length <= len) return t;
-  return t.slice(0, len).trimEnd() + "…";
+  return t.slice(0, len).trimEnd() + '…';
 }
 
 export default function BlogsPage() {
@@ -48,17 +49,16 @@ export default function BlogsPage() {
 
   useEffect(() => {
     let mounted = true;
-    (async () => {
+    void (async () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch("/api/blogposts", { cache: "no-store" });
-        if (!res.ok)
-          throw new Error(`Failed to fetch blog posts: ${res.status}`);
-        const data: BlogPost[] = await res.json();
+        const res = await fetch('/api/blogposts', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Failed to fetch blog posts: ${res.status}`);
+        const data = (await res.json()) as unknown as BlogPost[];
         if (mounted) setPosts(data);
-      } catch (e: any) {
-        if (mounted) setError(e?.message || "Failed to load blog posts");
+      } catch (e: unknown) {
+        if (mounted) setError(e instanceof Error ? e.message : 'Failed to load blog posts');
       } finally {
         if (mounted) setLoading(false);
       }
@@ -71,13 +71,13 @@ export default function BlogsPage() {
   const published = useMemo(
     () =>
       posts
-        .filter((p) => p.status === "published")
+        .filter((p) => p.status === 'published')
         .sort((a, b) => {
           const da = a.publishDate ? new Date(a.publishDate).getTime() : 0;
           const db = b.publishDate ? new Date(b.publishDate).getTime() : 0;
           return db - da;
         }),
-    [posts]
+    [posts],
   );
 
   return (
@@ -85,7 +85,7 @@ export default function BlogsPage() {
       <ScrollProgress />
       <main>
         <header>
-          <div className="mx-auto py-12 px-4 sm:px-6 lg:px-8 md:mb-2 sm:mb-4 lg:mt-4 md:mt-4 sm:mt-4">
+          <div className="mx-auto px-4 py-12 sm:mt-4 sm:mb-4 sm:px-6 md:mt-4 md:mb-2 lg:mt-4 lg:px-8">
             <br />
             <H1 className="text-left">Blogs & Insights</H1>
             <br />
@@ -96,7 +96,7 @@ export default function BlogsPage() {
         </header>
 
         <section className="w-full py-8 md:py-10 lg:py-12">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
             {loading && (
               <div className="flex items-start py-12">
                 <H2 className="text-green text-left">Loading posts…</H2>
@@ -114,26 +114,22 @@ export default function BlogsPage() {
                     <H2 className="text-green text-left">No posts yet.</H2>
                   </div>
                 ) : (
-                  <div className="divide-y divide-lighter-green border-t border-lighter-green">
+                  <div className="divide-lighter-green border-lighter-green divide-y border-t">
                     {published.map((p) => (
                       <article key={p.id} className="py-6">
                         <header className="mb-2">
-                          <H1Inter className="text-green text-xl leading-7">
-                            {p.title}
-                          </H1Inter>
-                          <div className="text-green/70 text-xs mt-1">
+                          <H1Inter className="text-green text-xl leading-7">{p.title}</H1Inter>
+                          <div className="text-green/70 mt-1 text-xs">
                             {formatDate(p.publishDate)}
                           </div>
                         </header>
-                        <div className="text-green text-sm text-left leading-6">
+                        <div className="text-green text-left text-sm leading-6">
                           {expanded[p.id]
-                            ? p.content?.replace(/<[^>]+>/g, "") || ""
+                            ? p.content?.replace(/<[^>]+>/g, '') || ''
                             : getExcerpt(p.content)}
                         </div>
                         <div className="mt-3 flex items-center justify-between">
-                          <span className="font-Inter text-green/60 text-xs">
-                            {p.slug}
-                          </span>
+                          <span className="font-Inter text-green/60 text-xs">{p.slug}</span>
                           <button
                             type="button"
                             className="text-green font-Inter text-sm hover:underline"
@@ -144,7 +140,7 @@ export default function BlogsPage() {
                               }))
                             }
                           >
-                            {expanded[p.id] ? "Show less" : "Read more"}
+                            {expanded[p.id] ? 'Show less' : 'Read more'}
                           </button>
                         </div>
                       </article>
