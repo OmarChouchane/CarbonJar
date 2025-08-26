@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const { userId: clerkId } = await auth();
     if (!clerkId) return new NextResponse('Unauthorized', { status: 401 });
 
-  const { id } = await params;
+    const { id } = await params;
     const bodyUnknown = (await req.json().catch(() => ({}))) as unknown;
     type PatchBody = { status?: 'read' | 'unread' };
     const body = bodyUnknown as PatchBody;
@@ -54,7 +54,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     const { userId: clerkId } = await auth();
     if (!clerkId) return new NextResponse('Unauthorized', { status: 401 });
 
-  const { id } = await params;
+    const { id } = await params;
     const db = getDb();
     const user = await db
       .select({ userId: authUsers.userId })

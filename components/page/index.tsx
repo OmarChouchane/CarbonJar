@@ -1,6 +1,6 @@
-import Head from "next/head";
+import Head from 'next/head';
 
-import Navigation from "@/components/navigation";
+import Navigation from '@/components/navigation';
 
 interface IProps {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ const Page = ({ children }: IProps) => (
     <Head>
       <link rel="icon" href="/logoCarbonJar.svg" />
     </Head>
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <Navigation />
       {children}
     </div>

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import type { MouseEventHandler } from "react";
+import type { MouseEventHandler } from 'react';
 
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 interface IButton {
   primary?: boolean;
@@ -28,12 +28,12 @@ const Button = ({
   const styles = primary
     ? `bg-green text-white border-green hover:bg-green/90`
     : secondary
-    ? `bg-white text-green border-green hover:bg-light-green/80`
-    : `bg-light-green text-green border-light-green hover:bg-light-green/80`;
+      ? `bg-white text-green border-green hover:bg-light-green/80`
+      : `bg-light-green text-green border-light-green hover:bg-light-green/80`;
 
   return (
     <motion.button
-      className={`${baseStyle} ${styles} ${modifier || ""}`}
+      className={`${baseStyle} ${styles} ${modifier || ''}`}
       onClick={onClick}
       disabled={disabled}
       {...rest}

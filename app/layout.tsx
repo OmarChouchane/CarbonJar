@@ -1,34 +1,30 @@
-import { ClerkProvider } from "@clerk/nextjs";
-import type { Metadata } from "next";
-import "./globals.css";
-import { Inter } from "next/font/google";
+import { ClerkProvider } from '@clerk/nextjs';
+import type { Metadata } from 'next';
+import './globals.css';
+import { Inter } from 'next/font/google';
 
-import ClientLayout from "./ClientLayout";
+import ClientLayout from './ClientLayout';
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
   // weight: ['400', '500', '700'] // can specify if needed
 });
 
 export const metadata: Metadata = {
-  title: "CarbonJar",
-  description: "Carbon management and climate action solutions",
+  title: 'CarbonJar',
+  description: 'Carbon management and climate action solutions',
   icons: {
-    icon: "/logoCarbonJar.svg",
-    shortcut: "/logoCarbonJar.svg",
-    apple: "/logoCarbonJar.svg",
+    icon: '/logoCarbonJar.svg',
+    shortcut: '/logoCarbonJar.svg',
+    apple: '/logoCarbonJar.svg',
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-  <ClerkProvider>
+    <ClerkProvider>
       <html lang="en">
         <head>
           <link
@@ -53,12 +49,10 @@ export default function RootLayout({
             crossOrigin="anonymous"
           />
         </head>
-        <body
-          className={`${inter.variable} text-center bg-lighter-green min-h-screen`}
-        >
+        <body className={`${inter.variable} bg-lighter-green min-h-screen text-center`}>
           <ClientLayout>{children}</ClientLayout>
         </body>
       </html>
-  </ClerkProvider>
+    </ClerkProvider>
   );
 }

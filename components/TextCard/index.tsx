@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
-import { H2, H2Bold, SmallerH1 } from "../Heading";
+import { H2, H2Bold, SmallerH1 } from '../Heading';
 
 interface TextCardProps {
   texts: { title: string; text: string }[];
@@ -14,16 +14,16 @@ const TextCard: React.FC<TextCardProps> = ({ texts, title }) => (
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, amount: 0.2 }}
-    transition={{ duration: 0.6, ease: "easeOut" }}
-    className="rounded-lg border border-lighter-green bg-white-light lg:mt-20 lg:mb-20 lg:mx-32"
+    transition={{ duration: 0.6, ease: 'easeOut' }}
+    className="border-lighter-green bg-white-light rounded-lg border lg:mx-32 lg:mt-20 lg:mb-20"
   >
     {title && <SmallerH1 className="mt-6 px-6">{title}</SmallerH1>}
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+    <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
       {texts.map((textItem, index) => (
         <div
           key={index}
-          className="flex flex-col p-4 rounded-lg hover:shadow-md transition duration-300"
+          className="flex flex-col rounded-lg p-4 transition duration-300 hover:shadow-md"
         >
           <H2Bold className="text-3xl">{textItem.title}</H2Bold>
           <H2>{textItem.text}</H2>

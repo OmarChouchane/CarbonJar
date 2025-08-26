@@ -7,17 +7,14 @@ import { Client } from 'pg';
 
 import * as schema from '../../../../../lib/db/schema';
 
-export const GET = async (
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> },
-) => {
+export const GET = async (request: NextRequest, context: { params: Promise<{ id: string }> }) => {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-  const { id } = await context.params;
+    const { id } = await context.params;
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
 
@@ -36,17 +33,14 @@ export const GET = async (
   }
 };
 
-export const POST = async (
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> },
-) => {
+export const POST = async (request: NextRequest, context: { params: Promise<{ id: string }> }) => {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-  const { id } = await context.params;
+    const { id } = await context.params;
     const dataUnknown = (await request.json()) as unknown;
     type QuestionInsert = typeof schema.questions.$inferInsert;
     const data = dataUnknown as Partial<QuestionInsert> & {

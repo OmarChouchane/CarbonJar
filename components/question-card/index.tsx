@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import { motion } from "framer-motion";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { motion } from 'framer-motion';
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 
-import { Title, H2 } from "../Heading";
-
+import { Title, H2 } from '../Heading';
 
 interface QuestionCardProps {
   question: string;
@@ -23,18 +22,18 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, answer }) => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       <div
-        className={`w-full shadow-base rounded-xl border border-lighter-green flex-col justify-start lg:px-8 sm:px-4 md:px-6 gap-4 inline-flex mb-2 ${
-          isOpen ? "bg-lighter-grey" : "bg-white"
+        className={`shadow-base border-lighter-green mb-2 inline-flex w-full flex-col justify-start gap-4 rounded-xl border sm:px-4 md:px-6 lg:px-8 ${
+          isOpen ? 'bg-lighter-grey' : 'bg-white'
         }`}
-        style={{ boxShadow: "none" }} // Remove outline/shadow
+        style={{ boxShadow: 'none' }} // Remove outline/shadow
       >
         <div
-          className="px-2 rounded-lg border-0 flex justify-between items-center cursor-pointer"
+          className="flex cursor-pointer items-center justify-between rounded-lg border-0 px-2"
           onClick={toggleCard}
-          style={{ minHeight: "24px" }} // Further reduce height
+          style={{ minHeight: '24px' }} // Further reduce height
         >
           <Title className="text-base">Q: {question}</Title>
           {isOpen ? (
@@ -45,22 +44,20 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, answer }) => {
         </div>
         <motion.div
           initial={false}
-          animate={
-            isOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }
-          }
+          animate={isOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
           transition={{
-            height: { duration: 0.3, ease: "easeInOut" },
+            height: { duration: 0.3, ease: 'easeInOut' },
             opacity: { duration: 0.2 },
           }}
-          style={{ overflow: "hidden" }}
+          style={{ overflow: 'hidden' }}
         >
           <div
             style={{
-              display: isOpen ? "block" : "none",
+              display: isOpen ? 'block' : 'none',
             }}
-            className="pl-4 pr-6 pt-2 pb-2 text-left transition-all duration-300 ease-in-out sm:pl-6 sm:pr-12 lg:pl-10 lg:pr-28"
+            className="pt-2 pr-6 pb-2 pl-4 text-left transition-all duration-300 ease-in-out sm:pr-12 sm:pl-6 lg:pr-28 lg:pl-10"
           >
-            <H2 className="text-left mb-2 sm:m-2">{answer}</H2>
+            <H2 className="mb-2 text-left sm:m-2">{answer}</H2>
           </div>
         </motion.div>
       </div>

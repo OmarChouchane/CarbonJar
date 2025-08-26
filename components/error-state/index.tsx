@@ -5,11 +5,11 @@ interface ErrorStateProps {
 
 export default function ErrorState({ error, onRetry }: ErrorStateProps) {
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="container mx-auto px-4">
         <div className="text-center">
           <div className="mb-4">
-            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <svg
                 className="h-6 w-6 text-red-600"
                 fill="none"
@@ -25,14 +25,12 @@ export default function ErrorState({ error, onRetry }: ErrorStateProps) {
               </svg>
             </div>
           </div>
-          <h3 className="text-lg font-medium text-green mb-2 font-Inter">
-            Something went wrong
-          </h3>
-          <p className="text-red-500 mb-4 font-Inter">{error}</p>
+          <h3 className="text-green font-Inter mb-2 text-lg font-medium">Something went wrong</h3>
+          <p className="font-Inter mb-4 text-red-500">{error}</p>
           {onRetry && (
             <button
               onClick={onRetry}
-              className="px-4 py-2 bg-green text-white rounded-lg hover:bg-green/90 transition-colors font-medium font-Inter"
+              className="bg-green hover:bg-green/90 font-Inter rounded-lg px-4 py-2 font-medium text-white transition-colors"
             >
               Try Again
             </button>

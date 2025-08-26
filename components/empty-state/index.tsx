@@ -1,5 +1,5 @@
-import { GraduationCap } from "lucide-react";
-import Link from "next/link";
+import { GraduationCap } from 'lucide-react';
+import Link from 'next/link';
 
 interface EmptyStateProps {
   title: string;
@@ -17,19 +17,15 @@ export default function EmptyState({
   icon,
 }: EmptyStateProps) {
   return (
-    <div className="flex items-center justify-center min-h-[400px]">
-      <div className="text-center max-w-md mx-auto">
-        {icon || (
-          <GraduationCap className="h-24 w-24 mx-auto mb-6 text-green" />
-        )}
-        <h3 className="text-2xl font-semibold text-green mb-3 font-Inter">
-          {title}
-        </h3>
-        <p className="text-green/70 mb-6 font-Inter">{description}</p>
+    <div className="flex min-h-[400px] items-center justify-center">
+      <div className="mx-auto max-w-md text-center">
+        {icon || <GraduationCap className="text-green mx-auto mb-6 h-24 w-24" />}
+        <h3 className="text-green font-Inter mb-3 text-2xl font-semibold">{title}</h3>
+        <p className="text-green/70 font-Inter mb-6">{description}</p>
         {actionText && actionHref && (
           <Link
             href={actionHref}
-            className="inline-flex items-center px-6 py-3 bg-green text-white rounded-lg hover:bg-green/90 transition-colors font-medium font-Inter"
+            className="bg-green hover:bg-green/90 font-Inter inline-flex items-center rounded-lg px-6 py-3 font-medium text-white transition-colors"
           >
             {actionText}
           </Link>

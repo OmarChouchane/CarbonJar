@@ -86,7 +86,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 // DELETE /api/certificates/[id]  (id can be certificateId UUID or certificateCode)
-export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const { id } = await params;
   const byCode = !isUuid(id);
   const keyCol = byCode ? schema.certificates.certificateCode : schema.certificates.certificateId;

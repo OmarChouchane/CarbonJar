@@ -7,10 +7,7 @@ import { Client } from 'pg';
 
 import * as schema from '../../../../lib/db/schema';
 
-export async function GET(
-  _request: NextRequest,
-  context: { params: Promise<{ id: string }> },
-) {
+export async function GET(_request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -34,10 +31,7 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> },
-) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -83,10 +77,7 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  _request: NextRequest,
-  context: { params: Promise<{ id: string }> },
-) {
+export async function DELETE(_request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { userId } = await auth();
     if (!userId) {

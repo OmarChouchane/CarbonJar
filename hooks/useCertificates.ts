@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
-import type { Certificate } from "@/types/certificate";
+import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/nextjs';
+import type { Certificate } from '@/types/certificate';
 
 interface UseCertificatesReturn {
   certificates: Certificate[];
@@ -20,9 +20,9 @@ export function useCertificates(): UseCertificatesReturn {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("/api/certificates", {
+      const response = await fetch('/api/certificates', {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
@@ -33,10 +33,8 @@ export function useCertificates(): UseCertificatesReturn {
       const data = await response.json();
       setCertificates(data.data || []);
     } catch (err) {
-      console.error("Error fetching certificates:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to load certificates"
-      );
+      console.error('Error fetching certificates:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load certificates');
     } finally {
       setLoading(false);
     }
@@ -45,10 +43,10 @@ export function useCertificates(): UseCertificatesReturn {
   const generateTestData = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/certificates", {
-        method: "POST",
+      const response = await fetch('/api/certificates', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
@@ -59,10 +57,8 @@ export function useCertificates(): UseCertificatesReturn {
       // Refresh the certificates list
       await fetchCertificates();
     } catch (err) {
-      console.error("Error generating test data:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to generate test data"
-      );
+      console.error('Error generating test data:', err);
+      setError(err instanceof Error ? err.message : 'Failed to generate test data');
     }
   };
 

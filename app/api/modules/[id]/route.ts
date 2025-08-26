@@ -49,7 +49,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   return NextResponse.json(updated[0] || null);
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   const { id } = await params;

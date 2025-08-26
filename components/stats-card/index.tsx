@@ -1,11 +1,11 @@
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
 
 interface StatsCardProps {
   title: string;
   value: string | number;
   description?: string;
   icon?: LucideIcon;
-  variant?: "default" | "hero";
+  variant?: 'default' | 'hero';
   className?: string;
 }
 
@@ -14,37 +14,33 @@ export default function StatsCard({
   value,
   description,
   icon: Icon,
-  variant = "default",
-  className = "",
+  variant = 'default',
+  className = '',
 }: StatsCardProps) {
-  if (variant === "hero") {
+  if (variant === 'hero') {
     return (
       <div
-        className={`bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 ${className}`}
+        className={`rounded-xl border border-white/20 bg-white/10 p-6 backdrop-blur-sm ${className}`}
       >
-        <div className="text-3xl font-bold text-white mb-2">{value}</div>
-        <div className="text-white/80 font-Inter">{title}</div>
+        <div className="mb-2 text-3xl font-bold text-white">{value}</div>
+        <div className="font-Inter text-white/80">{title}</div>
       </div>
     );
   }
 
   if (!Icon) {
-    throw new Error("Icon is required for default variant");
+    throw new Error('Icon is required for default variant');
   }
 
   return (
-    <div
-      className={`flex items-center justify-between p-4 bg-gray-50 rounded-xl ${className}`}
-    >
+    <div className={`flex items-center justify-between rounded-xl bg-gray-50 p-4 ${className}`}>
       <div>
-        <div className="text-sm text-gray-600 font-Inter">{title}</div>
-        <div className="text-2xl font-bold text-green">{value}</div>
-        {description && (
-          <div className="text-xs text-gray-500 font-Inter">{description}</div>
-        )}
+        <div className="font-Inter text-sm text-gray-600">{title}</div>
+        <div className="text-green text-2xl font-bold">{value}</div>
+        {description && <div className="font-Inter text-xs text-gray-500">{description}</div>}
       </div>
-      <div className="w-12 h-12 bg-green/10 rounded-full flex items-center justify-center">
-        <Icon className="w-6 h-6 text-green" />
+      <div className="bg-green/10 flex h-12 w-12 items-center justify-center rounded-full">
+        <Icon className="text-green h-6 w-6" />
       </div>
     </div>
   );

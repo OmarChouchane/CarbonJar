@@ -1,18 +1,15 @@
-"use client";
-import React from "react";
+'use client';
+import React from 'react';
 
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div
-      className="min-h-screen w-full bg-dotted-pattern bg-cover bg-center"
-      data-auth-page
-    >
+    <div className="bg-dotted-pattern min-h-screen w-full bg-cover bg-center" data-auth-page>
       {/* Navbar */}
-      <nav className="bg-green lg:mx-32 sm:mx-8 md:mx-12 px-4 sm:px-4 lg:px-4 rounded-b-xl lg:rounded-b-3xl border border-border-white relative z-50">
-        <div className="flex items-center justify-center lg:h-20 md:h-20 sm:h-30 h-17 px-4 sm:px-1 lg:px-1 mx-auto">
+      <nav className="bg-green border-border-white relative z-50 rounded-b-xl border px-4 sm:mx-8 sm:px-4 md:mx-12 lg:mx-32 lg:rounded-b-3xl lg:px-4">
+        <div className="mx-auto flex h-17 items-center justify-center px-4 sm:h-30 sm:px-1 md:h-20 lg:h-20 lg:px-1">
           <Link href="/">
             <Image
               className="h-40 w-50"
@@ -27,7 +24,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </nav>
 
       {/* Main content */}
-      <div className="flex w-full items-center justify-center mt-8 sm:mt-6 md:mt-8 lg:mt-12">
+      <div className="mt-8 flex w-full items-center justify-center sm:mt-6 md:mt-8 lg:mt-12">
         {children}
       </div>
     </div>

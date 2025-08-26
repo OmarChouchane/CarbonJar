@@ -1,8 +1,8 @@
-import { eq, sql } from "drizzle-orm";
-import { NextResponse } from "next/server";
+import { eq, sql } from 'drizzle-orm';
+import { NextResponse } from 'next/server';
 
-import { getDb } from "@/lib/db/drizzle";
-import { trainingSessions, courses, authUsers } from "@/lib/db/schema";
+import { getDb } from '@/lib/db/drizzle';
+import { trainingSessions, courses, authUsers } from '@/lib/db/schema';
 
 interface RouteParams {
   params: { id: string };
@@ -32,7 +32,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
     return NextResponse.json(sessions);
   } catch (error) {
-    console.error("Error fetching sessions by courseId:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Error fetching sessions by courseId:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

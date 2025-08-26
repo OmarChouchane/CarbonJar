@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 
-import { H2, H2Bold } from "../Heading";
+import { H2, H2Bold } from '../Heading';
 
 interface CardComponentProps {
   rating: number;
@@ -24,28 +24,28 @@ const CardComponent: React.FC<CardComponentProps> = ({
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-96 h-64 px-8 py-4 rounded-lg border border-lighter-green flex flex-col justify-between shadow-lg transition-shadow ease-in-out"
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className="border-lighter-green flex h-64 w-96 flex-col justify-between rounded-lg border px-8 py-4 shadow-lg transition-shadow ease-in-out"
       whileHover={{ scale: 1.05 }}
     >
       {/* Review text */}
-      <H2 className="text-left mt-4">{reviewText}</H2>
+      <H2 className="mt-4 text-left">{reviewText}</H2>
 
       {/* Client section */}
-      <div className="flex items-center gap-4 mt-auto">
+      <div className="mt-auto flex items-center gap-4">
         {/* Client avatar */}
         {clientImage && (
           <Image
-            className="w-14 h-14 rounded-full"
+            className="h-14 w-14 rounded-full"
             src={clientImage}
             alt={`${Client}'s Avatar`}
             width={56}
             height={56}
-            style={{ objectFit: "cover" }}
+            style={{ objectFit: 'cover' }}
           />
         )}
         {/* Client details */}
-        <div className="flex flex-col justify-start items-start gap-2 text-left">
+        <div className="flex flex-col items-start justify-start gap-2 text-left">
           <H2Bold>{Client}</H2Bold>
           {clientTitle && <H2>{clientTitle}</H2>}
         </div>

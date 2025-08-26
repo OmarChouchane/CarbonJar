@@ -1,19 +1,19 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { CheckCircle, Award, Eye } from "lucide-react";
+import { CheckCircle, Award, Eye } from 'lucide-react';
 
-import CertificateModal from "@/components/certificate-modal";
-import type { Certificate } from "@/types/certificate";
+import CertificateModal from '@/components/certificate-modal';
+import type { Certificate } from '@/types/certificate';
 
 interface CertificateCardProps {
   certificate: Certificate;
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 };
 
@@ -22,39 +22,34 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
   const issuedDate = new Date(certificate.issuedAt);
   const issueYear = issuedDate.getUTCFullYear();
   const issueMonth = issuedDate.getUTCMonth() + 1; // 1-12
-  const expiration = certificate.expirationAt
-    ? new Date(certificate.expirationAt)
-    : null;
+  const expiration = certificate.expirationAt ? new Date(certificate.expirationAt) : null;
   const expirationYear = expiration ? expiration.getUTCFullYear() : undefined;
   const expirationMonth = expiration ? expiration.getUTCMonth() + 1 : undefined;
 
   // Build LinkedIn Add to Profile link (prefilled)
   const addToProfileUrl = (() => {
     const params = new URLSearchParams();
-    params.set("startTask", "CERTIFICATION_NAME");
-    params.set("name", certificate.title);
+    params.set('startTask', 'CERTIFICATION_NAME');
+    params.set('name', certificate.title);
     const orgId = process.env.NEXT_PUBLIC_LINKEDIN_ORG_ID;
     if (orgId && orgId.trim().length > 0) {
       // If a LinkedIn Organization ID is provided, use it so LinkedIn auto-recognizes the company
-      params.set("organizationId", orgId.trim());
+      params.set('organizationId', orgId.trim());
     } else {
       // Fallback to organization name; LinkedIn may require user confirmation from dropdown
-      params.set(
-        "organizationName",
-        certificate.organizationName || "Carbon Jar"
-      );
+      params.set('organizationName', certificate.organizationName || 'Carbon Jar');
     }
-    params.set("issueYear", String(issueYear));
-    params.set("issueMonth", String(issueMonth));
+    params.set('issueYear', String(issueYear));
+    params.set('issueMonth', String(issueMonth));
     if (expirationYear && expirationMonth) {
-      params.set("expirationYear", String(expirationYear));
-      params.set("expirationMonth", String(expirationMonth));
+      params.set('expirationYear', String(expirationYear));
+      params.set('expirationMonth', String(expirationMonth));
     }
     if (certificate.certificateUrl) {
-      params.set("certUrl", certificate.certificateUrl);
+      params.set('certUrl', certificate.certificateUrl);
     }
     if (certificate.certId) {
-      params.set("certId", certificate.certId);
+      params.set('certId', certificate.certId);
     }
     return `https://www.linkedin.com/profile/add?${params.toString()}`;
   })();
@@ -66,30 +61,28 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
     <>
       <div className="group relative">
         {/* Certificate Card */}
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-0 overflow-hidden border border-gray-100 group-hover:border-green/20">
+        <div className="group-hover:border-green/20 overflow-hidden rounded-2xl border border-gray-100 bg-white p-0 shadow-lg transition-all duration-300 hover:shadow-2xl">
           {/* Certificate Header with Gradient */}
-          <div className="bg-gradient-to-r from-green to-green/80 p-6 text-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12"></div>
+          <div className="from-green to-green/80 relative overflow-hidden bg-gradient-to-r p-6 text-white">
+            <div className="absolute top-0 right-0 -mt-16 -mr-16 h-32 w-32 rounded-full bg-white/10"></div>
+            <div className="absolute bottom-0 left-0 -mb-12 -ml-12 h-24 w-24 rounded-full bg-white/5"></div>
 
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="rounded-full bg-white/20 p-3 backdrop-blur-sm">
                   <Award className="h-6 w-6 text-white" />
                 </div>
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-white/30">
-                  <CheckCircle className="h-3 w-3 mr-1 inline" />
+                <span className="rounded-full border border-white/30 bg-white/20 px-3 py-1 text-xs font-medium backdrop-blur-sm">
+                  <CheckCircle className="mr-1 inline h-3 w-3" />
                   Verified
                 </span>
               </div>
 
-              <h3 className="text-xl font-bold mb-2 line-clamp-2 leading-tight">
+              <h3 className="mb-2 line-clamp-2 text-xl leading-tight font-bold">
                 {certificate.title}
               </h3>
 
-              <p className="text-white/80 text-sm">
-                Issued on {formatDate(certificate.issuedAt)}
-              </p>
+              <p className="text-sm text-white/80">Issued on {formatDate(certificate.issuedAt)}</p>
             </div>
           </div>
 
@@ -97,20 +90,20 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
           <div className="p-6">
             {/* Description */}
             {certificate.description && (
-              <p className="text-gray-600 text-sm mb-6 line-clamp-3 leading-relaxed font-Inter">
+              <p className="font-Inter mb-6 line-clamp-3 text-sm leading-relaxed text-gray-600">
                 {certificate.description}
               </p>
             )}
 
             {/* Skills Tags */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              <span className="bg-green/10 text-green px-3 py-1 rounded-full text-xs font-medium">
+            <div className="mb-6 flex flex-wrap gap-2">
+              <span className="bg-green/10 text-green rounded-full px-3 py-1 text-xs font-medium">
                 Sustainability
               </span>
-              <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium">
+              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600">
                 Leadership
               </span>
-              <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-xs font-medium">
+              <span className="rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-600">
                 Innovation
               </span>
             </div>
@@ -119,9 +112,9 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
             <div className="flex space-x-3">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="flex-1 inline-flex items-center justify-center px-4 py-3 bg-green text-white rounded-xl hover:bg-green/90 transition-all duration-200 font-medium group-hover:shadow-lg font-Inter"
+                className="bg-green hover:bg-green/90 font-Inter inline-flex flex-1 items-center justify-center rounded-xl px-4 py-3 font-medium text-white transition-all duration-200 group-hover:shadow-lg"
               >
-                <Eye className="h-4 w-4 mr-2" />
+                <Eye className="mr-2 h-4 w-4" />
                 <span>View Certificate</span>
               </button>
 
@@ -129,11 +122,11 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
                 href={addToProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-4 py-3 bg-[#0a66c2] text-white rounded-xl hover:bg-[#084d96] transition-all duration-200 font-medium group-hover:shadow-lg font-Inter"
+                className="font-Inter inline-flex items-center justify-center rounded-xl bg-[#0a66c2] px-4 py-3 font-medium text-white transition-all duration-200 group-hover:shadow-lg hover:bg-[#084d96]"
                 title="Share"
               >
                 <svg
-                  className="h-4 w-4 mr-2"
+                  className="mr-2 h-4 w-4"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +139,7 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
           </div>
 
           {/* Hover Effect Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-green/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"></div>
+          <div className="from-green/5 pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
         </div>
       </div>
 

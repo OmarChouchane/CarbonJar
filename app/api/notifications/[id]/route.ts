@@ -19,7 +19,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     await client.connect();
     const db = drizzle(client, { schema });
 
-  const { id } = await params;
+    const { id } = await params;
     const notification = await db
       .select()
       .from(schema.notifications)
@@ -56,7 +56,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     await client.connect();
     const db = drizzle(client, { schema });
 
-  const { id } = await params;
+    const { id } = await params;
     const toUpdate: Partial<{
       content: string;
       status: 'read' | 'unread';
@@ -100,7 +100,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     await client.connect();
     const db = drizzle(client, { schema });
 
-  const { id } = await params;
+    const { id } = await params;
     await db.delete(schema.notifications).where(eq(schema.notifications.id, id));
 
     await client.end();

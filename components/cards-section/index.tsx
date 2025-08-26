@@ -1,43 +1,39 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
-import BigCard1 from "../big-card1";
-import BigCard2 from "../big-card2";
+import BigCard1 from '../big-card1';
+import BigCard2 from '../big-card2';
 
 const CardsSection: React.FC = () => {
   const card1 = {
-    image: "/images/images/card1.jpg",
-    title: "Empowering Organizations to Take Climate Action",
+    image: '/images/images/card1.jpg',
+    title: 'Empowering Organizations to Take Climate Action',
     Maindescription: "It's Time to Take Climate Action",
     description:
-      "Join the growing movement towards a sustainable future. At CarbonJar, we empower organizations to understand, manage, and reduce their carbon footprints, promoting sustainable practices and innovations.",
-    button1: "Learn More",
-    button2: "Get Started Now",
+      'Join the growing movement towards a sustainable future. At CarbonJar, we empower organizations to understand, manage, and reduce their carbon footprints, promoting sustainable practices and innovations.',
+    button1: 'Learn More',
+    button2: 'Get Started Now',
   };
 
   const card2 = {
-    title:
-      "Shaping MENA’s Future: Online Climate Education for Sustainable Development",
-    Maindescription: "Welcome to Carbon Jar Academy!",
+    title: 'Shaping MENA’s Future: Online Climate Education for Sustainable Development',
+    Maindescription: 'Welcome to Carbon Jar Academy!',
     description: (
       <>
-        Our courses are <span className="font-bold text-left">100% online</span>
-        , making them accessible to learners around the globe. We are proud to
-        offer our content in three languages, ensuring that language is not a
-        barrier to climate education.
+        Our courses are <span className="text-left font-bold">100% online</span>
+        , making them accessible to learners around the globe. We are proud to offer our content in
+        three languages, ensuring that language is not a barrier to climate education.
         <br />
-        Most importantly, our training is effective. A whopping{" "}
-        <span className="font-bold">
-          87% of our participants report feeling better equipped
-        </span>{" "}
-        to take action in their organizations in the face of climate change.
+        Most importantly, our training is effective. A whopping{' '}
+        <span className="font-bold">87% of our participants report feeling better equipped</span> to
+        take action in their organizations in the face of climate change.
       </>
     ),
-    button1: "Learn More",
-    icon: "/images/icons/University.svg",
+    button1: 'Learn More',
+    icon: '/images/icons/University.svg',
   };
 
   return (
@@ -45,9 +41,9 @@ const CardsSection: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+      transition={{ duration: 0.6, ease: 'easeOut', delay: 0.2 }}
     >
-      <section className=" lg:px-8 px-2 lg:mt-8 mb-8 rounded-lg">
+      <section className="mb-8 rounded-lg px-2 lg:mt-8 lg:px-8">
         <div className="container mx-auto">
           <BigCard1
             title={card1.title}
@@ -59,7 +55,7 @@ const CardsSection: React.FC = () => {
           />
         </div>
 
-        <div className="container lg:px-8 px-2 mx-auto">
+        <div className="container mx-auto px-2 lg:px-8">
           <BigCard2
             title={card2.title}
             description={card2.description}

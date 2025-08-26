@@ -1,5 +1,5 @@
-import type { LucideIcon} from "lucide-react";
-import { ChevronRight } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 interface ActionButtonProps {
   title: string;
@@ -16,26 +16,26 @@ export default function ActionButton({
   icon: Icon,
   onClick,
   href,
-  className = "",
+  className = '',
 }: ActionButtonProps) {
-  const Component = href ? "a" : "button";
+  const Component = href ? 'a' : 'button';
   const props = href ? { href } : { onClick };
 
   return (
     <Component
       {...props}
-      className={`w-full flex items-center justify-between p-4 bg-green/5 hover:bg-green/10 rounded-xl transition-colors border border-green/20 ${className}`}
+      className={`bg-green/5 hover:bg-green/10 border-green/20 flex w-full items-center justify-between rounded-xl border p-4 transition-colors ${className}`}
     >
       <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 bg-green/10 rounded-full flex items-center justify-center">
-          <Icon className="w-5 h-5 text-green" />
+        <div className="bg-green/10 flex h-10 w-10 items-center justify-center rounded-full">
+          <Icon className="text-green h-5 w-5" />
         </div>
         <div className="text-left">
-          <div className="font-medium text-gray-900 font-Inter">{title}</div>
+          <div className="font-Inter font-medium text-gray-900">{title}</div>
           <div className="text-sm text-gray-600">{description}</div>
         </div>
       </div>
-      <ChevronRight className="w-5 h-5 text-gray-400" />
+      <ChevronRight className="h-5 w-5 text-gray-400" />
     </Component>
   );
 }
