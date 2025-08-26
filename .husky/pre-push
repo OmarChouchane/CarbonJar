@@ -1,3 +1,11 @@
 #!/usr/bin/env sh
 echo "Running typecheck and tests before push..."
-npm run typecheck && npm test
+
+# Prefer Windows npm.cmd if available to avoid bash dependency in GitHub Desktop's MinGit
+if command -v npm.cmd >/dev/null 2>&1; then
+	NPM_CMD="npm.cmd"
+else
+	NPM_CMD="npm"
+fi
+
+"$NPM_CMD" run typecheck && "$NPM_CMD" test
