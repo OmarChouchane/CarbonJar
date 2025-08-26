@@ -7,7 +7,7 @@ import { getDb } from '@/lib/db/drizzle';
 import { trainingSessions, authUsers } from '@/lib/db/schema';
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
@@ -18,7 +18,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const { id } = params;
+  const { id } = await params;
     const db = getDb();
     // DB role check
     const who = await db
@@ -75,7 +75,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const { id } = params;
+  const { id } = await params;
     const db = getDb();
     // DB role check
     const who = await db

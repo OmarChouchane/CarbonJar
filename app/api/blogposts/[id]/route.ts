@@ -7,8 +7,8 @@ import { Client } from 'pg';
 
 import * as schema from '../../../../lib/db/schema';
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();
@@ -25,8 +25,8 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();
@@ -95,8 +95,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
   await client.connect();

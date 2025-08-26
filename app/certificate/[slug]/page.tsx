@@ -10,7 +10,7 @@ import * as schema from '@/lib/db/schema';
 // Route: /certificate/[slug]
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 async function getCertificateBySlug(slug: string) {
@@ -24,7 +24,8 @@ async function getCertificateBySlug(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const cert = await getCertificateBySlug(params.slug);
+  const { slug } = await params;
+  const cert = await getCertificateBySlug(slug);
   const title = cert ? `${cert.title} • Certificate` : 'Certificate';
   const description = cert?.description || 'Verified training certificate.';
   const url = (async () => {
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return host ? `${proto}://${host}` : '';
   })();
   const resolvedUrl = typeof url === 'string' ? url : await url;
-  const pageUrl = `${resolvedUrl}/certificate/${params.slug}`;
+  const pageUrl = `${resolvedUrl}/certificate/${slug}`;
 
   // Use an existing PNG in /public for reliable social previews (LinkedIn prefers PNG/JPG over SVG)
   const ogPrimary = `${resolvedUrl}/images/images/card2.png`;
@@ -62,7 +63,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CertificatePublicPage({ params }: Props) {
-  const cert = await getCertificateBySlug(params.slug);
+  const { slug } = await params;
+  const cert = await getCertificateBySlug(slug);
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-gray-50 to-white">

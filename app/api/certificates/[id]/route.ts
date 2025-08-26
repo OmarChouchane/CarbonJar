@@ -25,8 +25,8 @@ async function withDb<T>(
 }
 
 // GET /api/certificates/[id]  (id can be certificateId UUID or certificateCode)
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const byCode = !isUuid(id);
   const keyCol = byCode ? schema.certificates.certificateCode : schema.certificates.certificateId;
 
@@ -43,8 +43,8 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
 // PUT /api/certificates/[id]   (revoke/update fields)
 // Body supports: { isRevoked?: boolean, revokedReason?: string | null, pdfUrl?: string, title?: string, description?: string, validUntil?: string | null }
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const byCode = !isUuid(id);
   const keyCol = byCode ? schema.certificates.certificateCode : schema.certificates.certificateId;
 
@@ -86,8 +86,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE /api/certificates/[id]  (id can be certificateId UUID or certificateCode)
-export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const byCode = !isUuid(id);
   const keyCol = byCode ? schema.certificates.certificateCode : schema.certificates.certificateId;
 

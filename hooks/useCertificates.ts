@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { Certificate } from "@/types/certificate";
+import type { Certificate } from "@/types/certificate";
 
 interface UseCertificatesReturn {
   certificates: Certificate[];

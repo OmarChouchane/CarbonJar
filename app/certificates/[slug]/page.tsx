@@ -8,7 +8,7 @@ import { getDb } from '@/lib/db/drizzle';
 import * as schema from '@/lib/db/schema';
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 async function getCertificateBySlug(slug: string) {
@@ -22,7 +22,8 @@ async function getCertificateBySlug(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const cert = await getCertificateBySlug(params.slug);
+  const { slug } = await params;
+  const cert = await getCertificateBySlug(slug);
   const title = cert ? `${cert.title} • Certificate` : 'Certificate';
   const description = cert?.description || 'Verified training certificate.';
   const origin = (async () => {
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return host ? `${proto}://${host}` : '';
   })();
   const resolved = typeof origin === 'string' ? origin : await origin;
-  const pageUrl = `${resolved}/certificates/${params.slug}`;
+  const pageUrl = `${resolved}/certificates/${slug}`;
 
   // Use an existing PNG so LinkedIn/Twitter render previews reliably
   const ogPrimary = `${resolved}/images/images/card2.png`;
@@ -71,7 +72,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CertificatePublicPage({ params }: Props) {
-  const cert = await getCertificateBySlug(params.slug);
+  const { slug } = await params;
+  const cert = await getCertificateBySlug(slug);
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-gray-50 to-white">

@@ -1,19 +1,16 @@
 import { NextResponse } from 'next/server';
 
-export function GET(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
-  // Get question details
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   return NextResponse.json({ message: `Get question ${id}` });
 }
 
-export function PUT(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
-  // Update question
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   return NextResponse.json({ message: `Update question ${id}` });
 }
 
-export function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
-  // Delete question
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   return NextResponse.json({ message: `Delete question ${id}` });
 }

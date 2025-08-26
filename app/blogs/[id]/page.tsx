@@ -16,7 +16,7 @@ type BlogPost = {
   status: 'draft' | 'published';
 };
 
-export default function BlogDetail({ params }: { params: { id: string } }) {
+export default function BlogDetail({ params }: { params: Promise<{ id: string }> }) {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +27,8 @@ export default function BlogDetail({ params }: { params: { id: string } }) {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`/api/blogposts/${params.id}`, {
+        const { id } = await params;
+        const res = await fetch(`/api/blogposts/${id}`, {
           cache: 'no-store',
         });
         if (!res.ok) throw new Error(`Failed to fetch blog post: ${res.status}`);
@@ -42,7 +43,7 @@ export default function BlogDetail({ params }: { params: { id: string } }) {
     return () => {
       mounted = false;
     };
-  }, [params.id]);
+  }, [params]);
 
   return (
     <Page>

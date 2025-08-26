@@ -8,7 +8,7 @@ import { Client } from 'pg';
 import * as schema from '../../../../lib/db/schema';
 
 // Admin-only GET by ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -19,7 +19,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     await client.connect();
     const db = drizzle(client, { schema });
 
-    const { id } = params;
+  const { id } = await params;
     const notification = await db
       .select()
       .from(schema.notifications)
@@ -40,7 +40,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // Admin-only Update
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -56,7 +56,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     await client.connect();
     const db = drizzle(client, { schema });
 
-    const { id } = params;
+  const { id } = await params;
     const toUpdate: Partial<{
       content: string;
       status: 'read' | 'unread';
@@ -89,7 +89,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // Admin-only Delete
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -100,7 +100,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     await client.connect();
     const db = drizzle(client, { schema });
 
-    const { id } = params;
+  const { id } = await params;
     await db.delete(schema.notifications).where(eq(schema.notifications.id, id));
 
     await client.end();

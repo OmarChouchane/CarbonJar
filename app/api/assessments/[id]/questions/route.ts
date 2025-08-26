@@ -7,18 +7,9 @@ import { Client } from 'pg';
 
 import * as schema from '../../../../../lib/db/schema';
 
-function isPromise<T>(v: unknown): v is Promise<T> {
-  return typeof v === 'object' && v !== null && 'then' in (v as Record<string, unknown>);
-}
-function resolveParams(
-  p: { id: string } | Promise<{ id: string }>,
-): Promise<{ id: string }> | { id: string } {
-  return isPromise<{ id: string }>(p) ? p : (p as { id: string });
-}
-
 export const GET = async (
   request: NextRequest,
-  context: { params: { id: string } | Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) => {
   try {
     const { userId } = await auth();
@@ -26,9 +17,7 @@ export const GET = async (
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const p = context?.params as { id: string } | Promise<{ id: string }>;
-    const resolved = await resolveParams(p);
-    const { id } = resolved || { id: '' };
+  const { id } = await context.params;
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client, { schema });
 
@@ -49,7 +38,7 @@ export const GET = async (
 
 export const POST = async (
   request: NextRequest,
-  context: { params: { id: string } | Promise<{ id: string }> },
+  context: { params: Promise<{ id: string }> },
 ) => {
   try {
     const { userId } = await auth();
@@ -57,9 +46,7 @@ export const POST = async (
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const p = context?.params as { id: string } | Promise<{ id: string }>;
-    const resolved = await resolveParams(p);
-    const { id } = resolved || { id: '' };
+  const { id } = await context.params;
     const dataUnknown = (await request.json()) as unknown;
     type QuestionInsert = typeof schema.questions.$inferInsert;
     const data = dataUnknown as Partial<QuestionInsert> & {

@@ -8,12 +8,12 @@ import { authUsers, notifications } from '@/lib/db/schema';
 
 // PATCH /api/user/notifications/[id] -> mark a single notification read/unread
 // DELETE /api/user/notifications/[id] -> delete a notification (owner only)
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) return new NextResponse('Unauthorized', { status: 401 });
 
-    const { id } = params;
+  const { id } = await params;
     const bodyUnknown = (await req.json().catch(() => ({}))) as unknown;
     type PatchBody = { status?: 'read' | 'unread' };
     const body = bodyUnknown as PatchBody;
@@ -49,12 +49,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) return new NextResponse('Unauthorized', { status: 401 });
 
-    const { id } = params;
+  const { id } = await params;
     const db = getDb();
     const user = await db
       .select({ userId: authUsers.userId })

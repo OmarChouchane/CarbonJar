@@ -1,4 +1,4 @@
-import { Certificate } from "@/types/certificate";
+import type { Certificate } from "@/types/certificate";
 
 export const calculateStats = (certificates: Certificate[]) => {
   return {

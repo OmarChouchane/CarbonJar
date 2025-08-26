@@ -179,8 +179,8 @@ const CardSection: React.FC = () => {
                 rating={data.rating}
                 reviewText={data.reviewText}
                 Client={data.Client}
-                clientTitle={data.clientTitle}
-                clientImage={data.clientImage}
+                {...(data.clientTitle ? { clientTitle: data.clientTitle } : {})}
+                {...(data.clientImage ? { clientImage: data.clientImage } : {})}
               />
             </SwiperSlide>
           ))}

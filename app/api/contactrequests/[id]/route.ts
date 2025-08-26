@@ -7,9 +7,9 @@ import { Client } from 'pg';
 import * as schema from '../../../../lib/db/schema';
 
 // Update a contact request by id
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+  const { id } = await params;
     const bodyUnknown = (await request.json()) as unknown;
     const body = bodyUnknown as Partial<{
       status: (typeof schema.contactStatus.enumValues)[number];
@@ -62,9 +62,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // Delete a contact request by id
-export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+  const { id } = await params;
     const client = new Client({ connectionString: process.env.DATABASE_URL });
     await client.connect();
     const db = drizzle(client, { schema });

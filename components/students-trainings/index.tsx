@@ -136,12 +136,12 @@ const StudentsTrainings: React.FC = () => {
             duration={course.duration}
             certified={course.certified}
             trainingTitle={course.trainingTitle}
-            trainingDescription={course.trainingDescription}
-            overview={course.overview}
-            trainingDescription2={course.trainingDescription2}
+            trainingDescription={course.trainingDescription ?? ''}
+            overview={course.overview ?? ''}
+            trainingDescription2={course.trainingDescription2 ?? ''}
             whyCourse={course.whyCourse}
-            content1={course.content1}
-            content2={course.content2}
+            {...(course.content1 ? { content1: course.content1 } : {})}
+            {...(course.content2 ? { content2: course.content2 } : {})}
             link={course.link}
           />
         ))}

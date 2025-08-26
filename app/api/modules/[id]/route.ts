@@ -6,20 +6,20 @@ import { Client } from 'pg';
 
 import * as schema from '../../../../lib/db/schema';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
-  const { id } = params;
+  const { id } = await params;
   await client.connect();
   const moduleData = await db.select().from(schema.modules).where(eq(schema.modules.moduleId, id));
   await client.end();
   return NextResponse.json(moduleData[0] || null);
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
-  const { id } = params;
+  const { id } = await params;
   const dataUnknown = (await request.json()) as unknown;
   type ModuleInsert = typeof schema.modules.$inferInsert;
   const data = dataUnknown as Partial<ModuleInsert>;
@@ -49,10 +49,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   return NextResponse.json(updated[0] || null);
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(client, { schema });
-  const { id } = params;
+  const { id } = await params;
   await client.connect();
   const deleted = await db
     .delete(schema.modules)
