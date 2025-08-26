@@ -2,6 +2,21 @@
 
 ## API Documentation
 
+## Security hardening
+
+- Authentication: Clerk middleware protects non-public routes. Users hitting `/sign-in` or `/sign-up` are redirected if already authenticated.
+- RBAC: Utility `lib/auth.ts` exposes `requireAuth({ roles: [...] })` to enforce roles stored in Clerk public metadata.
+- Rate limiting: Global API rate limiting in `middleware.ts` (if Upstash is configured) and per-route limiting via `lib/rateLimit.ts` with an in-memory fallback for development.
+- CSRF: Middleware blocks cross-site state-changing requests using Origin/Referer checks; `lib/security.ts` includes helpers for cookie-based CSRF tokens if needed.
+- XSS: `lib/xss.ts` provides `escapeHtml` for escaping user-input before reflecting it. Use carefully and prefer server-side rendering without dangerous HTML.
+- SQL injection: All DB access goes through Drizzle ORM with parameterized queries.
+- Secrets: `.env` variables are validated via `lib/env.ts` (Zod). See `.env.example` for required keys.
+
+Configuration:
+
+- To enable distributed rate limiting, set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` in your environment.
+- Ensure `CLERK_SECRET_KEY` and `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` are set. Webhook secret `CLERK_WEBHOOK_SECRET` is required for `/api/webhooks/user`.
+
 - Live docs: visit `/api-docs` when the dev server is running.
 - Spec file: `openapi.yml` (OpenAPI 3.1). Start with health, contact requests, and trainings. Expand as routes stabilize.
 - Static UI: `public/swagger.html` is embedded via an iframe for React 19 compatibility.

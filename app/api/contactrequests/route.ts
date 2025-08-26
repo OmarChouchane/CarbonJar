@@ -1,16 +1,15 @@
 import { desc } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/node-postgres';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { Client } from 'pg';
 
-import * as schema from '../../../lib/db/schema';
+import { getDb } from '@/lib/db/drizzle';
+import * as schema from '@/lib/db/schema';
+import { rateLimit } from '@/lib/rateLimit';
+import { escapeHtml } from '@/lib/xss';
 
 // GET /api/contactrequests -> return all requests ordered by submittedAt desc
 export const GET = async () => {
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
-  await client.connect();
-  const db = drizzle(client, { schema });
+  const db = getDb();
   try {
     const requests = await db
       .select()
@@ -20,8 +19,6 @@ export const GET = async () => {
   } catch (e) {
     console.error('Error fetching contact requests:', e);
     return new NextResponse('Internal Server Error', { status: 500 });
-  } finally {
-    await client.end();
   }
 };
 
@@ -33,16 +30,26 @@ export const POST = async (req: NextRequest) => {
     scheduledDate?: string | Date | null;
     respondedAt?: string | Date | null;
   };
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
-  await client.connect();
-  const db = drizzle(client, { schema });
+  const db = getDb();
   try {
+    // Rate limit unauthenticated POSTs by IP
+    const ip =
+      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      req.headers.get('cf-connecting-ip') ||
+      req.headers.get('x-real-ip') ||
+      'unknown';
+    const limit = await rateLimit(`contactrequests:POST:${ip}`, 8, 60_000);
+    if (!limit.allowed) {
+      const res = NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+      res.headers.set('Retry-After', String(Math.ceil((limit.reset - Date.now()) / 1000)));
+      return res;
+    }
+
     const validType =
       typeof data.type === 'string' && schema.contactType.enumValues.includes(data.type)
         ? data.type
         : undefined;
     if (!validType) {
-      await client.end();
       return NextResponse.json(
         { error: `type must be one of ${schema.contactType.enumValues.join(', ')}` },
         { status: 400 },
@@ -69,12 +76,12 @@ export const POST = async (req: NextRequest) => {
 
     const insertPayload: ContactInsert = {
       type: validType,
-      name: typeof data.name === 'string' ? data.name : '',
-      email: typeof data.email === 'string' ? data.email : '',
-      phone: typeof data.phone === 'string' ? data.phone : null,
-      subject: typeof data.subject === 'string' ? data.subject : null,
-      message: typeof data.message === 'string' ? data.message : null,
-      meetingType: typeof data.meetingType === 'string' ? data.meetingType : null,
+      name: typeof data.name === 'string' ? escapeHtml(data.name) : '',
+      email: typeof data.email === 'string' ? escapeHtml(data.email) : '',
+      phone: typeof data.phone === 'string' ? escapeHtml(data.phone) : null,
+      subject: typeof data.subject === 'string' ? escapeHtml(data.subject) : null,
+      message: typeof data.message === 'string' ? escapeHtml(data.message) : null,
+      meetingType: typeof data.meetingType === 'string' ? escapeHtml(data.meetingType) : null,
       scheduledDate,
       durationMinutes:
         typeof data.durationMinutes === 'number' && Number.isFinite(data.durationMinutes)
@@ -91,7 +98,5 @@ export const POST = async (req: NextRequest) => {
   } catch (e) {
     console.error('Error creating contact request:', e);
     return new NextResponse('Internal Server Error', { status: 500 });
-  } finally {
-    await client.end();
   }
 };

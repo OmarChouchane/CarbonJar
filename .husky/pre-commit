@@ -1,1 +1,3 @@
-"npx" --no-install lint-staged
+#!/usr/bin/env sh
+# Windows-safe Husky hook: run lint-staged via Node directly
+node "./node_modules/lint-staged/bin/lint-staged.js"
