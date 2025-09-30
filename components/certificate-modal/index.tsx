@@ -9,6 +9,7 @@ interface CertificateModalProps {
   onClose: () => void;
   certificateUrl: string;
   certificateTitle: string;
+  previewUrl?: string | undefined;
 }
 
 export default function CertificateModal({
@@ -16,6 +17,7 @@ export default function CertificateModal({
   onClose,
   certificateUrl,
   certificateTitle,
+  previewUrl,
 }: CertificateModalProps) {
   const EDGE_STORE_HOSTS = useMemo(() => new Set(['files.edgestore.dev']), []);
   const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
@@ -23,29 +25,33 @@ export default function CertificateModal({
   const [error, setError] = useState<string | null>(null);
 
   const effectiveUrl = useMemo(() => {
-    if (!certificateUrl) return null;
+    const source = previewUrl || certificateUrl;
+    if (!source) return null;
 
     try {
-      const parsed = new URL(certificateUrl);
+      const parsed = new URL(
+        source,
+        typeof window !== 'undefined' ? window.location.href : undefined,
+      );
       if (EDGE_STORE_HOSTS.has(parsed.hostname)) {
         return `/api/certificates/proxy?url=${encodeURIComponent(parsed.toString())}`;
       }
       return parsed.toString();
     } catch {
       // Relative URLs or data/blob schemes should pass through unchanged
-      if (certificateUrl.startsWith('data:') || certificateUrl.startsWith('blob:')) {
-        return certificateUrl;
+      if (source.startsWith('data:') || source.startsWith('blob:')) {
+        return source;
       }
 
       // Treat relative paths as same-origin resources and leave untouched
-      if (certificateUrl.startsWith('/')) {
-        return certificateUrl;
+      if (source.startsWith('/')) {
+        return source;
       }
 
       // Default fallback: return original string
-      return certificateUrl;
+      return source;
     }
-  }, [EDGE_STORE_HOSTS, certificateUrl]);
+  }, [EDGE_STORE_HOSTS, certificateUrl, previewUrl]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -73,7 +79,7 @@ export default function CertificateModal({
       return;
     }
 
-    if (!certificateUrl) {
+    if (!certificateUrl && !previewUrl) {
       setResolvedUrl(null);
       setLoading(false);
       setError('Certificate file is unavailable.');
@@ -167,7 +173,7 @@ export default function CertificateModal({
         URL.revokeObjectURL(objectUrl);
       }
     };
-  }, [certificateUrl, effectiveUrl, isOpen]);
+  }, [certificateUrl, effectiveUrl, isOpen, previewUrl]);
 
   const viewerSrc = useMemo(() => {
     if (!resolvedUrl) return null;
@@ -176,6 +182,7 @@ export default function CertificateModal({
   }, [resolvedUrl]);
 
   if (!isOpen) return null;
+  const downloadTarget = previewUrl || certificateUrl;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -190,7 +197,7 @@ export default function CertificateModal({
           <div className="flex items-center space-x-2">
             {/* Download Button */}
             <a
-              href={certificateUrl}
+              href={downloadTarget || '#'}
               download
               className="text-green hover:bg-green/10 rounded-lg p-2 transition-colors"
               title="Download Certificate"
@@ -200,7 +207,7 @@ export default function CertificateModal({
 
             {/* Open in New Tab */}
             <a
-              href={certificateUrl}
+              href={downloadTarget || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="text-green hover:bg-green/10 rounded-lg p-2 transition-colors"
@@ -234,7 +241,7 @@ export default function CertificateModal({
               <p className="font-Inter text-sm text-gray-600">{error}</p>
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <a
-                  href={certificateUrl}
+                  href={downloadTarget || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-green hover:bg-green/90 font-Inter rounded-xl px-4 py-2 text-sm font-medium text-white transition-colors"
@@ -242,7 +249,7 @@ export default function CertificateModal({
                   Open in New Tab
                 </a>
                 <a
-                  href={certificateUrl}
+                  href={downloadTarget || '#'}
                   download
                   className="font-Inter border-green text-green hover:bg-green/10 rounded-xl border px-4 py-2 text-sm font-medium transition-colors"
                 >

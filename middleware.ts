@@ -68,6 +68,9 @@ const isAuthRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)']);
 export default clerkMiddleware(
   async (auth, req) => {
     const { userId } = await auth();
+    const url = new URL(req.url);
+    const isCertificatePreview =
+      req.method === 'GET' && /^\/api\/certificates\/[^/]+\/preview$/.test(url.pathname);
 
     // If user is signed in and trying to access auth pages, redirect to home
     if (userId && isAuthRoute(req)) {
@@ -75,7 +78,7 @@ export default clerkMiddleware(
     }
 
     // Protect private routes
-    if (!isPublicRoute(req)) {
+    if (!isPublicRoute(req) && !isCertificatePreview) {
       await auth.protect();
     }
 
@@ -95,6 +98,7 @@ export default clerkMiddleware(
       directives: {
         'img-src': ['https:', 'data:'],
         'connect-src': ['https:'],
+        'font-src': ['https:', 'data:', "'self'"],
       },
     },
   },

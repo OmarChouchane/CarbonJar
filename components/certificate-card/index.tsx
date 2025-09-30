@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { CheckCircle, Award, Eye } from 'lucide-react';
 
 import CertificateModal from '@/components/certificate-modal';
 import type { Certificate } from '@/types/certificate';
+import { resolveCertificateAssetUrls } from '@/utils/certificateUtils';
 
 interface CertificateCardProps {
   certificate: Certificate;
@@ -26,6 +27,32 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
   const expirationYear = expiration ? expiration.getUTCFullYear() : undefined;
   const expirationMonth = expiration ? expiration.getUTCMonth() + 1 : undefined;
 
+  const credentialUrl = useMemo(() => {
+    if (certificate.credentialUrl) return certificate.credentialUrl;
+    if (typeof window !== 'undefined' && certificate.slug) {
+      return `${window.location.origin}/certificates/${certificate.slug}`;
+    }
+    if (certificate.slug) {
+      return `/certificates/${certificate.slug}`;
+    }
+    return certificate.certificateUrl;
+  }, [certificate.credentialUrl, certificate.slug, certificate.certificateUrl]);
+
+  const assetUrls = useMemo(
+    () =>
+      resolveCertificateAssetUrls({
+        pdfUrl: certificate.certificateUrl,
+        slug: certificate.slug ?? null,
+        fallbackPreviewUrl: certificate.slug
+          ? `/api/certificates/${certificate.slug}/preview`
+          : null,
+      }),
+    [certificate.certificateUrl, certificate.slug],
+  );
+
+  const previewUrl = assetUrls.previewUrl ?? undefined;
+  const certificateDownloadUrl = assetUrls.downloadUrl ?? certificate.certificateUrl;
+
   // Build LinkedIn Add to Profile link (prefilled)
   const addToProfileUrl = (() => {
     const params = new URLSearchParams();
@@ -45,8 +72,8 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
       params.set('expirationYear', String(expirationYear));
       params.set('expirationMonth', String(expirationMonth));
     }
-    if (certificate.certificateUrl) {
-      params.set('certUrl', certificate.certificateUrl);
+    if (credentialUrl) {
+      params.set('certUrl', credentialUrl);
     }
     if (certificate.certId) {
       params.set('certId', certificate.certId);
@@ -95,6 +122,20 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
               </p>
             )}
 
+            {credentialUrl ? (
+              <div className="mb-6 rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-500">
+                Public credential:{' '}
+                <a
+                  href={credentialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green hover:text-green/80 font-medium"
+                >
+                  {credentialUrl}
+                </a>
+              </div>
+            ) : null}
+
             {/* Skills Tags */}
             <div className="mb-6 flex flex-wrap gap-2">
               <span className="bg-green/10 text-green rounded-full px-3 py-1 text-xs font-medium">
@@ -123,7 +164,8 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-Inter inline-flex items-center justify-center rounded-xl bg-[#0a66c2] px-4 py-3 font-medium text-white transition-all duration-200 group-hover:shadow-lg hover:bg-[#084d96]"
-                title="Share"
+                title="Add to LinkedIn profile"
+                aria-label="Add to LinkedIn profile"
               >
                 <svg
                   className="mr-2 h-4 w-4"
@@ -133,7 +175,7 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
                 >
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                 </svg>
-                <span className="hidden sm:inline">Share</span>
+                <span className="hidden sm:inline">Add to LinkedIn</span>
               </a>
             </div>
           </div>
@@ -147,8 +189,9 @@ export default function CertificateCard({ certificate }: CertificateCardProps) {
       <CertificateModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        certificateUrl={certificate.certificateUrl}
+        certificateUrl={certificateDownloadUrl}
         certificateTitle={certificate.title}
+        previewUrl={previewUrl}
       />
     </>
   );

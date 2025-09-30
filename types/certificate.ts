@@ -4,6 +4,7 @@ export interface Certificate {
   description?: string;
   issuedAt: string;
   certificateUrl: string;
+  credentialUrl?: string;
   // Optional fields for integrations (e.g., LinkedIn Add to Profile)
   certId?: string; // e.g., certificateCode
   expirationAt?: string | null; // ISO string

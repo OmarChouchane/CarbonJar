@@ -28,6 +28,7 @@ import Navigation from '@/components/navigation';
 import SectionWrapper from '@/components/section-wrapper';
 import StatsCard from '@/components/stats-card';
 import type { Certificate } from '@/types/certificate';
+import { resolveCertificateAssetUrls } from '@/utils/certificateUtils';
 
 type ApiCertificate = {
   certificateId: string;
@@ -108,6 +109,7 @@ export default function CertificatesDashboard() {
       const certsRes = await fetch('/api/certificates', { cache: 'no-store' });
       if (!certsRes.ok) throw new Error('Failed to load certificates');
       const data = (await certsRes.json()) as unknown as ApiCertificate[];
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
 
       const mine = data
         .filter((c) => c.userId === me.userId)
@@ -116,18 +118,35 @@ export default function CertificatesDashboard() {
           const db = b.issueDate ? new Date(b.issueDate).getTime() : 0;
           return db - da;
         })
-        .map<Certificate>((c) => ({
-          id: c.certificateId,
-          title: c.title,
-          ...(c.description ? { description: c.description } : {}),
-          issuedAt: c.issueDate,
-          certificateUrl: c.pdfUrl || '',
-          certId: c.certificateCode,
-          expirationAt: c.validUntil,
-          // Always use company name for LinkedIn issuing organization
-          organizationName: 'Carbon Jar',
-          slug: c.certificateSlug,
-        }));
+        .map<Certificate>((c) => {
+          const assetUrls = resolveCertificateAssetUrls({
+            pdfUrl: c.pdfUrl,
+            slug: c.certificateSlug ?? null,
+            fallbackPreviewUrl: c.certificateSlug
+              ? `/api/certificates/${c.certificateSlug}/preview`
+              : null,
+          });
+
+          return {
+            id: c.certificateId,
+            title: c.title,
+            ...(c.description ? { description: c.description } : {}),
+            issuedAt: c.issueDate,
+            certificateUrl: assetUrls.downloadUrl ?? c.pdfUrl ?? '',
+            certId: c.certificateCode,
+            expirationAt: c.validUntil,
+            // Always use company name for LinkedIn issuing organization
+            organizationName: 'Carbon Jar',
+            slug: c.certificateSlug,
+            ...(c.certificateSlug
+              ? {
+                  credentialUrl: origin
+                    ? `${origin}/certificates/${c.certificateSlug}`
+                    : `/certificates/${c.certificateSlug}`,
+                }
+              : {}),
+          } satisfies Certificate;
+        });
 
       setCertificates(mine);
     } catch (e: unknown) {
