@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { X, ExternalLink, Download } from 'lucide-react';
+import { Loader2, X, ExternalLink, Download } from 'lucide-react';
 
 interface CertificateModalProps {
   isOpen: boolean;
@@ -17,6 +17,36 @@ export default function CertificateModal({
   certificateUrl,
   certificateTitle,
 }: CertificateModalProps) {
+  const EDGE_STORE_HOSTS = useMemo(() => new Set(['files.edgestore.dev']), []);
+  const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const effectiveUrl = useMemo(() => {
+    if (!certificateUrl) return null;
+
+    try {
+      const parsed = new URL(certificateUrl);
+      if (EDGE_STORE_HOSTS.has(parsed.hostname)) {
+        return `/api/certificates/proxy?url=${encodeURIComponent(parsed.toString())}`;
+      }
+      return parsed.toString();
+    } catch {
+      // Relative URLs or data/blob schemes should pass through unchanged
+      if (certificateUrl.startsWith('data:') || certificateUrl.startsWith('blob:')) {
+        return certificateUrl;
+      }
+
+      // Treat relative paths as same-origin resources and leave untouched
+      if (certificateUrl.startsWith('/')) {
+        return certificateUrl;
+      }
+
+      // Default fallback: return original string
+      return certificateUrl;
+    }
+  }, [EDGE_STORE_HOSTS, certificateUrl]);
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -34,6 +64,116 @@ export default function CertificateModal({
       document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setResolvedUrl(null);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
+    if (!certificateUrl) {
+      setResolvedUrl(null);
+      setLoading(false);
+      setError('Certificate file is unavailable.');
+      return;
+    }
+
+    if (!effectiveUrl) {
+      setResolvedUrl(null);
+      setLoading(false);
+      setError('Certificate link could not be processed.');
+      return;
+    }
+
+    let isCancelled = false;
+    let objectUrl: string | null = null;
+    const abortController = new AbortController();
+
+    const usesSameOrigin = (urlToCheck: string) => {
+      if (typeof window === 'undefined') return false;
+      try {
+        const url = new URL(urlToCheck, window.location.href);
+        return url.origin === window.location.origin;
+      } catch {
+        return false;
+      }
+    };
+
+    const assignResolvedUrl = (url: string) => {
+      if (isCancelled) return;
+      setResolvedUrl(url);
+      setLoading(false);
+      setError(null);
+    };
+
+    const loadCertificate = async () => {
+      // Fast path for same-origin/data/blob URLs that won't trigger frame blocking
+      if (
+        effectiveUrl.startsWith('data:') ||
+        effectiveUrl.startsWith('blob:') ||
+        usesSameOrigin(effectiveUrl)
+      ) {
+        assignResolvedUrl(effectiveUrl);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await fetch(effectiveUrl, {
+          signal: abortController.signal,
+          cache: 'no-store',
+        });
+
+        if (!response.ok) {
+          // Some CDNs return 304 for conditional requests; retry once with reload semantics.
+          if (response.status === 304) {
+            const retry = await fetch(effectiveUrl, {
+              signal: abortController.signal,
+              cache: 'reload',
+            });
+
+            if (retry.ok) {
+              const blob = await retry.blob();
+              objectUrl = URL.createObjectURL(blob);
+              assignResolvedUrl(objectUrl);
+              return;
+            }
+          }
+          throw new Error(`Unable to fetch certificate (${response.status})`);
+        }
+
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(blob);
+        assignResolvedUrl(objectUrl);
+      } catch (fetchError) {
+        if (isCancelled) return;
+        console.error('Failed to preload certificate for inline viewing:', fetchError);
+        setResolvedUrl(null);
+        setLoading(false);
+        setError(
+          "We couldn't display this certificate inline. Please use “Open in New Tab” or download it instead.",
+        );
+      }
+    };
+
+    void loadCertificate();
+
+    return () => {
+      isCancelled = true;
+      abortController.abort();
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [certificateUrl, effectiveUrl, isOpen]);
+
+  const viewerSrc = useMemo(() => {
+    if (!resolvedUrl) return null;
+    const hasHash = resolvedUrl.includes('#');
+    return hasHash ? resolvedUrl : `${resolvedUrl}#toolbar=1&navpanes=0&scrollbar=1`;
+  }, [resolvedUrl]);
 
   if (!isOpen) return null;
 
@@ -82,12 +222,44 @@ export default function CertificateModal({
 
         {/* PDF Viewer */}
         <div className="h-[calc(100%-64px)] w-full">
-          <iframe
-            src={`${certificateUrl}#toolbar=1&navpanes=0&scrollbar=1`}
-            className="h-full w-full border-0"
-            title={certificateTitle}
-            loading="lazy"
-          />
+          {loading && (
+            <div className="flex h-full w-full flex-col items-center justify-center space-y-4 text-gray-500">
+              <Loader2 className="h-8 w-8 animate-spin" />
+              <p className="font-Inter text-sm">Loading certificate…</p>
+            </div>
+          )}
+
+          {!loading && error && (
+            <div className="flex h-full w-full flex-col items-center justify-center space-y-4 p-6 text-center">
+              <p className="font-Inter text-sm text-gray-600">{error}</p>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <a
+                  href={certificateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-green hover:bg-green/90 font-Inter rounded-xl px-4 py-2 text-sm font-medium text-white transition-colors"
+                >
+                  Open in New Tab
+                </a>
+                <a
+                  href={certificateUrl}
+                  download
+                  className="font-Inter border-green text-green hover:bg-green/10 rounded-xl border px-4 py-2 text-sm font-medium transition-colors"
+                >
+                  Download Certificate
+                </a>
+              </div>
+            </div>
+          )}
+
+          {!loading && !error && viewerSrc && (
+            <iframe
+              src={viewerSrc}
+              className="h-full w-full border-0"
+              title={certificateTitle}
+              loading="lazy"
+            />
+          )}
         </div>
       </div>
     </div>
