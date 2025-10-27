@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import CredentialActions from '@/components/credential-actions';
 import Footer from '@/components/footer';
 import Navigation from '@/components/navigation';
+import PdfCanvas from '@/components/PdfCanvas';
 import { getDb } from '@/lib/db/drizzle';
 import * as schema from '@/lib/db/schema';
 import { resolveCertificateAssetUrls } from '@/utils/certificateUtils';
@@ -239,112 +240,21 @@ export default async function CredentialPage({ params }: PageParams) {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navigation />
-      <main className="pt-20 pb-16">
-        {/* Hero Section with Green Background */}
-        <div className="mb-8 bg-gradient-to-r from-green-600 to-green-500 py-16 text-white">
-          <div className="container mx-auto max-w-6xl px-4">
-            <div className="mb-8 text-center">
-              <div className="mx-auto mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-white/20 shadow-lg ring-4 ring-white/20">
-                {learner?.profileImageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={learner.profileImageUrl}
-                    alt={learnerName}
-                    className="h-20 w-20 rounded-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <span className="text-2xl font-bold text-white">
-                    {learnerName
-                      .split(' ')
-                      .map((word) => word.charAt(0))
-                      .join('')
-                      .slice(0, 2)}
-                  </span>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                <div className="inline-flex items-center rounded-full border border-white/40 bg-white/20 px-4 py-2 text-sm font-semibold text-white backdrop-blur-sm">
-                  <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Verified Credential
-                </div>
-
-                <h1 className="text-4xl leading-tight font-bold text-white lg:text-5xl">
-                  {certificate.title}
-                </h1>
-
-                <p className="mx-auto max-w-2xl text-lg text-white/90">
-                  Issued to <span className="font-semibold text-white">{learnerName}</span> by{' '}
-                  <span className="font-semibold text-white">{certificate.issuerName}</span>
-                  {certificate.issuerRole && (
-                    <span className="text-white/80"> — {certificate.issuerRole}</span>
-                  )}
-                </p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="mt-8">
-                <CredentialActions
-                  credentialUrl={credentialUrl}
-                  linkedInUrl={linkedInUrl}
-                  {...(downloadUrl ? { pdfUrl: downloadUrl } : {})}
-                />
-              </div>
-            </div>
-
-            {/* Key Details Cards - Centered in Hero */}
-            <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-xl border border-white/20 bg-white/10 p-4 shadow-sm backdrop-blur-sm">
-                <dt className="mb-1 text-xs font-medium text-white/80">Issued On</dt>
-                <dd className="text-lg font-semibold text-white">{issueDate}</dd>
-              </div>
-              <div className="rounded-xl border border-white/20 bg-white/10 p-4 shadow-sm backdrop-blur-sm">
-                <dt className="mb-1 text-xs font-medium text-white/80">Credential ID</dt>
-                <dd className="font-mono text-lg font-semibold text-white">
-                  {certificate.certificateCode}
-                </dd>
-              </div>
-              <div className="rounded-xl border border-white/20 bg-white/10 p-4 shadow-sm backdrop-blur-sm">
-                <dt className="mb-1 text-xs font-medium text-white/80">Duration</dt>
-                <dd className="text-lg font-semibold text-white">{course?.duration || '—'}</dd>
-              </div>
-              <div className="rounded-xl border border-white/20 bg-white/10 p-4 shadow-sm backdrop-blur-sm">
-                <dt className="mb-1 text-xs font-medium text-white/80">Valid Until</dt>
-                <dd className="text-lg font-semibold text-white">{expiration}</dd>
-              </div>
-            </div>
-          </div>
-        </div>
-
+    <div className="-mt-10 min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-slate-50">
+      <div className="pt-10">
+        <Navigation />
+      </div>
+      <main className="mt-5 pt-0 pb-0">
         <div className="container mx-auto max-w-6xl px-4">
-          {/* Main Content: Certificate Preview (Left) and Verification (Right) */}
-          <div className="mb-12 grid gap-8 lg:grid-cols-2">
-            {/* Certificate Preview - Left Side */}
-            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
-              <div className="border-b border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900">Certificate Preview</h2>
-                <p className="mt-1 text-sm text-gray-600">View the official certificate document</p>
-              </div>
+          {/* Hero Section: Certificate Preview (Left) and Hero Info (Right) */}
+          <div className="mb-6 grid gap-6 lg:grid-cols-12">
+            {/* Certificate Preview - Right Side (2/3 width) */}
+            <div className="overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/30 shadow-sm backdrop-blur-sm lg:order-2 lg:col-span-8">
               {previewUrl ? (
-                <div className="p-6">
+                <div className="p-2">
                   <div className="relative overflow-hidden rounded-lg border border-green-500/20 bg-slate-900/50 shadow-inner">
-                    <iframe
-                      src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH&zoom=page-fit`}
-                      title={`${certificate.title} – certificate PDF`}
-                      className="h-[500px] w-full border-0"
-                      style={{
-                        aspectRatio: '210 / 297', // A4 aspect ratio
-                      }}
-                    />
+                    {/* Canvas-based preview to avoid scrollbars regardless of PDF size */}
+                    <PdfCanvas url={previewUrl} />
                   </div>
                 </div>
               ) : (
@@ -369,59 +279,70 @@ export default async function CredentialPage({ params }: PageParams) {
               )}
             </div>
 
-            {/* Hero Info - Right Side */}
-            <div className="space-y-6">
+            {/* Hero Info - Left Side (1/3 width) */}
+            <div className="space-y-6 lg:order-1 lg:col-span-4">
               {/* Profile and Title Section */}
-              <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-8 shadow-sm backdrop-blur-sm">
-                <div className="text-center">
-                  <div className="mx-auto mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-green-600 shadow-lg ring-4 ring-green-500/20">
-                    {learner?.profileImageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={learner.profileImageUrl}
-                        alt={learnerName}
-                        className="h-20 w-20 rounded-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span className="text-2xl font-bold text-white">
-                        {learnerName
-                          .split(' ')
-                          .map((word) => word.charAt(0))
-                          .join('')
-                          .slice(0, 2)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="inline-flex items-center rounded-full border border-green-500/40 bg-green-500/20 px-4 py-2 text-sm font-semibold text-green-400 backdrop-blur-sm">
-                      <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 shadow-sm backdrop-blur-sm">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-green-600 shadow ring-2 ring-green-500/20">
+                      {learner?.profileImageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={learner.profileImageUrl}
+                          alt={learnerName}
+                          className="h-10 w-10 rounded-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="text-sm font-bold text-white">
+                          {learnerName
+                            .split(' ')
+                            .map((word) => word.charAt(0))
+                            .join('')
+                            .slice(0, 2)}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-slate-50">{learnerName}</span>
+                    <span className="inline-flex items-center rounded-full border border-green-500/40 bg-green-500/20 px-2.5 py-1 text-[11px] font-semibold text-green-400 backdrop-blur-sm">
+                      <svg className="mr-1.5 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                           clipRule="evenodd"
                         />
                       </svg>
-                      Verified Credential
-                    </div>
-
-                    <h1 className="text-3xl leading-tight font-bold text-slate-50 lg:text-4xl">
-                      {certificate.title}
-                    </h1>
-
-                    <p className="text-base text-slate-300">
-                      Issued to <span className="font-semibold text-green-400">{learnerName}</span>{' '}
-                      by{' '}
-                      <span className="font-semibold text-green-400">{certificate.issuerName}</span>
-                      {certificate.issuerRole && (
-                        <span className="text-slate-400"> — {certificate.issuerRole}</span>
-                      )}
-                    </p>
+                      Verified
+                    </span>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="mt-6">
+                  <h2 className="pt-5 text-left text-lg font-semibold text-slate-50 md:text-2xl">
+                    {certificate.title}
+                  </h2>
+
+                  <p className="text-sm text-slate-300">
+                    Issued to <span className="font-semibold text-green-400">{learnerName}</span> by{' '}
+                    <span className="font-semibold text-green-400">Carbon Jar</span>
+                  </p>
+
+                  {/* Inline details under issuance */}
+                  <div className="mt-10 space-y-1.5 text-left text-sm">
+                    <div className="">
+                      <span className="text-slate-400">Issued on:</span>{' '}
+                      <span className="text-slate-200">{issueDate}</span>
+                    </div>
+                    <div className="pt-2">
+                      <span className="text-slate-400">Duration:</span>{' '}
+                      <span className="text-slate-200">{course?.duration || '—'}</span>
+                    </div>
+                    <div className="pt-2">
+                      <span className="text-slate-400">Valid until:</span>{' '}
+                      <span className="text-slate-200">{expiration}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-10">
                     <CredentialActions
                       credentialUrl={credentialUrl}
                       linkedInUrl={linkedInUrl}
@@ -431,27 +352,7 @@ export default async function CredentialPage({ params }: PageParams) {
                 </div>
               </div>
 
-              {/* Key Details - Compact Cards */}
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-lg border border-slate-700/50 bg-slate-800/50 p-4 shadow-sm backdrop-blur-sm">
-                  <dt className="mb-1 text-xs font-medium text-slate-400">Issued On</dt>
-                  <dd className="text-lg font-semibold text-slate-50">{issueDate}</dd>
-                </div>
-                <div className="rounded-lg border border-slate-700/50 bg-slate-800/50 p-4 shadow-sm backdrop-blur-sm">
-                  <dt className="mb-1 text-xs font-medium text-slate-400">Credential ID</dt>
-                  <dd className="font-mono text-lg font-semibold text-green-400">
-                    {certificate.certificateCode}
-                  </dd>
-                </div>
-                <div className="rounded-lg border border-slate-700/50 bg-slate-800/50 p-4 shadow-sm backdrop-blur-sm">
-                  <dt className="mb-1 text-xs font-medium text-slate-400">Duration</dt>
-                  <dd className="text-lg font-semibold text-slate-50">{course?.duration || '—'}</dd>
-                </div>
-                <div className="rounded-lg border border-slate-700/50 bg-slate-800/50 p-4 shadow-sm backdrop-blur-sm">
-                  <dt className="mb-1 text-xs font-medium text-slate-400">Valid Until</dt>
-                  <dd className="text-lg font-semibold text-slate-50">{expiration}</dd>
-                </div>
-              </div>
+              {/* Inline details shown above; removed card grid */}
             </div>
           </div>
 
@@ -530,7 +431,9 @@ export default async function CredentialPage({ params }: PageParams) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </main>
-      <Footer />
+      <div className="pb-1">
+        <Footer />
+      </div>
     </div>
   );
 }

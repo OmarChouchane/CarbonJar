@@ -5,13 +5,13 @@ import { getDb } from '@/lib/db/drizzle';
 import { trainingSessions, courses, authUsers } from '@/lib/db/schema';
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 // Public endpoint: list sessions for a course by courseId
 export async function GET(_request: Request, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const db = getDb();
 
     const sessions = await db
