@@ -1,11 +1,23 @@
-#!/usr/bin/env sh
-echo "Running typecheck and tests before push..."
+#!/usr/bin/env node
+// Cross-platform pre-push without requiring bash/sh
+const { spawnSync } = require('node:child_process');
 
-# Prefer Windows npm.cmd if available to avoid bash dependency in GitHub Desktop's MinGit
-if command -v npm.cmd >/dev/null 2>&1; then
-	NPM_CMD="npm.cmd"
-else
-	NPM_CMD="npm"
-fi
+const isWin = process.platform === 'win32';
+const npmCmd = isWin ? 'npm.cmd' : 'npm';
 
-"$NPM_CMD" run typecheck && "$NPM_CMD" test
+function runNpm(args) {
+  const options = { stdio: 'inherit', shell: isWin };
+  if (isWin) {
+    // On some Windows envs, child_process can't find npm.cmd without shell
+    const cmd = `${npmCmd} ${args.map((a) => JSON.stringify(a)).join(' ')}`;
+    const res = spawnSync(cmd, [], options);
+    if (res.status !== 0) process.exit(res.status ?? 1);
+    return;
+  }
+  const res = spawnSync(npmCmd, args, options);
+  if (res.status !== 0) process.exit(res.status ?? 1);
+}
+
+console.log('Running typecheck and tests before push...');
+runNpm(['run', 'typecheck']);
+runNpm(['test']);
