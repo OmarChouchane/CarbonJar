@@ -193,77 +193,70 @@ const CardSection: React.FC = () => {
         </div>
       </section>
 
-      {/* Trusted Partners Section */}
-      <motion.section
-        className="bg-green mt-16 mb-12 flex flex-col items-center justify-center gap-10 p-6 px-2 lg:mt-16 lg:mb-12 lg:px-8"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, ease: 'easeOut', delay: 0.2 }}
-      >
-        <div className="text-center">
-          <div className="self-stretch text-center">
-            <SmallerH1 className="text-white-light">
-              <span className="text-light-green">Trusted</span>{' '}
-              <span className="text-white-light">by Industry Leaders</span>
-            </SmallerH1>
-          </div>
-          <p className="font-Inter text-lg text-white/80">
-            Join hundreds of companies making a positive environmental impact
-          </p>
-        </div>
-
-        {/* Auto-rotating Logo Carousel */}
-        <div className="relative w-full overflow-hidden">
-          <div className="animate-scroll-left flex items-center space-x-12">
-            {/* First set of logos */}
-            <div className="flex min-w-max items-center space-x-6">
-              {trustedPartners.map((partner, index) => (
-                <div
-                  key={index}
-                  className="flex h-20 w-40 flex-shrink-0 items-center justify-center"
-                >
-                  <Image
-                    src={partner.logo}
-                    alt={partner.name}
-                    width={120}
-                    height={40}
-                    className="max-h-full max-w-full object-contain brightness-0 invert filter transition-all duration-300 hover:brightness-100 hover:invert-0"
-                  />
-                </div>
-              ))}
-            </div>
-            {/* Duplicate set for seamless loop */}
-            <div className="flex min-w-max items-center space-x-12">
-              {trustedPartners.map((partner, index) => (
-                <div
-                  key={`duplicate-${index}`}
-                  className="flex h-20 w-40 flex-shrink-0 items-center justify-center"
-                >
-                  <Image
-                    src={partner.logo}
-                    alt={partner.name}
-                    width={120}
-                    height={40}
-                    className="max-h-full max-w-full object-contain brightness-0 invert filter transition-all duration-300 hover:brightness-100 hover:invert-0"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Left vignette */}
-          <div className="from-green pointer-events-none absolute top-0 left-0 z-10 h-full w-50 bg-gradient-to-r to-transparent"></div>
-          {/* Right vignette */}
-          <div className="from-green pointer-events-none absolute top-0 right-0 z-10 h-full w-50 bg-gradient-to-l to-transparent"></div>
-        </div>
-
-        <div className="text-center">
-          <p className="font-Inter text-sm text-white/60">
-            And many more companies choosing sustainable solutions
-          </p>
-        </div>
-      </motion.section>
+      {/**
+       * Trusted Partners Section (commented out for future use)
+       * To re-enable, remove this comment block.
+       *
+       * <motion.section
+       *   className="bg-green mt-16 mb-12 flex flex-col items-center justify-center gap-10 p-6 px-2 lg:mt-16 lg:mb-12 lg:px-8"
+       *   initial={{ opacity: 0, y: 30 }}
+       *   whileInView={{ opacity: 1, y: 0 }}
+       *   viewport={{ once: true, amount: 0.3 }}
+       *   transition={{ duration: 0.6, ease: 'easeOut', delay: 0.2 }}
+       * >
+       *   <div className="text-center">
+       *     <div className="self-stretch text-center">
+       *       <SmallerH1 className="text-white-light">
+       *         <span className="text-light-green">Trusted</span>{' '}
+       *         <span className="text-white-light">by Industry Leaders</span>
+       *       </SmallerH1>
+       *     </div>
+       *     <p className="font-Inter text-lg text-white/80">
+       *       Join hundreds of companies making a positive environmental impact
+       *     </p>
+       *   </div>
+       *
+       *   <div className="relative w-full overflow-hidden">
+       *     <div className="animate-scroll-left flex items-center space-x-12">
+       *       <div className="flex min-w-max items-center space-x-6">
+       *         {trustedPartners.map((partner, index) => (
+       *           <div key={index} className="flex h-20 w-40 flex-shrink-0 items-center justify-center">
+       *             <Image
+       *               src={partner.logo}
+       *               alt={partner.name}
+       *               width={120}
+       *               height={40}
+       *               className="max-h-full max-w-full object-contain brightness-0 invert filter transition-all duration-300 hover:brightness-100 hover:invert-0"
+       *             />
+       *           </div>
+       *         ))}
+       *       </div>
+       *       <div className="flex min-w-max items-center space-x-12">
+       *         {trustedPartners.map((partner, index) => (
+       *           <div key={`duplicate-${index}`} className="flex h-20 w-40 flex-shrink-0 items-center justify-center">
+       *             <Image
+       *               src={partner.logo}
+       *               alt={partner.name}
+       *               width={120}
+       *               height={40}
+       *               className="max-h-full max-w-full object-contain brightness-0 invert filter transition-all duration-300 hover:brightness-100 hover:invert-0"
+       *             />
+       *           </div>
+       *         ))}
+       *       </div>
+       *     </div>
+       *
+       *     <div className="from-green pointer-events-none absolute top-0 left-0 z-10 h-full w-50 bg-gradient-to-r to-transparent"></div>
+       *     <div className="from-green pointer-events-none absolute top-0 right-0 z-10 h-full w-50 bg-gradient-to-l to-transparent"></div>
+       *   </div>
+       *
+       *   <div className="text-center">
+       *     <p className="font-Inter text-sm text-white/60">
+       *       And many more companies choosing sustainable solutions
+       *     </p>
+       *   </div>
+       * </motion.section>
+       */}
     </motion.div>
   );
 };
