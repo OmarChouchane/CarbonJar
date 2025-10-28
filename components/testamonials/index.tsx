@@ -256,6 +256,7 @@ const CardSection: React.FC = () => {
        *     </p>
        *   </div>
        * </motion.section>
+       * *
        */}
     </motion.div>
   );
